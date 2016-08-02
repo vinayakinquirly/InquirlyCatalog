@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#ff357a</color>
+    <color name="color1">#FF5252</color>
+    <color name="color2">#F8BBD0</color>
+    <color name="color3">#FFC107</color>
+    <color name="color4">#FFF9C4</color>
+    <color name="color5">#8BC34A</color>
+    <color name="translucent">#99000000</color>
+    <color name="customColor">#a6ce38</color>
+    <color name="mainColor">#712b8d</color>
+    <color name="mobileMainColor">#dc712b8d</color>
+</resources>

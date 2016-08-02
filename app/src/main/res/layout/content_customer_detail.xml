@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_centerVertical="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="30dp"
+                android:textSize="20dp"
+                android:id="@+id/lbl_heading"
+                android:text="CUSTOMER DETAILS"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#a8b3bd"
+                android:layout_marginTop="4dp"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="10dp"
+                android:id="@+id/cust_fullname"
+                android:textCursorDrawable="@null"
+                android:textSize="15dp"
+                android:textColor="#000"
+                android:layout_marginRight="10sp"
+                android:background="@drawable/background_edit_text"
+                android:hint="Enter Full Name"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/cust_emailid"
+                android:paddingLeft="10dp"
+                android:textSize="15dp"
+                android:textColor="#000"
+                android:textCursorDrawable="@null"
+                android:layout_marginRight="10sp"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/background_edit_text"
+                android:hint="Enter Email"/>
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/cust_phonenumber"
+                android:textSize="15dp"
+                android:paddingLeft="10dp"
+                android:inputType="phone"
+                android:textCursorDrawable="@null"
+                android:layout_marginRight="10sp"
+                android:digits="0123456789"
+                android:textColor="#000"
+                android:maxLength="10"
+                android:background="@drawable/background_edit_text"
+                android:hint="Enter Phone Number"/>
+
+           <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/label_date"
+                android:textSize="20dp"
+                android:text="Delivery Date :"
+                />
+                <EditText
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/date"
+                    android:hint="date"
+                    android:focusable="false"
+                    android:layout_marginRight="10sp"
+                    android:paddingLeft="10sp"
+                    android:layout_marginLeft="10sp"
+                    android:textCursorDrawable="@null"
+                    />
+               </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/label_time"
+                    android:textSize="20dp"
+                    android:text="Delivery Time :"
+                    />
+                <EditText
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/time"
+                    android:hint="time"
+                    android:focusable="false"
+                    android:textCursorDrawable="@null"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:paddingLeft="10sp"
+                    />
+           </LinearLayout>
+               <EditText
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:maxLines="8"
+                android:textColor="#000"
+                android:id="@+id/cust_address"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:singleLine="false"
+                android:background="@drawable/background_edit_text"
+                android:textSize="15sp"
+                android:layout_marginRight="10sp"
+                android:layout_marginBottom="10sp"
+                android:textCursorDrawable="@null"
+                android:hint="Enter Address"
+                />-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:id="@+id/desc1"
+                android:text= "You have 3 items in your cart. The total amount payable is Rs.4000 "/>
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:id="@+id/desc2"
+                android:text= "Please enter the details to place the order."/>
+
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:layout_gravity="bottom"
+                android:paddingRight="10dp"
+                android:text="Place Order"
+                android:gravity="center"
+                android:id="@+id/btn_placeorder"
+                style="@style/button_white"/>
+
+        </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

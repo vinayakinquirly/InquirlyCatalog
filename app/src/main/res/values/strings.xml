@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Inquirly CaFe</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">search</string>
+    <string name="action_refresh">refresh</string>
+    <string name="add_cart">add to cart</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="section1">All time specials</string>
+    <string name="section2">Seasons specials</string>
+    <string name="section3">health and Taste combos</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_detail_view">DetailViewActivity</string>
+    <string name="cart_label">My Cart</string>
+    <string name="customer_form_label">My Details</string>
+    <string name="order_place_label">Order</string>
+
+    <array name="qty_items">
+        <item>"1"</item>
+        <item>"2"</item>
+        <item>"3"</item>
+        <item>"4"</item>
+        <item>"5"</item>
+        <item>"6"</item>
+        <item>"7"</item>
+        <item>"8"</item>
+        <item>"9"</item>
+        <item>"10"</item>
+    </array>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_search_detail_view">SearchDetailView</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_place_order">PlaceOrderActivity</string>
+    <string name="title_activity_coolberry_main">CoolberryMainActivity</string>
+    <string name="title_activity_coolberry_items_tab">CoolberryItemsTabActivity</string>
+    <string name="sample_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s. </string>
+    <string name="title_activity_cool_berry_cart"></string>
+    <string name="title_activity_item_bill">My Bill</string>
+    <string name="title_activity_customer_form">CustomerFormActivity</string>
+    <string name="title_activity_order_placed">OrderPlacedActivity</string>
+    <string name="title_activity_coolberry_search">CoolberrySearchActivity</string>
+
+</resources>

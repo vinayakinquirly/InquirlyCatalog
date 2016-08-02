@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal"
+    android:background="#ffffff"
+    >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingBottom="10dp"
+        android:layout_marginLeft="20dp"
+        >
+
+        <ImageView
+            android:layout_width="500dp"
+            android:layout_height="400dp"
+            android:id="@+id/primary_img"
+            android:layout_marginTop="10dp"
+             />
+
+    <ImageView
+        android:layout_width="100sp"
+        android:layout_height="90sp"
+        android:id="@+id/smallimg_1"
+        android:layout_below="@+id/primary_img"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/image_selector"
+        />
+    <ImageView
+        android:layout_width="100sp"
+        android:layout_height="90sp"
+        android:id="@+id/smallimg_2"
+        android:layout_below="@+id/primary_img"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/image_selector"
+        android:layout_toRightOf="@+id/smallimg_1"
+        />
+    <ImageView
+        android:layout_width="100sp"
+        android:layout_height="90sp"
+        android:id="@+id/smallimg_3"
+        android:layout_toRightOf="@+id/smallimg_2"
+        android:layout_below="@+id/primary_img"
+        android:src="@drawable/image_selector"
+        android:layout_marginTop="10dp"
+        />
+        <ImageView
+            android:layout_width="100sp"
+            android:layout_height="90sp"
+            android:id="@+id/smallimg_4"
+            android:layout_below="@+id/primary_img"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/image_selector"
+            android:layout_toRightOf="@+id/smallimg_3"
+            />
+        <ImageView
+            android:layout_width="100sp"
+            android:layout_height="90sp"
+            android:id="@+id/smallimg_5"
+            android:layout_toRightOf="@+id/smallimg_4"
+            android:layout_below="@+id/primary_img"
+            android:src="@drawable/image_selector"
+            android:layout_marginTop="10dp"
+            />
+    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="50dp"
+            android:layout_gravity="end"
+            >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtItemName"
+            android:layout_marginTop="35dp"
+            android:textSize="25sp"
+            android:textColor="#212121"
+            android:text=""
+           />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtPrice"
+            android:textSize="20sp"
+            android:text=""
+            android:textColor="#00BCD4"
+            android:layout_below="@+id/txtItemName"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text=""
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/txtDescription"
+            android:layout_below="@+id/txtPrice"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+
+            <Button
+                android:layout_width="180dp"
+                android:layout_height="70dp"
+                android:id="@+id/addToCart"
+                android:textSize="20sp"
+                android:text="ADD TO CART"
+                android:layout_gravity="bottom"
+                style="@style/button_white"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="80dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lbl_tac"
+                android:textSize="15sp"
+                android:textColor="#212121"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:text="Terms &amp; Conditions : "
+                android:layout_marginBottom="20dp"
+                />
+
+            <inquirly.com.inquirlycatalogue.utils.ScrollTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tac"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_alignParentBottom="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="inquirly catalogue"
+                android:lines="1"
+                android:fadingEdge="horizontal"
+                android:layout_toRightOf="@+id/lbl_tac"
+                android:layout_marginBottom="20dp"
+                />
+
+
+        </RelativeLayout>
+
+
+</LinearLayout>

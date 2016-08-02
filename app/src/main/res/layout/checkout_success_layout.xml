@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:padding="30dp"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:id="@+id/img_checkout"
+        android:src="@drawable/thumbs_up_icon" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:textSize="20sp"
+        android:id="@+id/txt_checkout_message"
+        android:layout_marginLeft="2dp"
+        android:textColor="#000"
+        android:text="Congratulations! Your order was placed successfully. Your order number is 00000"
+        android:layout_toRightOf="@+id/img_checkout"
+        android:layout_toEndOf="@+id/img_checkout" />
+</RelativeLayout>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:id="@+id/inquirly_logo"
+        android:src="@mipmap/img_inquirly_logo"/>
+    <LinearLayout
+        android:id="@+id/linear_login_base"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:layout_below="@+id/inquirly_logo"
+        android:layout_centerInParent="true">
+        <inquirly.com.inquirlycatalogue.utils.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textSize="20dp"
+            android:layout_gravity="center_horizontal"/>
+        <inquirly.com.inquirlycatalogue.utils.CustomEditTextView
+            android:id="@+id/edit_login_email"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:minHeight="45dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/background_edit_text"
+            style="@style/label_small_hint_default"
+            android:hint="Email Id"
+            android:paddingLeft="10dp"
+            android:layout_gravity="center"
+            android:inputType="textEmailAddress"/>
+        <inquirly.com.inquirlycatalogue.utils.CustomEditTextView
+            android:id="@+id/edit_login_password"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:minHeight="45dp"
+            android:background="@drawable/background_edit_text"
+            android:layout_marginTop="10dp"
+            style="@style/label_small_hint_default"
+            android:hint="Password"
+            android:paddingLeft="10dp"
+           android:layout_gravity="center"
+            android:inputType="textPassword"/>
+        <!--android:text="Inquirly@123"/>-->
+
+        <inquirly.com.inquirlycatalogue.utils.CustomTextView
+            android:id="@+id/txt_login_btn"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            style="@style/button_white"
+            android:layout_marginTop="20dp"
+            android:text="Go"
+            android:layout_gravity="center_horizontal"/>
+
+        <inquirly.com.inquirlycatalogue.utils.CustomTextView
+            android:id="@+id/txt_login_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/label_error_white"
+            android:text="Oops, something went wrong, please try again later"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"/>
+
+        <inquirly.com.inquirlycatalogue.utils.CustomTextView
+            android:id="@+id/txt_login_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/button_no_background"
+            android:text="Forgot Password?"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:clickable="true"
+            android:visibility="invisible"/>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linear_login_base"
+        android:visibility="invisible">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true">
+            <inquirly.com.inquirlycatalogue.utils.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/label_small_grey"
+                android:layout_gravity="center_horizontal"
+                android:text="Not a member?"/>
+            <inquirly.com.inquirlycatalogue.utils.CustomTextView
+                android:id="@+id/txt_login_send_membership_query"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                style="@style/label_small_blue"
+                android:text="SEND MEMBER QUERY"
+                android:clickable="true"/>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

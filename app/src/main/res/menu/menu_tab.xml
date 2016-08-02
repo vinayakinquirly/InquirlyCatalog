@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="inquirly.gridviewtest.activities.ItemTabActivity">
+
+    <item android:id="@+id/action_refresh"
+        android:title="@string/action_refresh"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@mipmap/refresh"/>
+
+    <item
+        android:id="@+id/action_count"
+        android:icon="@drawable/ic_menu_cart"
+        android:title="cart_items"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+
+</menu>
