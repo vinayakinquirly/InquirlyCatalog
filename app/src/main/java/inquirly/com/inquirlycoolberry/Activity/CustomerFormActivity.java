@@ -165,7 +165,6 @@ public class CustomerFormActivity extends AppCompatActivity {
         btn_pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (user_mob.getText().toString().equals(null) ||
                         user_mob.getText().toString().equals("")) {
                     Toast.makeText(CustomerFormActivity.this, "Mobile number is mandatory!", Toast.LENGTH_SHORT).show();

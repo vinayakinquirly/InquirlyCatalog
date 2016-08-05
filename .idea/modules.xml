@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/InquirlyCatalog.iml" filepath="$PROJECT_DIR$/InquirlyCatalog.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/inquirlycatalogue.iml" filepath="$PROJECT_DIR$/inquirlycatalogue.iml" />
     </modules>
   </component>
 </project>
