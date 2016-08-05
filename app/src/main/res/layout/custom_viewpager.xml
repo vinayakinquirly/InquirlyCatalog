@@ -18,34 +18,34 @@
             android:layout_width="150dp"
             android:layout_height="250dp"
             android:id="@+id/primary_img"
-             />
+            />
 
-    <ImageView
-        android:layout_width="60sp"
-        android:layout_height="60sp"
-        android:id="@+id/smallimg_1"
-        android:layout_below="@+id/primary_img"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/image_selector"
-        />
-    <ImageView
-        android:layout_width="60sp"
-        android:layout_height="60sp"
-        android:id="@+id/smallimg_2"
-        android:layout_below="@+id/primary_img"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/image_selector"
-        android:layout_toRightOf="@+id/smallimg_1"
-        />
-    <ImageView
-        android:layout_width="60sp"
-        android:layout_height="60sp"
-        android:id="@+id/smallimg_3"
-        android:layout_toRightOf="@+id/smallimg_2"
-        android:layout_below="@+id/primary_img"
-        android:src="@drawable/image_selector"
-        android:layout_marginTop="10dp"
-        />
+        <ImageView
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:id="@+id/smallimg_1"
+            android:layout_below="@+id/primary_img"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/image_selector"
+            />
+        <ImageView
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:id="@+id/smallimg_2"
+            android:layout_below="@+id/primary_img"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/image_selector"
+            android:layout_toRightOf="@+id/smallimg_1"
+            />
+        <ImageView
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:id="@+id/smallimg_3"
+            android:layout_toRightOf="@+id/smallimg_2"
+            android:layout_below="@+id/primary_img"
+            android:src="@drawable/image_selector"
+            android:layout_marginTop="10dp"
+            />
         <ImageView
             android:layout_width="60sp"
             android:layout_height="60sp"
@@ -65,13 +65,14 @@
             android:layout_marginTop="10dp"
             />
     </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginLeft="50dp"
-            android:layout_gravity="end"
-            >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="end"
+        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +81,7 @@
             android:textColor="#212121"
             android:layout_marginTop="20dp"
             android:text=""
-           />
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,68 +94,68 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/txtPrice"
-                >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/txtPrice"
+            >
 
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >
-        <TextView
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text=""
-            android:textSize="15dp"
-            android:layout_marginTop="10dp"
-            android:id="@+id/txtDescription"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+                <TextView
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=""
+                    android:textSize="15dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/txtDescription"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
             </ScrollView>
-            </RelativeLayout>
-            <Button
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:id="@+id/addToCart"
-                android:textSize="20sp"
-                android:text="ADD TO CART"
-                android:layout_gravity="bottom"
-                style="@style/button_white"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="20dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/lbl_tac"
-                android:textSize="15sp"
-                android:textColor="#212121"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:text="Terms&amp;Conditions : "
-                android:layout_marginBottom="20dp"
-                />
+        </RelativeLayout>
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:id="@+id/addToCart"
+            android:textSize="20sp"
+            android:text="ADD TO CART"
+            android:layout_gravity="bottom"
+            style="@style/button_white"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="20dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lbl_tac"
+            android:textSize="15sp"
+            android:textColor="#212121"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:text="Terms&amp;Conditions : "
+            android:layout_marginBottom="20dp"
+            />
 
-            <inquirly.com.inquirlycatalogue.utils.ScrollTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tac"
-                android:textColor="#000000"
-                android:textStyle="bold"
-                android:textSize="15sp"
-                android:layout_alignParentBottom="true"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="text1"
-                android:layout_toRightOf="@+id/lbl_tac"
-                android:layout_marginBottom="20dp"
-                />
+        <inquirly.com.inquirlycatalogue.utils.ScrollTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tac"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_alignParentBottom="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="text1"
+            android:layout_toRightOf="@+id/lbl_tac"
+            android:layout_marginBottom="20dp"
+            />
 
     </RelativeLayout>
 

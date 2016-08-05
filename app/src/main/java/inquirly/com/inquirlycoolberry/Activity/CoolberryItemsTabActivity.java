@@ -1,49 +1,48 @@
 package inquirly.com.inquirlycoolberry.Activity;
 
-import android.provider.Settings;
+import java.net.URL;
+import java.io.File;
+import java.util.List;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.android.volley.VolleyError;
 import org.json.JSONObject;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import android.view.Window;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
+import android.view.MenuItem;
+import java.net.URLConnection;
+import android.view.ViewGroup;
+import android.content.Intent;
+import android.graphics.Color;
+import android.content.Context;
+import android.widget.TextView;
+import android.widget.ImageView;
+import java.io.FileOutputStream;
+import android.graphics.Typeface;
+import android.view.WindowManager;
+import android.app.ProgressDialog;
+import java.io.BufferedInputStream;
 import android.util.DisplayMetrics;
+import com.android.volley.VolleyError;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import inquirly.com.inquirlycatalogue.R;
+import android.support.v7.widget.Toolbar;
+import android.support.v4.view.ViewPager;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.SearchView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.graphics.drawable.LayerDrawable;
+import android.support.design.widget.TabLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentPagerAdapter;
 import inquirly.com.inquirlycatalogue.rest.ApiRequest;
 import inquirly.com.inquirlycatalogue.utils.CartCount;
 import inquirly.com.inquirlycatalogue.models.Campaign;
@@ -89,7 +88,6 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
         intent = getIntent();
         setContentView(R.layout.activity_coolberry_items_tab);
         coordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorTabLayout);
-        //coordinatorLayout.setBackgroundColor(Color.parseColor(instance.getImage("color_1")));
         context = CoolberryItemsTabActivity.this;
         initToolbar();
         Log.i(TAG,"--->entered");
@@ -297,7 +295,6 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
                 pDialog.setMessage("Reloading....Please wait");
                 pDialog.setCancelable(false);
                 pDialog.show();
-
                 new Thread() {
                     public void run() {
                         try {
@@ -307,16 +304,18 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
                             Log.e(TAG, e.getMessage());
                             Toast.makeText(getApplicationContext(), "Something went wrong...please try again later", Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 }.start();
             }
             else {
-                Toast.makeText(getApplicationContext(),"Please connect to the Internet and try again",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Unable to connect to server. " +
+                        "please check your network connection",Toast.LENGTH_SHORT).show();
             }
             return true;
         }
         if (id == R.id.action_count) {
+            finish();
+            startActivity(getIntent());
             Intent cartIntent = new Intent(this, CoolBerryCartActivity.class);
             cartIntent.putExtra("campaign_id", mCampaignId);
             Log.i(TAG,"check campaign_id sent" + mCampaignId);
@@ -450,7 +449,6 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
         @Override
         protected Object doInBackground(Object... objects) {
             try {
-
                 String[] tempFileNames;
                 String tempFileName ="";
                 String delimiter = ":";

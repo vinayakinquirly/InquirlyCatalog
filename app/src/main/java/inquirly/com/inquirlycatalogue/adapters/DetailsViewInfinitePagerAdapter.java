@@ -1,9 +1,5 @@
 package inquirly.com.inquirlycatalogue.adapters;
 
-/**
- * Created by kaushal on 07-12-2015.
- */
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,13 +27,17 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import inquirly.com.inquirlycatalogue.ApplicationController;
 import inquirly.com.inquirlycatalogue.R;
 import inquirly.com.inquirlycatalogue.activities.CartActivity;
@@ -51,20 +51,22 @@ import inquirly.com.inquirlycatalogue.utils.ScrollTextView;
 
 public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
 
-    private Typeface font;
-    private EditText text;
-    private int mPosition;
     private Context mContext;
-    private String mCampaignId;
-    boolean hasEditText = false;
-    private LinearLayout contentLayout ;
-    private CampaignDbItem mSelectedItem;
     private ArrayList<CampaignDbItem> mItems;
+    private CampaignDbItem mSelectedItem;
+    private String mCampaignId;
+    private int mPosition;
     private HashMap<String, ArrayList<Fields>> propertyList;
-    private static HashMap<String,View> mOptionWidgets = new HashMap<>();
-    private ApplicationController appInstance = ApplicationController.getInstance();
-    private static final String TAG = DetailsViewInfinitePagerAdapter.class.getSimpleName();
+    boolean hasEditText = false;
+    LinearLayout contentLayout ;
 
+    ApplicationController appInstance = ApplicationController.getInstance();
+
+    EditText text ;
+
+    private Typeface font;
+    private static final String TAG = DetailsViewInfinitePagerAdapter.class.getSimpleName();
+    private static HashMap<String,View> mOptionWidgets = new HashMap<>();
     @IdRes
     private static final int ID_MALE = 1;
     @IdRes
@@ -142,12 +144,15 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
             itemSmallImage1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     Picasso.with(mContext).load(selectedItem.getMediaImg1()).resize(1100, 900).into(itemLargeImage);
                     highlight(0, ImageView);
+
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage1.setVisibility(View.GONE);
         }
 
@@ -156,12 +161,14 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
             itemSmallImage2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     Picasso.with(mContext).load(selectedItem.getMediaImg2()).resize(1100, 900).into(itemLargeImage);
                     highlight(1, ImageView);
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage2.setVisibility(View.GONE);
         }
         if(mSelectedItem.getMediaImg3() != null) {
@@ -176,7 +183,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage3.setVisibility(View.GONE);
         }
         if(mSelectedItem.getMediaImg4() != null) {
@@ -191,7 +199,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage4.setVisibility(View.GONE);
         }
         if(mSelectedItem.getMediaImg5() != null) {
@@ -206,7 +215,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage5.setVisibility(View.GONE);
         }
 
@@ -229,19 +239,26 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 contentLayout = (LinearLayout) dialogView.findViewById(R.id.dlg_specs_content);
 
                 //bring up the item specs chooser dialogs
-                Log.i(TAG,"property list" + selectedItem.getType() + "---" + propertyList.size()+ "----" +propertyList.get(selectedItem.getType()));
+
                 DetailsViewInfinitePagerAdapter.this.buildSpecsDialog(contentLayout, propertyList.get(selectedItem.getType()));
 
                 dialogBuilder.setView(dialogView);
                 dialogBuilder.setTitle("Specify Options");
+
                 dialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {}
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+
                 });
 
                 dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {}
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                    }
                 });
 
                 final AlertDialog dialog = dialogBuilder.create();
@@ -252,16 +269,19 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
 
                     @Override
                     public void onClick(View v) {
+
                         if (hasEditText) {
                             if (text.getText().toString().equals("")) {
                                 Toast.makeText(mContext, "Please fill all the fields", Toast.LENGTH_SHORT).show();
                             }
-                            else {
+                            else
+                            {
                                 dialog.dismiss();
                                 generateitemdetails(selectedItem);
                             }
                         }
-                        else {
+                        else
+                        {
                             dialog.dismiss();
                             generateitemdetails(selectedItem);
                         }
@@ -277,7 +297,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         return layout;
     }
 
-    public void generateitemdetails(CampaignDbItem selItem) {
+    public void generateitemdetails(CampaignDbItem selItem)
+    {
         CartItem cartItem = new CartItem();
         cartItem.setCampaignId(DetailsViewInfinitePagerAdapter.this.mCampaignId);
         int basePrice = selItem.getPrice();
@@ -289,6 +310,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         Gson gson = new Gson();
         try {
             if (pricingJSON.has(type)) {
+
                 pricingModel = gson.fromJson(pricingJSON.getString(type), PricingModel.class);
             } else {
                 //get BASIC pricing model
@@ -299,11 +321,6 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         }
 
         Log.i(TAG, "campaign_id=" + DetailsViewInfinitePagerAdapter.this.mCampaignId);
-        for(int i=0;i<contentLayout.getChildCount();i++){
-            LinearLayout innerLayout = (LinearLayout) contentLayout.getChildAt(i);
-            Log.i(TAG,"------" + innerLayout.getChildAt(1).getTag());
-        }
-
         HashMap<String, String[]> options = new HashMap<>();
         for (int iChild = 0; iChild < contentLayout.getChildCount(); iChild++) {
             LinearLayout innerLayout = (LinearLayout) contentLayout.getChildAt(iChild);
@@ -312,7 +329,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
             View widget = mOptionWidgets.get(key);
             if (widget instanceof EditText) {
                 String qty_value = ((EditText) widget).getText().toString();
-                //selectedQuantity = Integer.parseInt(qty_value);
+//                selectedQuantity = Integer.parseInt(qty_value);
                 options.put(key, new String[]{qty_value});
             }
             else if (widget instanceof Spinner)
@@ -320,14 +337,15 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 Spinner spinner = (Spinner) widget;
                 String value = spinner.getSelectedItem().toString();
                 if (key.equals("Weight")) {
-                    if (value.equals("0.5")) {
+                    if (value.equals("0.5"))
+                    {
                         String price = pricingModel.Weight[0].getPrice();
                         int weightPrice = Integer.parseInt(price.substring(1, price.length()));
                         basePrice += weightPrice;
                     }
                     selectedWeight = Float.parseFloat(value);
                 } else if (key.equals("Quantity")) {
-                   // selectedQuantity = Integer.parseInt(value);
+                    selectedQuantity = Integer.parseInt(value);
                 }
                 options.put(key, new String[]{value});
             } else if ((widget instanceof RadioGroup) || (widget instanceof RadioButton)) {
@@ -353,6 +371,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
             if (mContext instanceof DetailViewActivity) {
                 ((DetailViewActivity) mContext).endActivity();
             }
+
         }
 
         float totalPrice = 0.0f;
@@ -406,7 +425,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 innerLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                 if (field.getType().equals("number_input") || field.getType().equals("text_input") ) {
-                   /* TextView label = new TextView(mContext);
+                    TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(17);
@@ -425,9 +444,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                     hasEditText = true;
                     mOptionWidgets.put(field.getLabel(),text);
                     Log.i(TAG, "Adding single input");
-                    hasChild = true;*/
+                    hasChild = true;
 
-                    TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(17);
@@ -562,11 +580,12 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             }
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
-    }
 
+    }
     public void highlight(int index, ImageView[] imgView) {
 
         for(int i=0;i<5;i++) {
@@ -591,6 +610,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         }
         return pricingJSON;
     }
+
 
     public void buildItemProperties() {
         SharedPreferences prefs = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
@@ -622,9 +642,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                         field.setOptions(options);
                         fieldList.add(field);
                     }
-                    Log.i(TAG,"field size--->" + fieldList.size() + fieldList.get(keyIndex).getLabel());
-                    propertyList.put("cake", fieldList);
-                    Log.i(TAG,"check  propertyList--JUST-->" + propertyList.size() + "---" + propertyList.get(0));
+                    propertyList.put(key, fieldList);
                 }
             } catch (Exception ex) {
                 Log.e(TAG, "Error parsing item properties from shared prefs:" + ex.getMessage());

@@ -1,2 +1,1 @@
-# InquirlyCatalog
-CatalogAppBuild
+# Inquirlycatalogue

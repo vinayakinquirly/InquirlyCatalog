@@ -25,13 +25,15 @@ import inquirly.com.inquirlycatalogue.models.CampaignDbItem;
 import inquirly.com.inquirlycatalogue.utils.ApiConstants;
 import inquirly.com.inquirlycatalogue.utils.RecyclerItemClickListener;
 
+
 public class ItemTabFragment extends Fragment  {
 
     public final static String ITEMS_KEY = "PartThreeFragment$ItemsCount";
     // private  Campaign.FormAttributes.SubCategories.Item[] mItems;
-    public static ArrayList<CampaignDbItem> mItems;
+    private ArrayList<CampaignDbItem> mItems;
     private final static String TAG = ItemTabFragment.class.getSimpleName();
     private String mCampaignId;
+
     RecyclerView recyclerView;
     RecyclerCategoryAdapter mAdapter;
 
@@ -63,8 +65,8 @@ public class ItemTabFragment extends Fragment  {
         mAdapter = new RecyclerCategoryAdapter(mItems, this.getActivity());
         recyclerView.setAdapter(mAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-       // RecyclerViewGridSpacing spacing = new RecyclerViewGridSpacing(getActivity(), R.dimen.recycler_item_spacing);
-       // recyclerView.addItemDecoration(spacing);
+        // RecyclerViewGridSpacing spacing = new RecyclerViewGridSpacing(getActivity(), R.dimen.recycler_item_spacing);
+        // recyclerView.addItemDecoration(spacing);
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
@@ -75,8 +77,8 @@ public class ItemTabFragment extends Fragment  {
                         bundle.putSerializable("itemsList", mItems);
                         bundle.putInt("itemPosition", position);
                         Log.i(TAG, "ItemTabFragment clicked position=" + position);
-                        bundle.putString(ApiConstants.CAMPAIGN_ID, mCampaignId);
-                        Log.i(TAG, "campaign_id=" + mCampaignId);
+                        bundle.putString(ApiConstants.CAMPAIGN_ID, ItemTabFragment.this.mCampaignId);
+                        Log.i(TAG, "campaign_id=" + ItemTabFragment.this.mCampaignId);
                         detailActivityIntent.putExtras(bundle);
                         startActivity(detailActivityIntent);
                     }
@@ -90,6 +92,7 @@ public class ItemTabFragment extends Fragment  {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_cart, menu);
+
     }
 
     @Override

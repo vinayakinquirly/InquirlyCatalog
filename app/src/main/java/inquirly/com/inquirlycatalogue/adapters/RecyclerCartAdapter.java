@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,30 +24,34 @@ import inquirly.com.inquirlycatalogue.activities.CartActivity;
 import inquirly.com.inquirlycatalogue.models.CartItem;
 
 public class RecyclerCartAdapter extends RecyclerView.Adapter<RecyclerCartAdapter.ViewHolder> {
-
     private ArrayList<CartItem> mItems;
     private Context mContext;
-    private static final String TAG = "RecyclerCartAdapter";
+
 
     public RecyclerCartAdapter(Context context,ArrayList<CartItem> items) {
         this.mItems = items;
         mContext = context;
     }
 
+    // Create new views (invoked by the layout manager)
     @Override
-    public RecyclerCartAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerCartAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                             int viewType) {
+        // create a new view
         View itemLayoutView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_cart_item, null);
+        // create ViewHolder
         ViewHolder viewHolder = new ViewHolder(itemLayoutView);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
         CartItem item = mItems.get(position);
+        // - get data from your itemsData at this position
+        // - replace the contents of the view with that itemsData
         viewHolder.item_name.setText(item.getItemName());
-        viewHolder.item_price.setText("Rs. " + item.getItemPrice());
+        viewHolder.item_price.setText(item.getItemPrice());
         String qty = String.valueOf(item.getItemQuantity());
         Log.d("qty is:", qty);
         viewHolder.item_quantity.setText(qty);
@@ -57,22 +60,24 @@ public class RecyclerCartAdapter extends RecyclerView.Adapter<RecyclerCartAdapte
         viewHolder.item_name.setTypeface(font);
         viewHolder.item_price.setTypeface(font);
         viewHolder.item_quantity.setTypeface(font);
-        Picasso.with(mContext).load(item.getItemImage()).resize(100,100).centerInside().into(viewHolder.item_img);
-        Log.i(TAG,"check image url kaushal--->" + item.getItemImage());
-
+        Picasso.with(mContext).load(item.getItemImage()).resize(150,150).centerInside().into(viewHolder.item_img);
         viewHolder.cancel_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // mItems.remove(position);
                 ApplicationController.getInstance().removeCartItem(mItems.get(position));
+
                 if(mContext instanceof CartActivity){
                     ((CartActivity)mContext).getTotalamount();
                 }
+
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mItems.size());
             }
         });
     }
 
+    // inner class to hold a reference to each item of RecyclerView
     public class ViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
         public TextView item_name,item_price,item_quantity;
         public ImageView item_img,cancel_img;
@@ -82,7 +87,7 @@ public class RecyclerCartAdapter extends RecyclerView.Adapter<RecyclerCartAdapte
             item_name = (TextView) itemLayoutView.findViewById(R.id.item_name);
             item_price = (TextView) itemLayoutView.findViewById(R.id.item_price);
             item_quantity = (TextView) itemLayoutView.findViewById(R.id.item_qty);
-            item_img=(ImageView) itemLayoutView.findViewById(R.id.item_img);
+            item_img=(ImageView)itemLayoutView.findViewById(R.id.item_img);
             cancel_img=(ImageView)itemLayoutView.findViewById(R.id.cancel_btn);
         }
 
@@ -92,8 +97,14 @@ public class RecyclerCartAdapter extends RecyclerView.Adapter<RecyclerCartAdapte
             if(v.equals(cancel_img)){
                 removeAt(getPosition());
             }
+            else
+            {
+
+            }
         }
-        public void removeAt(int position) {}
+        public void removeAt(int position) {
+
+        }
     }
 
     @Override

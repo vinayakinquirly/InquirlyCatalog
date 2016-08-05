@@ -95,8 +95,8 @@
                     card_view:cardElevation="4dp">
 
                     <Button
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
                         android:text="-"
                         android:background="@android:color/transparent"
                         android:id="@+id/food_cart_sub"
@@ -128,8 +128,8 @@
                     card_view:cardElevation="4dp">
 
                     <Button
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
                         android:text="+"
                         android:background="@android:color/transparent"
                         android:id="@+id/food_cart_add"

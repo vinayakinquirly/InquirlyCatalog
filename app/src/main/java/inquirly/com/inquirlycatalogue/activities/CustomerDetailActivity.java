@@ -129,7 +129,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         desc2.setTypeface(font);
         btn_placeorder.setTypeface(font);
 
-        int count = ApplicationController.getInstance().getCartItemCount();
+        int count = ApplicationController.getInstance().getJustCartItemCount();
         float amount = ApplicationController.getInstance().getTotalCartAmount();
         String itemMessage = "You have " + count + " items in your cart. The total amount payable is Rs." + amount;
         desc1.setText(itemMessage);
@@ -289,7 +289,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
     public void pushOrderfromDeeplink(Customer customer) {
 
-        final ArrayList<CartItem> items = ApplicationController.getInstance().getCartItems();
+        final ArrayList<CartItem> items = ApplicationController.getInstance().getListCartItems();
         SharedPreferences sPrefs = this.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
         String tableId = sPrefs.getString(CatalogSharedPrefs.TABLE_NAME, null);
 
@@ -361,7 +361,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
     public void pushOrderfromnonDeeplink(Customer customer) {
 
-        final ArrayList<CartItem> items = ApplicationController.getInstance().getCartItems();
+        final ArrayList<CartItem> items = ApplicationController.getInstance().getListCartItems();
         SharedPreferences sPrefs = this.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
 
         Gson gson = new Gson();

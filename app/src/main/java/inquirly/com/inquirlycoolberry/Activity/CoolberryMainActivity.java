@@ -271,13 +271,17 @@ public class CoolberryMainActivity extends AppCompatActivity {
                                         new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
                                             @Override
                                             public void onItemClick(View view, int position) {
-                                                CampaignItemData campaign = itemData.get(position);
-
-                                                Log.i(TAG, "campaign clicked=" + campaign.getId());
-                                                Intent i = new Intent(getApplicationContext(), CoolberryItemsTabActivity.class);
-                                                i.putExtra("campaignId", campaign.getId());
-                                                i.putExtra(ApiConstants.CAMPAIGN_TYPE, campaignType);
-                                                startActivity(i);
+                                                if(InternetConnectionStatus.checkConnection(CoolberryMainActivity.this)){
+                                                    CampaignItemData campaign = itemData.get(position);
+                                                    Log.i(TAG, "campaign clicked=" + campaign.getId());
+                                                    Intent i = new Intent(getApplicationContext(), CoolberryItemsTabActivity.class);
+                                                    i.putExtra("campaignId", campaign.getId());
+                                                    i.putExtra(ApiConstants.CAMPAIGN_TYPE, campaignType);
+                                                    startActivity(i);
+                                                }else {
+                                                    Toast.makeText(CoolberryMainActivity.this, "Unable to connect to server. " +
+                                                            "please check your network connection", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         })
                                 );
@@ -305,7 +309,6 @@ public class CoolberryMainActivity extends AppCompatActivity {
             Log.i(TAG,"campaignList size is---- 0");
             buildCampaignList(campaignType);
         }else {
-            Log.i(TAG,"campaignList size is---- not 0");
             final ArrayList<CampaignItemData> items = myDB.getCampaignListData();
             camp_id = items.get(0).getId();
             listCategory.setLayoutManager(new GridLayoutManager(CoolberryMainActivity.this, 2));
@@ -319,13 +322,18 @@ public class CoolberryMainActivity extends AppCompatActivity {
                     new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, int position) {
-                            CampaignItemData campaign = items.get(position);
-                            Log.i(TAG, "campaign clicked=" + campaign.getId());
-                            Intent i = new Intent(getApplicationContext(), CoolberryItemsTabActivity.class);
-                            Log.i(TAG, "campaignID" + campaign.getId() + "--type--" + campaignType);
-                            i.putExtra("campaignId", campaign.getId());
-                            i.putExtra(ApiConstants.CAMPAIGN_TYPE, campaignType);
-                            startActivity(i);
+                            if(InternetConnectionStatus.checkConnection(CoolberryMainActivity.this)) {
+                                CampaignItemData campaign = items.get(position);
+                                Log.i(TAG, "campaign clicked=" + campaign.getId());
+                                Intent i = new Intent(getApplicationContext(), CoolberryItemsTabActivity.class);
+                                Log.i(TAG, "campaignID" + campaign.getId() + "--type--" + campaignType);
+                                i.putExtra("campaignId", campaign.getId());
+                                i.putExtra(ApiConstants.CAMPAIGN_TYPE, campaignType);
+                                startActivity(i);
+                            }else{
+                                Toast.makeText(CoolberryMainActivity.this, "Unable to connect to server. " +
+                                        "please check your network connection", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     })
             );
@@ -339,8 +347,11 @@ public class CoolberryMainActivity extends AppCompatActivity {
         myDB.deleteCampaigns();
         myDB.close();
         Log.i(TAG,"moving to build campaigns");
-        buildCampaignList(ApiConstants.CAMPAIGN_TYPE_CATALOG);
+        pDialog.dismiss();
+        startActivity(getIntent());
         finish();
+//        buildCampaignList(ApiConstants.CAMPAIGN_TYPE_CATALOG);
+//        finish();
     }
 
     private class DownloadFile extends AsyncTask<Object, Object, Object> {

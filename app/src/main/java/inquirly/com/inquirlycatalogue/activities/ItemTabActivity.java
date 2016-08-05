@@ -115,7 +115,7 @@ public class ItemTabActivity extends AppCompatActivity implements SearchView.OnQ
         if (mMenu != null) {
             MenuItem item = mMenu.findItem(R.id.action_count);
             LayerDrawable icon = (LayerDrawable) item.getIcon();
-            int size = ApplicationController.getInstance().getCartItemCount();
+            int size = ApplicationController.getInstance().getJustCartItemCount();
             CartCount.setBadgeCount(this, icon, size);
         }
     }
@@ -250,7 +250,7 @@ public class ItemTabActivity extends AppCompatActivity implements SearchView.OnQ
         getMenuInflater().inflate(R.menu.menu_tab, menu);
         MenuItem item = menu.findItem(R.id.action_count);
         LayerDrawable icon = (LayerDrawable) item.getIcon();
-        int size = ApplicationController.getInstance().getCartItemCount();
+        int size = ApplicationController.getInstance().getJustCartItemCount();
         CartCount.setBadgeCount(this, icon, size);
         mMenu = menu;
         return true;

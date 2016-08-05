@@ -73,7 +73,7 @@ public class CampaignTypeActivity extends AppCompatActivity {
         }
 
         if(catalougeView!=null&& (showFeedback!=null)&& (color_1!=null) && (color_2!=null) ){
-            btn_feedback.setBackgroundColor(Color.parseColor(color_2));
+            btn_feedback.setBackgroundColor(Color.parseColor(color_1));
             btn_catalogue.setBackgroundColor(Color.parseColor(color_1));
             btn_feedback.setTextColor(getResources().getColor(android.R.color.white));
             btn_catalogue.setTextColor(getResources().getColor(android.R.color.white));
@@ -84,12 +84,12 @@ public class CampaignTypeActivity extends AppCompatActivity {
         type_back_1= (ImageView)findViewById(R.id.type_back_1);
         type_back_2 = (ImageView)findViewById(R.id.type_back_2);
         type_back_3 = (ImageView)findViewById(R.id.type_back_3);
-
         type_logo = (ImageView)findViewById(R.id.type_logo);
+
         Picasso.with(this).load(instance.getImage("bg_1")).resize(530,100).into(type_back_1);
         Picasso.with(this).load(instance.getImage("bg_1")).resize(530,100).into(type_back_2);
         Picasso.with(this).load(instance.getImage("bg_1")).resize(530,100).into(type_back_3);
-        Picasso.with(this).load(instance.getImage("logo")).into(type_logo);
+        Picasso.with(this).load(instance.getImage("logo")).resize(500,0).into(type_logo);
 
         Typeface font = Typeface.createFromAsset(getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         btn_catalogue.setTypeface(font);
@@ -98,9 +98,9 @@ public class CampaignTypeActivity extends AppCompatActivity {
         btn_catalogue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"check view again check----" + catalougeView);
+                Log.i(TAG,"view check----" + catalougeView);
                 if(catalougeView.equals("food_menu_view")){
-                    Log.i(TAG,"food menu entered" +"---" +catalougeView);
+                    Log.i(TAG,"food menu entered");
                     Intent intent = new Intent(getApplicationContext(), CoolberryMainActivity.class);
                     intent.putExtra(ApiConstants.CAMPAIGN_TYPE, ApiConstants.CAMPAIGN_TYPE_CATALOG);
                     startActivity(intent);

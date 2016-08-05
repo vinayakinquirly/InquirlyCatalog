@@ -36,13 +36,14 @@ import inquirly.com.inquirlycatalogue.models.PlaceOrderRes;
 import inquirly.com.inquirlycatalogue.ApplicationController;
 import inquirly.com.inquirlycatalogue.rest.IRequestCallback;
 import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
+import inquirly.com.inquirlycatalogue.utils.InternetConnectionStatus;
 
 public class CustomerFormActivity extends AppCompatActivity {
 
+    private String color;
     public Intent intent;
     public Button btn_pay;
     private int pipeline_id;
-    private String color;
     private Gson gson = new Gson();
     public static String mCampaignId;
     private ProgressDialog orderDialog;
@@ -164,18 +165,32 @@ public class CustomerFormActivity extends AppCompatActivity {
         btn_pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                orderDialog.setMessage("Please wait! while we place your Order.");
-                orderDialog.setCancelable(false);
-                orderDialog.show();
-                valuesList.add(user_name.getText().toString());
-                valuesList.add(user_mob.getText().toString());
-                valuesList.add(user_email.getText().toString());
-                Log.i(TAG,"values entered----" + valuesList.get(0) + "--" +
-                        valuesList.get(1) + "---" + valuesList.get(2));
 
-                buildFieldList(propsJson);
-
-                createBillJson();
+                if (user_mob.getText().toString().equals(null) ||
+                        user_mob.getText().toString().equals("")) {
+                    Toast.makeText(CustomerFormActivity.this, "Mobile number is mandatory!", Toast.LENGTH_SHORT).show();
+                }else{
+                    if((user_mob.getText().length() <10)) {
+                        Toast.makeText(CustomerFormActivity.this, "Please check your number!", Toast.LENGTH_SHORT).show();
+                    }else{
+                        if (InternetConnectionStatus.checkConnection(getApplicationContext())) {
+                            orderDialog.setMessage("Please wait! while we place your Order.");
+                            orderDialog.setCancelable(false);
+                            orderDialog.show();
+                            valuesList.add(user_name.getText().toString());
+                            valuesList.add(user_mob.getText().toString());
+                            valuesList.add(user_email.getText().toString());
+                            Log.i(TAG, "values entered----" + valuesList.get(0) + "--" +
+                                    valuesList.get(1) + "---" + valuesList.get(2));
+                            buildFieldList(propsJson);
+                            createBillJson();
+                        } else {
+                            Toast.makeText(CustomerFormActivity.this, "Unable to connect to server. " +
+                                    "please check your network connection", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                }
             }
         });
 
@@ -216,10 +231,10 @@ public class CustomerFormActivity extends AppCompatActivity {
 
                 itemDetailsList.add(cartItemsDetail);
                 items.setItemDetails(itemDetailsList);
-                itemList.add(items);
-                itemsJsonList = gson.toJson(itemList);
                 Log.i(TAG, "itemList---" + i + "--a--" + itemsJsonList);
             }
+            itemList.add(items);
+            itemsJsonList = gson.toJson(itemList);
         }
         createCustomerDetails();
     }

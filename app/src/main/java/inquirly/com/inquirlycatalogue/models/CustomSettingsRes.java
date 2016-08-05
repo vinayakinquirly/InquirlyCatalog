@@ -42,7 +42,7 @@ public class CustomSettingsRes implements Serializable {
         private String catalog_view;
         private int pipeline_id;
         private boolean show_catalog;
-        private boolean show_feedback;
+        private Boolean show_feedback;
         private CustomeTheme theme;
 
         public String getCatalog_group() {
@@ -77,11 +77,11 @@ public class CustomSettingsRes implements Serializable {
             this.show_catalog = show_catalog;
         }
 
-        public boolean isShow_feedback() {
+        public Boolean isShow_feedback() {
             return show_feedback;
         }
 
-        public void setShow_feedback(boolean show_feedback) {
+        public void setShow_feedback(Boolean show_feedback) {
             this.show_feedback = show_feedback;
         }
 

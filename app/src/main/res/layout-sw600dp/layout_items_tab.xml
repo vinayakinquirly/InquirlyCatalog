@@ -12,15 +12,14 @@
         android:layout_gravity="center"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="3sp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="7dp">
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp">
 
         <ImageView
             android:id="@+id/item_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:src="@drawable/paratha"/>
+            android:layout_width="match_parent"
+            android:layout_height="270dp"
+            android:src="@drawable/placeholder_check_2"/>
 
         <TableRow
             android:layout_width="wrap_content"
@@ -56,7 +55,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:padding="3dp"
-            android:textSize="18dp"
+            android:textSize="24dp"
             android:textStyle="bold"
             android:typeface="serif"
             android:textScaleX="1.1"
@@ -68,11 +67,11 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/sample_text"
             android:id="@+id/item_description"
-            android:layout_marginTop="300dp"
+            android:layout_marginTop="315dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
-            android:textSize="16dp"
+            android:textSize="21dp"
             android:typeface="sans"
             android:maxLines="3"
             android:maxLength="200"
@@ -85,14 +84,15 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="380dp"
-            android:layout_marginBottom="15dp">
+            android:layout_marginTop="390dp"
+            android:layout_marginBottom="15dp"
+            android:weightSum="3">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="4"
+                android:layout_weight="1.4"
                 android:layout_gravity="center_vertical">
 
                 <TextView
@@ -108,6 +108,7 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:textStyle="bold"
+                    android:textSize="22dp"
                     android:layout_gravity="center_vertical" />
             </LinearLayout>
 
@@ -115,20 +116,20 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="6"
+                android:layout_weight="1.8"
                 android:paddingEnd="25dp"
                 android:paddingStart="25dp">
 
                 <android.support.v7.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
                     card_view:cardCornerRadius="9dp"
                     card_view:cardElevation="6dp">
 
                     <Button
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:text="-"
                         android:background="@android:color/transparent"
                         android:id="@+id/item_sub"
@@ -146,19 +147,19 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:layout_gravity="center_vertical"
-                    android:textSize="20sp"
+                    android:textSize="22dp"
                     android:textStyle="bold" />
 
                 <android.support.v7.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
                     card_view:cardCornerRadius="9dp"
                     card_view:cardElevation="6dp">
 
                     <Button
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:text="+"
                         android:background="@android:color/transparent"
                         android:id="@+id/item_add"

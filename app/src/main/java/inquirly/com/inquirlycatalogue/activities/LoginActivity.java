@@ -42,13 +42,13 @@ import io.branch.referral.BranchError;
 public class LoginActivity extends AppCompatActivity {
 
     private Branch branch;
-    public CustomSettingsRes customSettingsRes;
+    public ProgressDialog pDialog;
     public AuthenticateRes userAuth;
-    private CustomTextView mErrorTextView;
     private CustomTextView mLoginButton;
+    private CustomTextView mErrorTextView;
     private CustomEditTextView mEmailText;
     private CustomEditTextView mPasswordText;
-    public ProgressDialog pDialog;
+    public CustomSettingsRes customSettingsRes;
     private static final String TAG = "LoginActivity";
 
     @Override
@@ -209,10 +209,19 @@ public class LoginActivity extends AppCompatActivity {
                                 sharedPrefs.putString(CatalogSharedPrefs.LOGO_LARGE, customSettingsRes.getConfig().getTheme().getLogo_large());
                                 sharedPrefs.apply();
                                 pDialog.dismiss();
+                    /*            if(customSettingsRes.getConfig().isShow_feedback()!=null){
+                                    if(customSettingsRes.getConfig().isShow_feedback()){
+                                        Intent mainActivity = new Intent(LoginActivity.this, CampaignTypeActivity.class);
+                                        startActivity(mainActivity);
+                                        finish();
+                                    }else{*/
+                                        Intent mainActivity = new Intent(LoginActivity.this, CampaignTypeActivity.class);
+                                        startActivity(mainActivity);
+                                        finish();
+                                /*    }
+                                }else{
 
-                                Intent mainActivity = new Intent(LoginActivity.this, CampaignTypeActivity.class);
-                                startActivity(mainActivity);
-                                finish();
+                                }*/
                             }
                         }
 

@@ -37,16 +37,16 @@ import inquirly.com.inquirlycoolberry.Adapters.ItemBillAdapter;
 
 public class ItemBillActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private Intent intent;
+    public Intent intent;
     private String cat_grp;
-    private Button btn_payment;
+    public Button btn_payment;
     private Gson gson = new Gson();
-    private RecyclerView food_bill_list;
+    public RecyclerView food_bill_list;
     private ProgressDialog progressDialog;
-    private ItemBillAdapter itemBillAdapter ;
-    private SharedPreferences sharedPreferences;
-    private LinearLayoutManager linearLayoutManager;
-    private ItemBillReq billRes = new ItemBillReq();
+    public ItemBillAdapter itemBillAdapter ;
+    public SharedPreferences sharedPreferences;
+    public LinearLayoutManager linearLayoutManager;
+    public ItemBillReq billRes = new ItemBillReq();
     private static final String TAG = "ItemBillActivity";
     private BillResponse billResponse = new BillResponse();
     private ArrayList<BillResponse.Taxes> billTaxesList = new ArrayList<>();
@@ -104,7 +104,6 @@ public class ItemBillActivity extends AppCompatActivity implements View.OnClickL
         }
 
         progressDialog.show();
-
         food_bill_list = (RecyclerView)findViewById(R.id.food_bill_list);
         sharedPreferences = getSharedPreferences(CatalogSharedPrefs.KEY_CUSTOM_THEME,MODE_PRIVATE);
         btn_payment = (Button)findViewById(R.id.btn_make_payment);

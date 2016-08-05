@@ -1,20 +1,16 @@
 package inquirly.com.inquirlycatalogue.adapters;
 
-
-import android.content.Context;
-import android.graphics.Typeface;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.content.Context;
+import android.widget.ImageView;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
+import com.squareup.picasso.Picasso;
 import inquirly.com.inquirlycatalogue.R;
+import android.support.v7.widget.RecyclerView;
 import inquirly.com.inquirlycatalogue.models.CampaignItemData;
 
 public class RecyclerFeedBackAdapter extends RecyclerView.Adapter<RecyclerFeedBackAdapter.ViewHolder> {

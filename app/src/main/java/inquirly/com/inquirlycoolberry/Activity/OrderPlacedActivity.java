@@ -27,12 +27,12 @@ import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
 
 public class OrderPlacedActivity extends AppCompatActivity {
 
-    private Intent intent;
-    private ImageView order_back_1,order_back_2,order_back_3,logo_image;
-    private String large,small,image_url,logo_url;
-    private TextView message_large,message_small;
+    public Intent intent;
+    public TextView message_large,message_small;
     private SharedPreferences sharedPreferences;
+    public String large,small,image_url,logo_url;
     private static final String TAG = "OrderPlaceActivity";
+    public ImageView order_back_1,order_back_2,order_back_3,logo_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +91,6 @@ public class OrderPlacedActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                ApplicationController.getInstance().removeAllCartItems();
-//                ProcessPhoenix.triggerRebirth(getApplicationContext());
                 Intent intent = new Intent(getApplicationContext(), CoolberryMainActivity.class);
                 intent.putExtra(ApiConstants.CAMPAIGN_TYPE, ApiConstants.CAMPAIGN_TYPE_CATALOG);
                 startActivity(intent);

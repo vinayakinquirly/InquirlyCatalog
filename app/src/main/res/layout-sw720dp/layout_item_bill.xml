@@ -35,44 +35,48 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:layout_width="50dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="1"
                     android:id="@+id/bill_item_num"
                     android:textColor="#000"
                     android:layout_marginLeft="5dp"
                     android:paddingLeft="3dp"
-                    android:gravity="left" />
+                    android:gravity="left"
+                    android:textSize="24dp" />
 
                 <TextView
-                    android:layout_width="300dp"
+                    android:layout_width="550dp"
                     android:layout_height="wrap_content"
                     android:text="Kitkat Shake with IceCream"
                     android:id="@+id/bill_item_name"
                     android:textColor="#000"
                     android:layout_marginLeft="5dp"
                     android:paddingLeft="3dp"
-                    android:gravity="left" />
+                    android:gravity="left"
+                    android:textSize="24dp" />
 
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="75"
                     android:id="@+id/bill_item_price"
                     android:textColor="#000"
                     android:layout_marginLeft="5dp"
                     android:paddingLeft="3dp"
-                    android:gravity="left" />
+                    android:gravity="left"
+                    android:textSize="24dp" />
 
                 <TextView
-                    android:layout_width="50dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="1"
                     android:id="@+id/bill_item_qty"
                     android:textColor="#000"
                     android:layout_marginLeft="5dp"
                     android:paddingLeft="3dp"
-                    android:gravity="center_horizontal" />
+                    android:gravity="center_horizontal"
+                    android:textSize="24dp" />
 
                 <TextView
                     android:layout_width="100dp"
@@ -84,7 +88,8 @@
                     android:paddingLeft="3dp"
                     android:gravity="center_horizontal"
                     android:layout_marginRight="10dp"
-                    android:paddingRight="10dp" />
+                    android:paddingRight="10dp"
+                    android:textSize="24dp" />
             </TableRow>
 
         </LinearLayout>

@@ -53,13 +53,13 @@ import inquirly.com.inquirlycatalogue.utils.SQLiteDataBase;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private RecyclerView mRecyclerViewMain;
+    private String type;
     private Menu mMenu;
+    private ProgressDialog pDialog;
+    private RecyclerView mRecyclerViewMain;
     private SharedPreferences mSharedPrefs;
-    ProgressDialog pDialog;
-    RecyclerCampaignGridAdapter campAdapter;
-    String type;
+    private RecyclerCampaignGridAdapter campAdapter;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +82,7 @@ public class MainActivity extends AppCompatActivity {
             View view = toolbar.getChildAt(i);
             if(view instanceof TextView){
                 TextView tv = (TextView) view;
-                if(tv.getText().equals(this.getTitle()))
-                {
+                if(tv.getText().equals(this.getTitle())) {
                     tv.setTypeface(font);
                     tv.setTextSize(18);
                     tv.setAllCaps(true);
@@ -96,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
 
         mSharedPrefs = getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
         boolean isCampaignListLoaded = mSharedPrefs.getBoolean(CatalogSharedPrefs.IS_CAMPAIGN_LIST_LOADED, false);
-
         mRecyclerViewMain = (RecyclerView) findViewById(R.id.recycler_view_main);
 
         type = getIntent().getStringExtra(ApiConstants.CAMPAIGN_TYPE);
@@ -115,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                                     sleep(5000);
                                     Log.i(TAG, "Campaign list not loaded. loading from server now");
                                     buildCampaignList(ApiConstants.CAMPAIGN_TYPE_CATALOG);
-
                                 }
                                 catch (Exception e) {
                                     Log.e(TAG, e.getMessage());
@@ -147,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         if (mMenu != null) {
             MenuItem item = mMenu.findItem(R.id.action_count);
             LayerDrawable icon = (LayerDrawable) item.getIcon();
-            int size = ApplicationController.getInstance().getCartItemCount();
+            int size = ApplicationController.getInstance().getJustCartItemCount();
             CartCount.setBadgeCount(this, icon, size);
                 this.recreate();
         }
@@ -158,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem item = menu.findItem(R.id.action_count);
         LayerDrawable icon = (LayerDrawable) item.getIcon();
-        int size = ApplicationController.getInstance().getCartItemCount();
+        int size = ApplicationController.getInstance().getJustCartItemCount();
         CartCount.setBadgeCount(this, icon, size);
         mMenu = menu;
         MenuItem item1 = menu.findItem(R.id.action_count);
@@ -323,18 +320,15 @@ public class MainActivity extends AppCompatActivity {
                         i.putExtra("campaignId", campaign.getId());
                         i.putExtra(ApiConstants.CAMPAIGN_TYPE, campaignType);
                         startActivity(i);
-
                     }
                 })
         );
-
     }
 
     @Override
     public void onBackPressed() {
 
     }
-
 
     public void refreshCampaignCategories() {
 

@@ -54,7 +54,8 @@ public class CoolberryMainAdapter extends RecyclerView.Adapter<CoolberryMainAdap
         viewHolder.txtViewTitle.setTypeface(font);
         try {
             String path = item.getPreview().getImage();
-            Picasso.with(mContext).load("file://" + path).resize(920, 480).placeholder(R.drawable.placeholder_check_2)
+            // original - 920,480
+            Picasso.with(mContext).load("file://" + path).resize(920,480).placeholder(R.drawable.placeholder_check_2)
                     .centerCrop().into(viewHolder.imgViewIcon);
             //Bitmap bitmap = BitmapFactory.decodeFile(item.getPreview().getImage());
         } catch (Exception e) {

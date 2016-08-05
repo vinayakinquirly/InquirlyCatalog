@@ -1,34 +1,27 @@
 package inquirly.com.inquirlycoolberry.Adapters;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.graphics.Palette;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.io.File;
 import java.util.List;
+import android.net.Uri;
+import android.util.Log;
+import android.view.View;
 import java.util.ArrayList;
+import android.widget.Toast;
+import android.widget.Button;
+import android.view.ViewGroup;
+import android.graphics.Color;
+import android.widget.TextView;
 import java.io.FileInputStream;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
 import com.squareup.picasso.Picasso;
 import java.io.FileNotFoundException;
+import android.graphics.BitmapFactory;
 import inquirly.com.inquirlycatalogue.R;
+import android.support.v7.widget.RecyclerView;
 import inquirly.com.inquirlycatalogue.models.Campaign;
 import inquirly.com.inquirlycatalogue.models.CartItem;
 import inquirly.com.inquirlycatalogue.ApplicationController;
@@ -44,10 +37,11 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
     private Context mContext;
     private CartItem cartItem;
     public  String mCampaignId;
-    public static String callFrom,color;
     private CampaignDbItem[] items;
+    public static String callFrom,color;
     public  ArrayList<CampaignDbItem> dbitem;
     private static final String TAG = "CoolItemsTabAdapter";
+    private ArrayList<CartItem> cartItemList = new ArrayList<>();
     private Campaign.FormAttributes.SubCategories.Item[] itemsData;
     private ApplicationController appInstance = ApplicationController.getInstance();
 
@@ -58,6 +52,8 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         this.mContext = ctx;
         Log.i(TAG,"itemdata---tab>" + itemsData.size());
         color = appInstance.getImage("color_1");
+        cartItemList = appInstance.getCartItems();
+        Log.i(TAG,"size----" +cartItemList.size());
     }
 
     @Override
@@ -130,18 +126,29 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                     cartItem.setItemImage(item.getPrimaryImage());
                     appInstance.saveItemInDb(cartItem);
                     viewHolder.item_qty.setText(String.valueOf(i[0]));
-
                 }
             }
         });
+
+        Log.i(TAG,"position---" + position + "---" + item.getItemName());
+        if(cartItemList.size()!=0) {
+            for(int k=0;k<cartItemList.size();k++){
+                if(item.getItemName().equals(cartItemList.get(k).getItemName())){
+                    viewHolder.item_qty.setText(
+                            String.valueOf(cartItemList.get(k).getItemQuantity())
+                    );
+                }
+            }
+        }
 
         try{
             String path = item.getPrimaryImage();
             Uri uri = Uri.fromFile(new File(item.getPrimaryImage()));
             Log.i(TAG,"tab images---" + uri);
            // original .resize(600,350)
+            // original .resize(900,465)
 
-            Picasso.with(mContext).load(uri).resize(900,480).centerCrop().placeholder(R.drawable.placeholder_check_2)
+            Picasso.with(mContext).load(uri).resize(900,465).centerCrop().placeholder(R.drawable.placeholder_check_2)
                     .into(viewHolder.imgViewIcon);
         }catch(Exception e) {
             e.printStackTrace();

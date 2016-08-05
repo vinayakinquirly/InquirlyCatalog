@@ -96,17 +96,46 @@ public class ApplicationController extends Application {
         getRequestQueue().add(req);
     }
 
+    public ArrayList<CartItem> getListCartItems() {
+        return mCartItems;
+    }
+
     public void cancelPendingRequests(Object tag) {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
     }
 
+    /*-------------------------JUST BAKE METHODS----------------------------------*/
+
     public void addCartItem(CartItem item) {
-        Log.i(TAG,"list size---" + mCartItems.size() + "--items--" + getCartItemCount()
-        +"--cartItems--" + getCartItems());
         mCartItems.add(item);
+        mTotalCartAmount += Float.parseFloat(item.getItemPrice());
     }
+
+    public int getJustCartItemCount(){
+        return mCartItems.size();
+    }
+
+    public Float getTotalCartAmount(){
+        return mTotalCartAmount;
+    }
+
+    public Float setTotalCartAmount() {
+        mTotalCartAmount = 0.0f;
+        return mTotalCartAmount;
+    }
+
+    public void removeCartItem(CartItem item) {
+        mCartItems.remove(item);
+        mTotalCartAmount -= Float.parseFloat(item.getItemPrice());
+    }
+
+    public void removeAllCartItems() {
+        mCartItems = new ArrayList<>();
+    }
+
+    /*-------------------------COOLBERRY METHODS----------------------------------*/
 
     public void saveItemInDb(CartItem item){
         mydb.open();
@@ -131,6 +160,7 @@ public class ApplicationController extends Application {
     }
 
     public int getCartItemCount(){
+        Log.i(TAG,"count item entered");
         mydb.open();
         int count = mydb.getItemsList().size();
         mydb.close();
@@ -155,23 +185,7 @@ public class ApplicationController extends Application {
         mydb.close();
     }
 
-    public void removeCartItem(CartItem item) {
-        mCartItems.remove(item);
-        mTotalCartAmount -= Float.parseFloat(item.getItemPrice());
-    }
-
-    public Float getTotalCartAmount(){
-        return mTotalCartAmount;
-    }
-
-    public Float setTotalCartAmount() {
-        mTotalCartAmount = 0.0f;
-        return mTotalCartAmount;
-    }
-
-    public void removeAllCartItems() {
-        mCartItems = new ArrayList<>();
-    }
+    /*---------------------------------------------------------------------------*/
 
     //set item specifications
     public  void setFieldsItem(HashMap<String,ArrayList<Fields>> fields) {
