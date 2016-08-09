@@ -148,8 +148,6 @@ public class Campaign {
                     this.is_active = is_active;
                 }
 
-
-
                 public String getDescription() {
                     return description;
                 }

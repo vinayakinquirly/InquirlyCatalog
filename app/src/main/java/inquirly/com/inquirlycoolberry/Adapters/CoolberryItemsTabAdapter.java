@@ -40,6 +40,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
     private CampaignDbItem[] items;
     public static String callFrom,color;
     public  ArrayList<CampaignDbItem> dbitem;
+    public static ArrayList<CampaignDbItem> dbitem_2;
     private static final String TAG = "CoolItemsTabAdapter";
     private ArrayList<CartItem> cartItemList = new ArrayList<>();
     private Campaign.FormAttributes.SubCategories.Item[] itemsData;
@@ -47,6 +48,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
 
     public CoolberryItemsTabAdapter(ArrayList<CampaignDbItem> itemsData, String mCampaignId,String callFrom,Context ctx) {
         this.dbitem = itemsData;
+        this.dbitem_2 = itemsData;
         this.mCampaignId =mCampaignId;
         this.callFrom = callFrom;
         this.mContext = ctx;
@@ -68,6 +70,9 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
 
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
+
+        viewHolder.setIsRecyclable(false);
+
         final CampaignDbItem item = dbitem.get(position);
         Log.i(TAG,"items----" + item.getItemName() + "----" + position);
         viewHolder.txtViewTitle.setText(item.getItemName());
@@ -94,7 +99,6 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                 }else{
                     CoolberryItemsTabActivity.addProduct(item.getItemName());
                 }
-
                 cartItem.setItemName(item.getItemName());
                 cartItem.setItemQuantity(finalQty[0]);
                 int totalprice = (finalQty[0] * item.getPrice());
@@ -102,6 +106,9 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                 cartItem.setItemCode(item.getItemCode());
                 Log.i(TAG,"check Imageurl--->" + item.getPrimaryImage());
                 cartItem.setItemImage(item.getPrimaryImage());
+                cartItem.setItemType(item.getType());
+                cartItem.setCampaignId(item.getCampaignId());
+                Log.i(TAG,"check type---" + item.getType() +"----" +  item.getCampaignId());
                 appInstance.saveItemInDb(cartItem);
                }
         });
@@ -124,6 +131,8 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                     cartItem.setItemCode(item.getItemCode());
                     Log.i(TAG,"check Imageurl--->" + item.getPrimaryImage());
                     cartItem.setItemImage(item.getPrimaryImage());
+                    cartItem.setItemType(item.getType());
+                    cartItem.setCampaignId(item.getCampaignId());
                     appInstance.saveItemInDb(cartItem);
                     viewHolder.item_qty.setText(String.valueOf(i[0]));
                 }
@@ -148,7 +157,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
            // original .resize(600,350)
             // original .resize(900,465)
 
-            Picasso.with(mContext).load(uri).resize(900,465).centerCrop().placeholder(R.drawable.placeholder_check_2)
+            Picasso.with(mContext).load(uri).resize(900,470).centerCrop().placeholder(R.drawable.placeholder_check_2)
                     .into(viewHolder.imgViewIcon);
         }catch(Exception e) {
             e.printStackTrace();

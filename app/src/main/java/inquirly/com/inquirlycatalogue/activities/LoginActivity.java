@@ -56,10 +56,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_login);
+
         this.mErrorTextView = (CustomTextView) findViewById(R.id.txt_login_error);
         this.mLoginButton = (CustomTextView) findViewById(R.id.txt_login_btn);
         this.mEmailText = (CustomEditTextView) findViewById(R.id.edit_login_email);
         this.mPasswordText = (CustomEditTextView) findViewById(R.id.edit_login_password);
+
         Typeface font = Typeface.createFromAsset(this.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         mLoginButton.setTypeface(font);
         mEmailText.setTypeface(font);
@@ -68,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
         this.mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String email = mEmailText.getText().toString();
                 String password = mPasswordText.getText().toString();
                 if ((password.length() == 0) || (email.length() == 0)) {

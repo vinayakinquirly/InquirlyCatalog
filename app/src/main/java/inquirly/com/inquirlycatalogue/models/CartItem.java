@@ -13,6 +13,15 @@ public class CartItem {
     private String itemPrice;
     private String campaignId;
     private String itemCode;
+    private String itemType;
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
 
     public String getItemCode() {
         return itemCode;

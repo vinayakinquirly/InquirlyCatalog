@@ -55,7 +55,6 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
         holder.setIsRecyclable(false);
 
         billItems = billItemsList.get(position);
-
         holder.item_num.setText(String.valueOf(billItems.getSerial_num()));
         holder.item_name.setText(billItems.getName());
         holder.item_price.setText(String.valueOf(billItems.getItem_price()));

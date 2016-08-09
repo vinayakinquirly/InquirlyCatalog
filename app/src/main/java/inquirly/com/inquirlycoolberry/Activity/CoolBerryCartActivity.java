@@ -1,57 +1,43 @@
 package inquirly.com.inquirlycoolberry.Activity;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.Toast;
+import com.google.gson.Gson;
+import android.view.MenuItem;
 import android.widget.Button;
+import android.graphics.Color;
 import android.content.Intent;
 import android.widget.TextView;
+import android.content.Context;
+import android.widget.ImageView;
 import android.graphics.Typeface;
-import android.widget.RelativeLayout;
+import android.view.WindowManager;
+import android.app.ProgressDialog;
+import com.android.volley.VolleyError;
 import inquirly.com.inquirlycatalogue.R;
+import android.content.SharedPreferences;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.app.AppCompatActivity;
+import inquirly.com.inquirlycatalogue.models.Fields;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-
-import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import inquirly.com.inquirlycatalogue.models.CartItem;
+import inquirly.com.inquirlycatalogue.rest.ApiRequest;
+import inquirly.com.inquirlycatalogue.models.ItemBillReq;
 import inquirly.com.inquirlycatalogue.models.BillResponse;
 import inquirly.com.inquirlycatalogue.models.CampaignDbItem;
-import inquirly.com.inquirlycatalogue.models.CartItem;
-import inquirly.com.inquirlycatalogue.models.Fields;
-import inquirly.com.inquirlycatalogue.models.ItemBillReq;
-import inquirly.com.inquirlycatalogue.models.PlaceOrderRes;
-import inquirly.com.inquirlycatalogue.rest.ApiRequest;
 import inquirly.com.inquirlycatalogue.rest.IRequestCallback;
-import inquirly.com.inquirlycatalogue.utils.ApiConstants;
 import inquirly.com.inquirlycatalogue.ApplicationController;
-import inquirly.com.inquirlycatalogue.activities.MainActivity;
 import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
-import inquirly.com.inquirlycatalogue.utils.InternetConnectionStatus;
-import inquirly.com.inquirlycatalogue.utils.RecyclerItemClickListener;
 import inquirly.com.inquirlycoolberry.Adapters.CoolberryCartAdapter;
+import inquirly.com.inquirlycatalogue.utils.InternetConnectionStatus;
 
 public class CoolBerryCartActivity extends AppCompatActivity {
 
@@ -69,9 +55,9 @@ public class CoolBerryCartActivity extends AppCompatActivity {
     public ArrayList<CartItem> cartItems;
     public CoolberryCartAdapter mAdapter;
     public String bill,itemsData,propsJson;
-    private static RecyclerView mRecyclerView;
-    public  static String mCampaignId,back_image;
-    public  static TextView mTxtTotalPrice,noItems;
+    public static RecyclerView mRecyclerView;
+    public static String mCampaignId,back_image;
+    public static TextView mTxtTotalPrice,noItems;
     private ArrayList<ItemBillReq.Items> itemsList;
     private ArrayList<ItemBillReq.Items> itemDetails;
     public SharedPreferences prefs,sharedPreferences;
@@ -128,8 +114,6 @@ public class CoolBerryCartActivity extends AppCompatActivity {
         back_image = sharedPreferences.getString(CatalogSharedPrefs.BG_IMAGE_1,null);
         Log.i(TAG,"check view----" + catalougeView + "--grp--" + catalog_group);
 
-        //Picasso.with(this).load(back_image).resize(1650,850).placeholder(R.drawable.placeholder_large).into(cart_back_image);
-
         for(int i = 0; i < toolbar.getChildCount(); i++){
             View view = toolbar.getChildAt(i);
             if(view instanceof TextView){
@@ -179,7 +163,7 @@ public class CoolBerryCartActivity extends AppCompatActivity {
             btn_CheckOut.setEnabled(true);
             cartItems = ApplicationController.getInstance().getCartItems();
             Log.i(TAG,"cart item size--->" + cartItems.size());
-            mAdapter = new CoolberryCartAdapter(this, cartItems,propsJson);
+            mAdapter = new CoolberryCartAdapter(this, cartItems);
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
             mRecyclerView.setHasFixedSize(true);
@@ -205,6 +189,7 @@ public class CoolBerryCartActivity extends AppCompatActivity {
                 }else{
                     Toast.makeText(CoolBerryCartActivity.this, "Unable to connect to server." +
                             " please check your network connection", Toast.LENGTH_SHORT).show();
+                    startActivity(getIntent());
                     finish();
                 }
             }

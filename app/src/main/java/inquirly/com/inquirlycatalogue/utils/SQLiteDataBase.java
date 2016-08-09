@@ -38,7 +38,8 @@ public class SQLiteDataBase {
     public static final String STATE = "state";
     public static final String VALID_TILL = "validTill";
 
-    public final String[] ALL_KEYS_ITEMS = new String[] {CART_ITEM_CODE,CART_ITEM_NAME,CART_ITEM_QTY,CART_ITEM_PRICE,CART_ITEM_TOTAL_AMOUNT};
+    public final String[] ALL_KEYS_ITEMS = new String[] {CART_ITEM_CODE,CART_ITEM_NAME,CART_ITEM_QTY,
+            CART_ITEM_PRICE,CART_ITEM_IMAGE,CART_ITEM_TYPE,CART_ITEM_CAMPAIGN_ID};
 
     public static final String CATEGORY_NAME = "category_name";
     public static final String DESCRIPTION = "description";
@@ -61,7 +62,9 @@ public class SQLiteDataBase {
     public static final String CART_ITEM_NAME = "item_name";
     public static final String CART_ITEM_QTY = "item_qty";
     public static final String CART_ITEM_PRICE = "item_price";
-    public static final String CART_ITEM_TOTAL_AMOUNT = "item_total_amount";
+    public static final String CART_ITEM_IMAGE = "item_image";
+    public static final String CART_ITEM_TYPE = "item_type";
+    public static final String CART_ITEM_CAMPAIGN_ID = "item_campaignId";
 
     private static final SQLiteDatabase db = null;
 
@@ -110,7 +113,9 @@ public class SQLiteDataBase {
                             + CART_ITEM_NAME + " TEXT NOT NULL, "
                             + CART_ITEM_QTY + " INTEGER NOT NULL, "
                             + CART_ITEM_PRICE + " INTEGER NOT NULL, "
-                            + CART_ITEM_TOTAL_AMOUNT + " TEXT NOT NULL"
+                            + CART_ITEM_IMAGE + " TEXT NOT NULL, "
+                            + CART_ITEM_TYPE + " TEXT NOT NULL, "
+                            + CART_ITEM_CAMPAIGN_ID + " TEXT NOT NULL"
                             + ");");
         }
 
@@ -165,7 +170,9 @@ public class SQLiteDataBase {
                 cv.put(CART_ITEM_NAME, item.getItemName());
                 cv.put(CART_ITEM_QTY, item.getItemQuantity());
                 cv.put(CART_ITEM_PRICE, item.getItemPrice());
-                cv.put(CART_ITEM_TOTAL_AMOUNT, (item.getItemImage()));
+                cv.put(CART_ITEM_IMAGE, (item.getItemImage()));
+                cv.put(CART_ITEM_TYPE,(item.getItemType()));
+                cv.put(CART_ITEM_CAMPAIGN_ID,(item.getCampaignId()));
                 return database.insertWithOnConflict(TABLE_ITEM_NAME, null, cv, SQLiteDatabase.CONFLICT_REPLACE) != 0;
             }
         }return false;
@@ -186,6 +193,8 @@ public class SQLiteDataBase {
                 item.setItemQuantity(cursorCart.getInt(3));
                 item.setItemPrice(String.valueOf(cursorCart.getInt(4)));
                 item.setItemImage(cursorCart.getString(5));
+                item.setItemType(cursorCart.getString(6));
+                item.setCampaignId(cursorCart.getString(7));
                 cartItemList.add(item);
 
             }while (cursorCart.moveToNext());
