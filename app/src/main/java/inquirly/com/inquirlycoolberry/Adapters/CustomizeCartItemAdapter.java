@@ -41,34 +41,38 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
     private EditText text;
     private Typeface font;
-    private String propJson,itemType;
+    private int itemCount ;
     private Context mContext;
     private String mCampaignId;
     boolean hasEditText = false;
     public SharedPreferences prefs;
     private ArrayList<CampaignDbItem> mItems;
+    private String propJson,itemType,itemName;
     public static ArrayList<Fields> fieldList;
-    private ArrayList<Integer> itemCount = new ArrayList<>();
     private static final String TAG = "CustomCartItemAdapter";
     private static HashMap<String,View> mOptionWidgets = new HashMap<>();
-    public static HashMap<String, ArrayList<Fields>>  propertyList = new HashMap<>();
     private ApplicationController appInstance = ApplicationController.getInstance();
+    public static HashMap<String, ArrayList<Fields>>  propertyList = new HashMap<>();
 
     @IdRes
     private static final int ID_MALE = 1;
+
     @IdRes
     private static final int ID_FEMALE = 2;
+
     @IdRes
     private static final int ID_YES = 3;
+
     @IdRes
     private static final int ID_NO = 4;
 
-    public CustomizeCartItemAdapter(Context mContext,ArrayList<Integer> itemCount,
-                                    String propJson,String itemType){
+    public CustomizeCartItemAdapter(Context mContext,int itemCount,
+                                    String propJson,String itemType,String itemName){
 
         this.mContext = mContext;
         this.itemCount = itemCount;
         this.itemType = itemType;
+        this.itemName = itemName;
         Log.i(TAG,"check propsjson--->" +itemType +"---" +  itemCount+"---" + propJson);
         font = Typeface.createFromAsset(mContext.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         buildItemProperties(propJson);
@@ -84,55 +88,10 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-
+        int itemNum= position+1;
         holder.setIsRecyclable(false);
-        holder.checkItemCount.setText("Item-" + String.valueOf(itemCount.get(position)));
+        holder.checkItemCount.setText(itemName +": "+ itemNum);
         buildSpecsDialog(holder.contentLayout,propertyList.get(itemType));
-        generateitemdetails(itemType,holder.contentLayout);
-    }
-
-    public void generateitemdetails(String selItem,LinearLayout contentLayout) {
-
-        Log.i(TAG, "campaign_id=" + mCampaignId + "----" + contentLayout.getChildCount());
-        for(int i=0;i<contentLayout.getChildCount();i++){
-            LinearLayout innerLayout = (LinearLayout) contentLayout.getChildAt(i);
-            Log.i(TAG,"------" + innerLayout.getChildAt(1).getTag());
-        }
-        HashMap<String, String[]> options = new HashMap<>();
-        for (int iChild = 0; iChild < contentLayout.getChildCount(); iChild++) {
-
-            LinearLayout innerLayout = (LinearLayout) contentLayout.getChildAt(iChild);
-            Log.i(TAG,"child at---" + innerLayout.getId() + "---" + innerLayout.getChildAt(1).getTag());
-            String key = (String) innerLayout.getChildAt(1).getTag();
-            Log.i(TAG, "widget key=" + key);
-            View widget = mOptionWidgets.get(key);
-            if (widget instanceof EditText) {
-                String qty_value = ((EditText) widget).getText().toString();
-                //selectedQuantity = Integer.parseInt(qty_value);
-                options.put(key, new String[]{qty_value});
-            }
-            else if (widget instanceof Spinner) {
-                Spinner spinner = (Spinner) widget;
-                if(spinner.getSelectedItem()!=null) {
-                    String value = spinner.getSelectedItem().toString();
-                    options.put(key, new String[]{value});
-                }
-            } else if ((widget instanceof RadioGroup) || (widget instanceof RadioButton)) {
-                Log.i(TAG, "inside radio button group condition");
-                RadioGroup rg = (RadioGroup) widget;
-                if (rg.getTag().equals("GENDER")) {
-                    if (rg.getCheckedRadioButtonId() == ID_FEMALE) {
-                        options.put(key, new String[]{"female"});
-                    } else if (rg.getCheckedRadioButtonId() == ID_MALE) {
-                        options.put(key, new String[]{"male"});
-                    }
-                } else if (rg.getTag().equals("Eggless")) {
-                }
-            }
-            if (mContext instanceof DetailViewActivity) {
-                ((DetailViewActivity) mContext).endActivity();
-            }
-        }
     }
 
     public void buildSpecsDialog(LinearLayout layout, ArrayList<Fields> itemFields) {
@@ -141,9 +100,9 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                 boolean hasChild = false;
 
                 LinearLayout innerLayout = new LinearLayout(mContext);
-                innerLayout.setLayoutParams(new ViewGroup.LayoutParams(500,
+                innerLayout.setLayoutParams(new ViewGroup.LayoutParams(600,
                         ViewGroup.LayoutParams.WRAP_CONTENT));
-                innerLayout.setPadding(5, 10, 5, 10);
+                innerLayout.setPadding(5, 5, 5, 5);
                 innerLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                 if (field.getType().equals("number_input") || field.getType().equals("text_input") ) {
@@ -151,16 +110,22 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
+                    label.setWidth(300);
+                    label.setPadding(10,0,0,0);
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     text = new EditText(mContext);
-                    text.setInputType(InputType.TYPE_CLASS_PHONE);
-                    text.setLayoutParams(new ViewGroup.LayoutParams(300, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    text.setGravity(Gravity.END);
+                    if(field.getType().equals("number_input")){
+                        text.setInputType(InputType.TYPE_CLASS_PHONE);
+                    }else{
+                        text.setInputType(InputType.TYPE_CLASS_TEXT);
+                    }
+                    text.setLayoutParams(new ViewGroup.LayoutParams(280, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    text.setGravity(Gravity.START);
                     text.setTag(field.getLabel());
+                    text.setPadding(0,0,10,0);
                     hasEditText = true;
                     innerLayout.addView(text);
                     hasChild = true;
@@ -173,20 +138,22 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
+                    label.setWidth(300);
+                    label.setPadding(10,0,0,0);
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     Spinner spinner = new Spinner(mContext);
                     spinner.setTag(field.getLabel());
+                    spinner.setPadding(0,0,10,0);
                     ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(mContext,
                             android.R.layout.simple_spinner_item,
                             field.getOptions()
                     ); //selected item will look like a spinner set from XML
                     spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(spinnerArrayAdapter);
-                    spinner.setLayoutParams(new ViewGroup.LayoutParams(300, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    spinner.setLayoutParams(new ViewGroup.LayoutParams(280, ViewGroup.LayoutParams.WRAP_CONTENT));
                     innerLayout.addView(spinner);
                     hasChild = true;
                     mOptionWidgets.put(field.getLabel(), spinner);
@@ -197,12 +164,14 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
+                    label.setWidth(300);
+                    label.setPadding(10,0,0,0);
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     Spinner spinner = new Spinner(mContext);
+                    spinner.setPadding(0,0,10,0);
                     spinner.setTag(field.getLabel());
                     ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(mContext,
                             android.R.layout.simple_spinner_item,
@@ -210,7 +179,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     ); //selected item will look like a spinner set from XML
                     spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(spinnerArrayAdapter);
-                    spinner.setLayoutParams(new ViewGroup.LayoutParams(300, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    spinner.setLayoutParams(new ViewGroup.LayoutParams(280, ViewGroup.LayoutParams.WRAP_CONTENT));
                     innerLayout.addView(spinner);
                     hasChild = true;
                     mOptionWidgets.put(field.getLabel(), spinner);
@@ -221,16 +190,18 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
+                    label.setWidth(300);
+                    label.setPadding(10,0,0,0);
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     text = new EditText(mContext);
-                    text.setMaxLines(10);
-                    text.setLayoutParams(new ViewGroup.LayoutParams(300, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    text.setGravity(Gravity.END);
+                    text.setMaxLines(3);
+                    text.setLayoutParams(new ViewGroup.LayoutParams(280, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    text.setGravity(Gravity.START);
                     text.setTag(field.getLabel());
+                    text.setPadding(0,0,10,0);
                     hasEditText = true;
                     innerLayout.addView(text);
                     hasChild = true;
@@ -244,13 +215,15 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
+                    label.setWidth(300);
+                    label.setPadding(10,0,0,0);
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     RadioGroup rbGroup = new RadioGroup(mContext);
-                    rbGroup.setLayoutParams(new ViewGroup.LayoutParams(300, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    rbGroup.setPadding(0,0,10,0);
+                    rbGroup.setLayoutParams(new ViewGroup.LayoutParams(280, ViewGroup.LayoutParams.WRAP_CONTENT));
                     rbGroup.setTag("GENDER");
                     RadioButton male = new RadioButton(mContext);
                     male.setText("Male");
@@ -273,12 +246,14 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
+                    label.setWidth(300);
+                    label.setPadding(10,0,0,0);
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     RadioGroup rbGroup = new RadioGroup(mContext);
+                    rbGroup.setPadding(0,0,10,0);
                     rbGroup.setOrientation(RadioGroup.HORIZONTAL);
                     rbGroup.setTag(field.getLabel());
 
@@ -356,7 +331,8 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
     @Override
     public int getItemCount() {
-        return itemCount.size();
+        Log.i(TAG,"itemName---" + itemName + "itemCount---" + itemCount);
+        return itemCount;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

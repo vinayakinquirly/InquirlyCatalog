@@ -4,15 +4,24 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="202dp">
 
     <android.support.v7.widget.CardView
-        android:layout_width="460dp"
-        android:layout_height="280dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:orientation="vertical"
-        card_view:cardElevation="5dp"
-        card_view:cardCornerRadius="6dp"
-        android:layout_marginLeft="3dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        card_view:cardElevation="4dp"
+        android:layout_marginBottom="10dp"
+        card_view:cardCornerRadius="2dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -24,10 +33,9 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="#000"
-                    android:textStyle="bold"
                     android:text="test123"
                     android:layout_weight="1"
-                    android:paddingLeft="15dp"
+                    android:paddingLeft="5dp"
                     android:paddingTop="5dp" />
 
                 <ImageView
@@ -40,68 +48,50 @@
                     android:layout_marginTop="5dp" />
             </TableRow>
 
-        <ScrollView
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="230dp"
-            android:layout_marginTop="20dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/holo_green_light"/>
 
             <LinearLayout
-                android:id="@+id/customizeItemLinear"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content">
 
-<!--            <RadioButton
+                <!--                <ScrollView
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">-->
+
+                <LinearLayout
+                    android:id="@+id/customizeItemLinear"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <!--
+                                </ScrollView>
+                -->
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/holo_green_light"/>
+
+            <Button
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New RadioButton"
-                android:id="@+id/radioButton"
-                android:layout_gravity="center_horizontal" />
-
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Toggle   "
-                android:id="@+id/switch1"
-                android:layout_gravity="center_horizontal" />
-
-            <Spinner
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner"
-                android:layout_gravity="center_horizontal" />
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Single Choice"
-                android:id="@+id/checkBox"
+                android:layout_height="25dp"
+                android:text="SAVE"
+                android:id="@+id/save_custom_item"
+                android:textColor="#fff"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:layout_gravity="center_horizontal"
-                android:checked="false" />
+                android:background="@android:color/holo_blue_light"/>
 
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:ems="10"
-                android:id="@+id/editText"
-                android:layout_gravity="center_horizontal"
-                android:hint="Multiline"
-                android:gravity="center_horizontal" /> -->
-        </ScrollView>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:text="Save"
-            android:id="@+id/save_custom_item"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/background_button_save"
-            android:textColor="#ffffff"
-            android:layout_marginTop="250dp" />
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 

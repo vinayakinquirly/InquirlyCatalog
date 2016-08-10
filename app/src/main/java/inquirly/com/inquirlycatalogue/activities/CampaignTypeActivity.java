@@ -99,17 +99,21 @@ public class CampaignTypeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"view check----" + catalougeView);
-                if(catalougeView.equals("food_menu_view")){
-                    Log.i(TAG,"food menu entered");
-                    Intent intent = new Intent(getApplicationContext(), CoolberryMainActivity.class);
-                    intent.putExtra(ApiConstants.CAMPAIGN_TYPE, ApiConstants.CAMPAIGN_TYPE_CATALOG);
-                    startActivity(intent);
-                }
-                else {
-                    Log.i(TAG, "no client");
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                    i.putExtra(ApiConstants.CAMPAIGN_TYPE, ApiConstants.CAMPAIGN_TYPE_CATALOG);
-                    startActivity(i);
+
+                if(catalougeView!=null) {
+                    if (catalougeView.equals("food_menu_view")) {
+                        Log.i(TAG, "food menu entered");
+                        Intent intent = new Intent(getApplicationContext(), CoolberryMainActivity.class);
+                        intent.putExtra(ApiConstants.CAMPAIGN_TYPE, ApiConstants.CAMPAIGN_TYPE_CATALOG);
+                        startActivity(intent);
+                    } else {
+                        Log.i(TAG, "no client");
+                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                        i.putExtra(ApiConstants.CAMPAIGN_TYPE, ApiConstants.CAMPAIGN_TYPE_CATALOG);
+                        startActivity(i);
+                    }
+                }else {
+                    Toast.makeText(CampaignTypeActivity.this, "Please Re-Login to get started.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

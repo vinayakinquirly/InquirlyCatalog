@@ -1,29 +1,26 @@
 package inquirly.com.inquirlycoolberry.Adapters;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 import android.os.Handler;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.widget.Toast;
 import android.widget.Button;
 import android.view.ViewGroup;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.widget.TextView;
-import java.io.FileInputStream;
 import android.widget.ImageView;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import com.squareup.picasso.Picasso;
-import java.io.FileNotFoundException;
-import android.graphics.BitmapFactory;
 import inquirly.com.inquirlycatalogue.R;
+import android.content.SharedPreferences;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 import inquirly.com.inquirlycatalogue.models.CartItem;
-import inquirly.com.inquirlycatalogue.models.CampaignDbItem;
 import inquirly.com.inquirlycatalogue.ApplicationController;
 import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
 import inquirly.com.inquirlycoolberry.Activity.CoolBerryCartActivity;
@@ -34,15 +31,15 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
     private int isClicked=0;
     private String propJson;
     private Context mContext;
-    public  ArrayList<CartItem> mItems;
+    public ArrayList<CartItem> mItems;
     public CartItem cartItem = new CartItem();
-    public  ArrayList<CampaignDbItem> dbItems;
     private SharedPreferences sharedPreferences;
     private LinearLayoutManager linearLayoutManager;
+    public ArrayList<Integer> qtyToSent = new ArrayList<>();
     private static final String TAG = "RecyclerCartAdapter";
     private CustomizeCartItemAdapter customizeCartItemAdapter;
-    private ArrayList<Integer> customizableItemCount = new ArrayList<>();
     private ApplicationController appInstance = ApplicationController.getInstance();
+    private HashMap<String,ArrayList<Integer>> customizableItemCount = new HashMap<>();
 
     public CoolberryCartAdapter(Context context, ArrayList<CartItem> items) {
         this.mContext = context;
@@ -66,12 +63,12 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
         viewHolder.item_name.setText(item.getItemName());
         viewHolder.item_price.setText(item.getItemPrice());
         final int itemCount = item.getItemQuantity();
-        String qty = String.valueOf(item.getItemQuantity());
-        Log.i("qty is:", qty);
+        final int qty = item.getItemQuantity();
+        Log.i("qty is:", String.valueOf(qty));
         viewHolder.item_quantity.setText(String.valueOf(appInstance.getCartItems().
                 get(position).getItemQuantity()));
-        Log.i(TAG,"check position---" + position + "--qty--" + qty);
-        customizableItemCount.add(position,Integer.parseInt(qty));
+        Log.i(TAG,"check position---" + position + "--qty--" + qty + "--name--" + item.getItemName());
+        qtyToSent.add(qty);
 
         Typeface font = Typeface.createFromAsset(mContext.getApplicationContext().
                 getAssets(), "Montserrat-Regular.ttf");
@@ -90,6 +87,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"check position---" + position);
+                int deletePosition = position-1;
                 ApplicationController.getInstance().deleteCartItem(mItems.get(position));
                 mItems.remove(position);
                 notifyItemRemoved(position);
@@ -143,9 +141,9 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                 cartItem.setItemType(item.getItemType());
                 cartItem.setCampaignId(item.getCampaignId());
                 appInstance.saveItemInDb(cartItem);
-                customizableItemCount.add(position,newQty[0]);
+
                 customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
-                        customizableItemCount,propJson,item.getItemType());
+                        cartItem.getItemQuantity(),propJson,item.getItemType(),item.getItemName());
 
                 viewHolder.item_quantity.setText(String.valueOf(newQty[0]));
                 viewHolder.item_price.setText(String.valueOf(newPrice[0]));
@@ -173,9 +171,8 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     newPrice[0] = (newPrice[0] * newQty[0]);
 
                     Log.i(TAG, "Qty-->" + newQty[0] + " Price--->" + newPrice[0]);
-                    customizableItemCount.remove(position);
-                    customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
-                            customizableItemCount, propJson,item.getItemType());
+                    qtyToSent.remove(position);
+                    qtyToSent.add(newQty[0]);
 
                     viewHolder.item_quantity.setText(String.valueOf(newQty[0]));
                     viewHolder.item_price.setText(String.valueOf(newPrice[0]));
@@ -192,6 +189,10 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     cartItem.setCampaignId(item.getCampaignId());
                     appInstance.saveItemInDb(cartItem);
 
+                    customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
+                            cartItem.getItemQuantity(), propJson,item.getItemType(),item.getItemName());
+
+
                     CoolBerryCartActivity.mTxtTotalPrice.setText(String.valueOf(newTotalPrice[0]));
                     viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
                 }
@@ -206,10 +207,12 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     isClicked=2;
                     Log.i(TAG,"isClicked---if--"+ isClicked + CoolberryItemsTabFragment.mItems);
                     ViewGroup.LayoutParams params = viewHolder.cart_item_card.getLayoutParams();
-                    params.height = 600;
+                    //params.height = 600;
+                    params.height = -2;
                     viewHolder.cart_item_card.setLayoutParams(params);
+                    int itemQty = appInstance.getCartItems().get(position).getItemQuantity();
                     customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
-                            customizableItemCount, propJson,item.getItemType());
+                           itemQty , propJson,item.getItemType(),item.getItemName());
                     viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
                     CoolBerryCartActivity.mRecyclerView.stopScroll();
                 }else {
@@ -222,17 +225,6 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                 Log.i(TAG,"isClicked---"+ isClicked);
             }
         });
-
-        for(int j=0;j<appInstance.getCartItems().size();j++){
-            Log.i(TAG,"position---" + position + "--j--" + j);
-            if(position!=j){
-                isClicked=1;
-                Log.i(TAG,"isClicked---else--"+ isClicked);
-                ViewGroup.LayoutParams params3 = viewHolder.cart_item_card.getLayoutParams();
-                params3.height = 160;
-                viewHolder.cart_item_card.setLayoutParams(params3);
-            }
-        }
     }
 
     @Override
@@ -243,7 +235,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
         return mItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder{
 
         private ImageView cancel_img;
         public ImageView item_img;
@@ -264,39 +256,5 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
             cart_item_card = (CardView)itemLayoutView.findViewById(R.id.cart_item_card);
             customizeCartItemList = (RecyclerView)itemLayoutView.findViewById(R.id.customizeCartItemList);
         }
-
-        @Override
-        public void onClick(View v) {
-            if(v.equals(cancel_img)){
-                removeAt(getPosition());
-            }
-        }
-        public void removeAt(int position) {
-        }
-    }
-
-    private Bitmap decodeFile(String f) {
-        try {
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
-
-            // The new size we want to scale to
-            final int REQUIRED_SIZE=70;
-
-            // Find the correct scale value. It should be the power of 2.
-            int scale = 1;
-            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
-                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
-                scale *= 2;
-            }
-
-            // Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-        } catch (FileNotFoundException e) {}
-        return null;
     }
 }
