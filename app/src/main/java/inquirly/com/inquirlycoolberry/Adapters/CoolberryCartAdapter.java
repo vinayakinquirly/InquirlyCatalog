@@ -89,6 +89,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                 Log.i(TAG,"check position---" + position);
                 int deletePosition = position-1;
                 ApplicationController.getInstance().deleteCartItem(mItems.get(position));
+                ApplicationController.getInstance().deleteCustomData(item.getItemName());
                 mItems.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mItems.size());
@@ -192,7 +193,6 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
                             cartItem.getItemQuantity(), propJson,item.getItemType(),item.getItemName());
 
-
                     CoolBerryCartActivity.mTxtTotalPrice.setText(String.valueOf(newTotalPrice[0]));
                     viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
                 }
@@ -237,8 +237,8 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private ImageView cancel_img;
         public ImageView item_img;
+        private ImageView cancel_img;
         private CardView cart_item_card;
         public RecyclerView customizeCartItemList;
         public Button food_cart_add,food_cart_sub;

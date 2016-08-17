@@ -25,6 +25,7 @@ public class SQLiteDataBase {
     public static final String CAMPAIGN_TABLE = "campaign_list";
     public static final String CAMPAIGNDETAILS_TABLE = "campaign_details";
     public static final String TABLE_ITEM_NAME = "cart_item_name";
+    public static final String TABLE_CUSTOM_ITEM = "custom_item";
     public static final String PIPELINE_TABLE = "pipleline";
     public static final String DB_ID = "db_id";
     public static final int DATABASE_VERSION = 2;
@@ -66,6 +67,11 @@ public class SQLiteDataBase {
     public static final String CART_ITEM_TYPE = "item_type";
     public static final String CART_ITEM_CAMPAIGN_ID = "item_campaignId";
 
+    public final String[] ALL_CUSTOM_ITEMS = new String[]{CUSTOM_ITEM_NAME,CUSTOM_ITEM_JSON};
+
+    public static final String CUSTOM_ITEM_NAME = "item_name";
+    public static final String CUSTOM_ITEM_JSON = "item_json";
+
     private static final SQLiteDatabase db = null;
 
     public static final String TAG = "CatalogueDatabase";
@@ -101,11 +107,6 @@ public class SQLiteDataBase {
                     + MEDIA2 + " TEXT," + MEDIA3 + " TEXT," + MEDIA4 + " TEXT," + MEDIA5 + " TEXT," + PRIMARY_IMAGE + " TEXT," + TYPE + " TEXT,"
                     + PRICE + " TEXT);");
 
-/*
-            db.execSQL("CREATE TABLE " + TABLE_ITEM_NAME + "(" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + CART_ITEM_NAME + " TEXT);");
-*/
-
             db.execSQL(
                     "CREATE TABLE " + TABLE_ITEM_NAME
                             + " (" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -117,6 +118,14 @@ public class SQLiteDataBase {
                             + CART_ITEM_TYPE + " TEXT NOT NULL, "
                             + CART_ITEM_CAMPAIGN_ID + " TEXT NOT NULL"
                             + ");");
+
+            db.execSQL(
+                    "CREATE TABLE " + TABLE_CUSTOM_ITEM
+                            + " (" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                            + CUSTOM_ITEM_NAME + " TEXT NOT NULL, "
+                            + CUSTOM_ITEM_JSON + " TEXT NOT NULL"
+                            + ");");
+
         }
 
         @Override
@@ -126,6 +135,7 @@ public class SQLiteDataBase {
                 db.execSQL("Drop table If Exists " + SQLiteDataBase.CAMPAIGN_TABLE);
                 db.execSQL("Drop table If Exists " + SQLiteDataBase.CAMPAIGNDETAILS_TABLE);
                 db.execSQL("Drop table If Exists " + SQLiteDataBase.TABLE_ITEM_NAME);
+                db.execSQL("Drop table If Exists " + SQLiteDataBase.TABLE_CUSTOM_ITEM);
                 onCreate(db);
 
             } catch (SQLException e) {
@@ -133,6 +143,7 @@ public class SQLiteDataBase {
             }
         }
     }
+
     public SQLiteDataBase open() throws SQLException {
         Helper = new DBHelper(mContext);
         database = Helper.getWritableDatabase();
@@ -163,6 +174,7 @@ public class SQLiteDataBase {
                 cv.put(CART_ITEM_QTY, item.getItemQuantity());
                 cv.put(CART_ITEM_PRICE, item.getItemPrice());
                 //Update the values
+                cart.close();
                 return database.update(TABLE_ITEM_NAME, cv, whereToPut, null) != 0;
             } else {
                 Log.i(TAG, "else entered");
@@ -173,6 +185,7 @@ public class SQLiteDataBase {
                 cv.put(CART_ITEM_IMAGE, (item.getItemImage()));
                 cv.put(CART_ITEM_TYPE,(item.getItemType()));
                 cv.put(CART_ITEM_CAMPAIGN_ID,(item.getCampaignId()));
+                cart.close();
                 return database.insertWithOnConflict(TABLE_ITEM_NAME, null, cv, SQLiteDatabase.CONFLICT_REPLACE) != 0;
             }
         }return false;
@@ -198,6 +211,7 @@ public class SQLiteDataBase {
                 cartItemList.add(item);
 
             }while (cursorCart.moveToNext());
+            cursorCart.close();
         }
         return cartItemList;
     }
@@ -208,8 +222,10 @@ public class SQLiteDataBase {
         Cursor cart = database.query(false,TABLE_ITEM_NAME,ALL_KEYS_ITEMS,where,null,null,
                 null,null,null);
         if (cart.getCount()!=0){
+            cart.close();
             return database.delete(TABLE_ITEM_NAME, where, null) != 0;
         }else{
+            cart.close();
             Log.i(TAG,"no item with that Code");
             return false;
         }
@@ -217,6 +233,62 @@ public class SQLiteDataBase {
 
     public boolean deleteAllItems() {
       return database.delete(TABLE_ITEM_NAME,null,null)!=0;
+    }
+
+    public boolean saveCustomItem(String itemName,String json){
+
+        String where = CUSTOM_ITEM_NAME + "= '" + itemName + "'";
+        Cursor cart = database.query(false, TABLE_CUSTOM_ITEM, ALL_CUSTOM_ITEMS, where, null, null,
+                null, null, null);
+
+        Log.i(TAG, "check address---" + cart.getCount() + "---"+ itemName +"---" +json);
+        ContentValues cv = new ContentValues();
+        if (cart.getCount() != 0) {
+            Log.i(TAG, "if entered");
+            String whereToPut = CUSTOM_ITEM_NAME + "= '" + itemName + "'";
+            cv.put(CUSTOM_ITEM_JSON,json);
+            //Update the values
+            cart.close();
+            return database.update(TABLE_CUSTOM_ITEM, cv, whereToPut, null) != 0;
+        } else {
+            Log.i(TAG, "else entered");
+            cv.put(CUSTOM_ITEM_NAME,itemName);
+            cv.put(CUSTOM_ITEM_JSON,json);
+            cart.close();
+            return database.insertWithOnConflict(TABLE_CUSTOM_ITEM, null, cv, SQLiteDatabase.CONFLICT_REPLACE) != 0;
+        }
+    }
+
+    public String getCustomItemList(String itemName){
+        Log.i(TAG,"get Item by name---" + itemName);
+        String where = CUSTOM_ITEM_NAME + "= '" + itemName + "'";
+        Cursor customItem = database.query(false, TABLE_CUSTOM_ITEM, ALL_CUSTOM_ITEMS, where, null, null,
+                null, null, null);
+        String json=null,name=null;
+        Log.i(TAG,"custom count---" + customItem.getCount() + "--" + customItem.getColumnCount());
+        if(customItem.getCount()!= 0) {
+            customItem.moveToFirst();
+            do{
+                json = customItem.getString(1);
+            }while (customItem.moveToNext());
+            customItem.close();
+        }
+        return json;
+    }
+
+    public boolean deleteCustomData(String itemName){
+        Log.i(TAG,"item received----" + itemName);
+        String where = CUSTOM_ITEM_NAME + "= '" + itemName + "'";
+        Cursor cart = database.query(false,TABLE_CUSTOM_ITEM,ALL_CUSTOM_ITEMS,where,null,null,
+                null,null,null);
+        if (cart.getCount()!=0){
+            cart.close();
+            return database.delete(TABLE_CUSTOM_ITEM, where, null) != 0;
+        }else{
+            cart.close();
+            Log.i(TAG,"no item with that Code");
+            return false;
+        }
     }
 
     public void createCampaignList(String uuid, String name,String state,String hashtag, String imagepath, String validtill) {
@@ -230,10 +302,6 @@ public class SQLiteDataBase {
 
         Log.d("uuid", uuid);
         Log.d("name", name);
-        Log.d("hastag", hashtag);
-        Log.d("path", imagepath);
-        Log.d("date", validtill);
-        Log.d("state", state);
 
         database.insertWithOnConflict(CAMPAIGN_TABLE, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
@@ -263,25 +331,11 @@ public class SQLiteDataBase {
             mydb.close();
 
             Log.i(TAG, "inserting categoryname=" + item.getCategoryName());
-            Log.i(TAG, "inserting item=" + item.getItemName());
-            Log.i(TAG, "inserting campaignid=" + item.getCampaignId());
-            Log.i(TAG, "inserting subcategory=" + item.getSubCategoryName());
-            Log.i(TAG, "inserting description=" + item.getDescription());
-            Log.i(TAG, "inserting active=" + item.isActive());
-            Log.i(TAG, "inserting code=" + item.getItemCode());
-            Log.i(TAG, "inserting itemname=" + item.getItemName());
-            Log.i(TAG, "inserting media1=" + item.getMediaImg1());
-            Log.i(TAG, "inserting media2=" + item.getMediaImg2());
-            Log.i(TAG, "inserting media3=" + item.getMediaImg3());
-            Log.i(TAG, "inserting type=" + item.getType());
-            Log.i(TAG, "inserting price=" + item.getPrice());
         }
     }
 
     public ArrayList<CampaignItemData> getCampaignListData() {
-
         item = new ArrayList<CampaignItemData>();
-
         String[] columns = new String[]{CAMPAIGN_UUID, CAMPAIGN_NAME, HASH_TAG, PREVIEW, VALID_TILL};
         Cursor c = database.query(CAMPAIGN_TABLE, columns, null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
@@ -310,6 +364,7 @@ public class SQLiteDataBase {
                 Log.d(TAG, "keydate : " + validtill);
             }
             while (c.moveToNext());
+            c.close();
         }
         return item;
     }
@@ -323,7 +378,6 @@ public class SQLiteDataBase {
         database.delete(CAMPAIGNDETAILS_TABLE, CAMPAIGN_ID + " = ? ", new String[] {campaignId});
     }
 
-
     public ArrayList<String> getSubcategories(String campaignId) {
         ArrayList<String> subcategory = new ArrayList<>();
         Cursor c = database.rawQuery("select distinct " + SUBCATEGORY_NAME + " from " + CAMPAIGNDETAILS_TABLE + " where " + CAMPAIGN_ID + " =?", new String[]{campaignId}) ;
@@ -333,10 +387,10 @@ public class SQLiteDataBase {
                 subcategory.add(item);
             }
             while (c.moveToNext());
+            c.close();
         }
        return subcategory;
     }
-
 
     public ArrayList<CampaignDbItem> getCampaignDetailForSubCategory(String campaignId, String subcategoryName) {
         ArrayList<CampaignDbItem> items = new ArrayList<>();
@@ -387,10 +441,10 @@ public class SQLiteDataBase {
 
             }
             while(c.moveToNext());
+            c.close();
         }else {
             Log.i(TAG, "No campaign details found for campaignid=" + campaignId + " sub-cateogory=" + subcategoryName);
         }
-
         return items;
     }
 
@@ -439,6 +493,7 @@ public class SQLiteDataBase {
 
             }
             while(c.moveToNext());
+            c.close();
         }
        else {
             Toast.makeText(mContext, "Sorry...no items for that search exist", Toast.LENGTH_SHORT).show();

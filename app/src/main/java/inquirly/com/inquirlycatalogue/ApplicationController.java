@@ -1,48 +1,43 @@
 package inquirly.com.inquirlycatalogue;
 
-import android.app.Application;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.text.TextUtils;
+import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
-import com.facebook.stetho.Stetho;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import inquirly.com.inquirlycatalogue.models.CartItem;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import android.text.TextUtils;
+import org.json.JSONException;
+import android.app.Application;
+import android.content.Context;
+import io.branch.referral.Branch;
+import com.android.volley.Request;
+import com.facebook.stetho.Stetho;
+import android.annotation.TargetApi;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+import android.content.SharedPreferences;
+import com.android.volley.toolbox.ImageLoader;
 import inquirly.com.inquirlycatalogue.models.Fields;
-import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
+import inquirly.com.inquirlycatalogue.models.CartItem;
 import inquirly.com.inquirlycatalogue.utils.LruBitmapCache;
 import inquirly.com.inquirlycatalogue.utils.SQLiteDataBase;
-import io.branch.referral.Branch;
+import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
 
 /**
  * Created by binvij on 11/12/15.
  */
 public class ApplicationController extends Application {
 
-    private int position;
     private Context context;
     private SQLiteDataBase mydb;
     private ImageLoader mImageLoader;
     private RequestQueue mRequestQueue;
     private static String mFeedbackLink;
-    SharedPreferences sharedPreferences;
-    private String itemPresent,itemReceived;
-    private ProgressDialog addingItemDialog;
     private  ArrayList<CartItem> mCartItems;
+    private SharedPreferences sharedPreferences;
     private static Float mTotalCartAmount = 0.0f;
     private static ApplicationController mInstance;
-    private HashSet<String> cartItemName = new HashSet<>();
     public static HashMap<String,ArrayList<Fields>> mItemFields;
     public static final String TAG = ApplicationController.class.getSimpleName();
 
@@ -183,6 +178,107 @@ public class ApplicationController extends Application {
         mydb.open();
         if(mydb.deleteAllItems());
         mydb.close();
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public boolean saveCustomItemJson(String itemName, int num, String json) {
+        ArrayList<String> customItemJson = new ArrayList<>();
+        Log.i(TAG, "save custom item entered--" +customItemJson.size() + "---" + itemName + "---" + num + "---" + json);
+
+        mydb.open();
+        if (mydb.getCustomItemList(itemName) != null) {
+            String data = mydb.getCustomItemList(itemName);
+            try {
+                JSONObject jsonObject = new JSONObject(data);
+                int dbJsonLength = jsonObject.getJSONArray(itemName).length();
+                for (int p =0;p<dbJsonLength;p++){
+                    Log.i(TAG,"json added--" + jsonObject.getJSONArray(itemName).getJSONObject(p).toString());
+                    customItemJson.add(p,jsonObject.getJSONArray(itemName).getJSONObject(p).toString());
+                    Log.i(TAG,"size----->" + customItemJson.size());
+                }
+                boolean isAdded = false;
+                for (int i = 0; i < dbJsonLength; i++) {
+                    Log.i(TAG,"--i--" + i + "length--" + String.valueOf(dbJsonLength-1));
+                    if (jsonObject.getJSONArray(itemName).getJSONObject(i).
+                            getString("itemNum").equals(String.valueOf(num))) {
+                        Log.i(TAG,"same item num--" + customItemJson.size() + json);
+                        customItemJson.remove(i);
+                        Log.i(TAG,"after delete---" + customItemJson.size());
+                        customItemJson.add(i,json);
+                        Log.i(TAG,"same thing--" + customItemJson.size());
+                        isAdded = true;
+                    }
+                    else if(i==(jsonObject.getJSONArray(itemName).length()-1)) {
+                        Log.i(TAG, "else if entered---");
+                        if (!isAdded) {
+                            customItemJson.add(json);
+                        }
+                    }
+                }
+                for(int j=0;j<customItemJson.size();j++) {
+                    Log.i(TAG, "check itemListSize--" + customItemJson.get(j));
+                }
+                JSONArray jsonArray = new JSONArray(customItemJson.toString());
+                JSONObject mainObject = new JSONObject();
+                mainObject.put(itemName, jsonArray);
+                if (mydb.saveCustomItem(itemName, mainObject.toString())) {
+                    Log.i(TAG, "custom item saved successfully");
+                    mydb.close();
+                    return true;
+                }else {
+                    Log.i(TAG, "some error occurred");
+                    mydb.close();
+                    return false;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return true;
+        } else {
+            for (int p =0;p<customItemJson.size();p++){
+                Log.i(TAG,"------>" + customItemJson.get(p));
+                customItemJson.remove(p);
+            }
+            customItemJson.add(json);
+            JSONArray jsonArray = null;
+            JSONObject mainObject = null;
+            try {
+                jsonArray = new JSONArray(customItemJson.toString());
+                mainObject = new JSONObject();
+                mainObject.put(itemName, jsonArray);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.i(TAG, "check Main String---" + mainObject.toString());
+            if (mydb.saveCustomItem(itemName, mainObject.toString())) {
+                Log.i(TAG, "custom item saved successfully");
+                mydb.close();
+                return true;
+            } else {
+                Log.i(TAG, "some error occurred");
+                mydb.close();
+                return false;
+            }
+        }
+    }
+
+    public String getCustomItemData(String itemName){
+        Log.i(TAG,"load custom item data enetered");
+        mydb.open();
+        String json=null;
+        json=  mydb.getCustomItemList(itemName);
+        Log.i(TAG,"check JSON---" + json);
+        return json;
+    }
+
+    public boolean deleteCustomData(String itemName){
+        Log.i(TAG,"entered delete custom data");
+        mydb.open();
+        if(mydb.deleteCustomData(itemName)){
+            return true;
+        }
+        Log.i(TAG,"some error occured");
+        return false;
     }
 
     /*---------------------------------------------------------------------------*/

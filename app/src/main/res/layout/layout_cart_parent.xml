@@ -12,8 +12,8 @@
         android:orientation="vertical"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        card_view:cardElevation="3dp"
         android:id="@+id/cart_item_card"
+        card_view:cardElevation="3dp"
         card_view:cardCornerRadius="4dp">
 
         <LinearLayout
@@ -163,11 +163,6 @@
 
         </LinearLayout>
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="300dp"-->
-            <!--android:layout_marginTop="80dp">-->
-
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -175,8 +170,6 @@
             android:id="@+id/customizeCartItemList"
             android:layout_marginTop="80dp"
             android:visibility="visible"/>
-
-<!--        </LinearLayout>-->
 
     </android.support.v7.widget.CardView>
 
