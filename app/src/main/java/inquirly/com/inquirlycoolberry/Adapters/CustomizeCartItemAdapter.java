@@ -2,6 +2,8 @@ package inquirly.com.inquirlycoolberry.Adapters;
 
 import android.util.Log;
 import java.util.HashMap;
+
+import android.view.MotionEvent;
 import android.view.View;
 import android.os.Handler;
 import org.json.JSONArray;
@@ -89,30 +91,38 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
         JSONObject jsonObject = null;
         Log.i(TAG,"itemCount---" + itemCount + "---" + jsonString);
         int po = position+1;
-            Log.i(TAG,"itemCount---" + itemCount + "---" + position +"---" );
-            if(jsonString!=null) {
-                try {
-                    jsonObject = new JSONObject(jsonString);
-                    Log.i(TAG, "array---"  + "-----" + jsonObject.getJSONArray(itemName).length());
-                    JSONObject jsonObject5 = new JSONObject();
-                    if (jsonObject.getJSONArray(itemName).length()>=po){
-                        JSONObject jsonObject1 = jsonObject.getJSONArray(itemName).getJSONObject(position);
-                        Log.i(TAG, "check json---" + position + "---" + jsonObject1);
-
-                        holder.friends_name.setText(jsonObject1.getString("name"));
-                        buildSpecsDialogWithValue(mOptionWidgets,holder.contentLayout, fieldList, jsonObject1);
-                        holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
-                        holder.save_custom_item.setText("SAVED");
-                        Log.i(TAG, "json Object---" + jsonObject);
-                    } else {
-                        buildSpecsDialog(mOptionWidgets,holder.contentLayout, fieldList);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        Log.i(TAG,"itemCount---" + itemCount + "---" + position +"---" );
+        if(jsonString!=null) {
+            try {
+                jsonObject = new JSONObject(jsonString);
+                Log.i(TAG, "array---"  + "-----" + jsonObject.getJSONArray(itemName).length());
+                JSONObject jsonObject5 = new JSONObject();
+                if (jsonObject.getJSONArray(itemName).length()>=po){
+                    JSONObject jsonObject1 = jsonObject.getJSONArray(itemName).getJSONObject(position);
+                    Log.i(TAG, "check json---" + position + "---" + jsonObject1);
+                    holder.friends_name.setText(jsonObject1.getString("name"));
+                    buildSpecsDialogWithValue(mOptionWidgets,holder.contentLayout, fieldList, jsonObject1);
+                    holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+                    holder.save_custom_item.setText("SAVED");
+                    Log.i(TAG, "json Object---" + jsonObject);
+                } else {
+                    buildSpecsDialog(mOptionWidgets,holder.contentLayout, fieldList);
                 }
-            }else{
-                buildSpecsDialog(mOptionWidgets,holder.contentLayout, fieldList);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+        }else{
+            buildSpecsDialog(mOptionWidgets,holder.contentLayout, fieldList);
+        }
+
+        holder.contentLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_red_light));
+                holder.save_custom_item.setText("SAVE");
+                return false;
+            }
+        });
 
         holder.save_custom_item.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +153,6 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
     }
 
     public void buildSpecsDialog(HashMap<String,View> mOptionWidgets,LinearLayout layout, ArrayList<Fields> itemFields) {
-
         try{
             for(Fields field : itemFields) {
                 boolean hasChild = false;

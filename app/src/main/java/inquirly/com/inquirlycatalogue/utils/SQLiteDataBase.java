@@ -259,9 +259,9 @@ public class SQLiteDataBase {
         }
     }
 
-    public String getCustomItemList(String itemName){
-        Log.i(TAG,"get Item by name---" + itemName);
-        String where = CUSTOM_ITEM_NAME + "= '" + itemName + "'";
+    public String getCustomItemList(String itemCode){
+        Log.i(TAG,"get Item by name---" + itemCode);
+        String where = CUSTOM_ITEM_NAME + "= '" + itemCode + "'";
         Cursor customItem = database.query(false, TABLE_CUSTOM_ITEM, ALL_CUSTOM_ITEMS, where, null, null,
                 null, null, null);
         String json=null,name=null;

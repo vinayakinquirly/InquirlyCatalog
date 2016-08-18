@@ -118,6 +118,8 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
             public void onClick(View view) {
                 if(viewHolder.item_qty.getText().toString().equals("0")) {
                     Toast.makeText(mContext,"sorry! Cannot be less then 0",Toast.LENGTH_SHORT).show();
+                }else if(viewHolder.item_qty.getText().toString().equals("1")){
+                    Toast.makeText(mContext, "Please delete item from cart!", Toast.LENGTH_SHORT).show();
                 }else {
                     i[0] = Integer.parseInt(viewHolder.item_qty.getText().toString());
                     i[0]--;

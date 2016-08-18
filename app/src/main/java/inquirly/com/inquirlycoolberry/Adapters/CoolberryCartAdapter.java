@@ -31,7 +31,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
     private int isClicked=0;
     private String propJson;
     private Context mContext;
-    public ArrayList<CartItem> mItems;
+    public static ArrayList<CartItem> mItems;
     public CartItem cartItem = new CartItem();
     private SharedPreferences sharedPreferences;
     private LinearLayoutManager linearLayoutManager;
@@ -89,7 +89,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                 Log.i(TAG,"check position---" + position);
                 int deletePosition = position-1;
                 ApplicationController.getInstance().deleteCartItem(mItems.get(position));
-                ApplicationController.getInstance().deleteCustomData(item.getItemName());
+                ApplicationController.getInstance().deleteCustomData(item.getItemCode());
                 mItems.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, mItems.size());
@@ -144,7 +144,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                 appInstance.saveItemInDb(cartItem);
 
                 customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
-                        cartItem.getItemQuantity(),propJson,item.getItemType(),item.getItemName());
+                        cartItem.getItemQuantity(),propJson,item.getItemType(),item.getItemCode());
 
                 viewHolder.item_quantity.setText(String.valueOf(newQty[0]));
                 viewHolder.item_price.setText(String.valueOf(newPrice[0]));
@@ -175,6 +175,10 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     qtyToSent.remove(position);
                     qtyToSent.add(newQty[0]);
 
+                    Log.i(TAG,"newQty---" + newQty[0]);
+                    int num = newQty[0]+1;
+                    appInstance.deleteCustomItemDataJson(item.getItemCode(),num);
+
                     viewHolder.item_quantity.setText(String.valueOf(newQty[0]));
                     viewHolder.item_price.setText(String.valueOf(newPrice[0]));
 
@@ -191,7 +195,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     appInstance.saveItemInDb(cartItem);
 
                     customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
-                            cartItem.getItemQuantity(), propJson,item.getItemType(),item.getItemName());
+                            cartItem.getItemQuantity(), propJson,item.getItemType(),item.getItemCode());
 
                     CoolBerryCartActivity.mTxtTotalPrice.setText(String.valueOf(newTotalPrice[0]));
                     viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
@@ -212,7 +216,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     viewHolder.cart_item_card.setLayoutParams(params);
                     int itemQty = appInstance.getCartItems().get(position).getItemQuantity();
                     customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
-                           itemQty , propJson,item.getItemType(),item.getItemName());
+                           itemQty , propJson,item.getItemType(),item.getItemCode());
                     viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
                     CoolBerryCartActivity.mRecyclerView.stopScroll();
                 }else {

@@ -1,5 +1,7 @@
 package inquirly.com.inquirlycatalogue.models;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -74,7 +76,16 @@ public  class ItemBillReq implements Serializable {
 
     public static class  Items {
         private String itemCode;
+        private ArrayList<JSONObject> itemProperties;
         private ArrayList<ItemDetails> itemDetails;
+
+        public ArrayList<JSONObject> getItemProperties() {
+            return itemProperties;
+        }
+
+        public void setItemProperties(ArrayList<JSONObject> itemProperties) {
+            this.itemProperties = itemProperties;
+        }
 
         public String getItemCode() {
             return itemCode;
@@ -136,4 +147,5 @@ public  class ItemBillReq implements Serializable {
             this.value = value;
         }
     }
+
 }

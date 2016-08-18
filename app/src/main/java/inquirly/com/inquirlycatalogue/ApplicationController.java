@@ -17,6 +17,8 @@ import android.annotation.TargetApi;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import android.content.SharedPreferences;
+import android.widget.Toast;
+
 import com.android.volley.toolbox.ImageLoader;
 import inquirly.com.inquirlycatalogue.models.Fields;
 import inquirly.com.inquirlycatalogue.models.CartItem;
@@ -262,24 +264,69 @@ public class ApplicationController extends Application {
         }
     }
 
-    public String getCustomItemData(String itemName){
-        Log.i(TAG,"load custom item data enetered");
+    public String getCustomItemData(String itemCode){
+        Log.i(TAG,"load custom item data enetered" + itemCode);
         mydb.open();
         String json=null;
-        json=  mydb.getCustomItemList(itemName);
+        json=  mydb.getCustomItemList(itemCode);
         Log.i(TAG,"check JSON---" + json);
         return json;
     }
 
-    public boolean deleteCustomData(String itemName){
+    public boolean deleteCustomData(String itemCode){
         Log.i(TAG,"entered delete custom data");
         mydb.open();
-        if(mydb.deleteCustomData(itemName)){
+        if(mydb.deleteCustomData(itemCode)){
             return true;
         }
         Log.i(TAG,"some error occured");
         return false;
     }
+
+    public boolean deleteCustomItemDataJson(String itemCode,int num){
+        Log.i(TAG,"deleting custom json entered---" + itemCode + "---" + num);
+        ArrayList<String> customItemJson = new ArrayList<>();
+        mydb.open();
+        if (mydb.getCustomItemList(itemCode) != null) {
+            String data = mydb.getCustomItemList(itemCode);
+            try {
+                JSONObject jsonObject = new JSONObject(data);
+                int dbJsonLength = jsonObject.getJSONArray(itemCode).length();
+                for (int p =0;p<dbJsonLength;p++){
+                    Log.i(TAG,"json added--" + jsonObject.getJSONArray(itemCode).getJSONObject(p).toString());
+                    customItemJson.add(p,jsonObject.getJSONArray(itemCode).getJSONObject(p).toString());
+                    Log.i(TAG,"size----->" + customItemJson.size());
+                }
+                boolean isAdded = false;
+                for (int i = 0; i < dbJsonLength; i++) {
+                    Log.i(TAG,"--i--" + i + "length--" + String.valueOf(dbJsonLength-1));
+                    if (jsonObject.getJSONArray(itemCode).getJSONObject(i).
+                            getString("itemNum").equals(String.valueOf(num))) {
+                        customItemJson.remove(i);
+                    }
+                }
+                JSONArray jsonArray = new JSONArray(customItemJson.toString());
+                JSONObject mainObject = new JSONObject();
+                mainObject.put(itemCode, jsonArray);
+                if (mydb.saveCustomItem(itemCode, mainObject.toString())) {
+                    Log.i(TAG, "custom item saved successfully");
+                    mydb.close();
+                    return true;
+                }else {
+                    Log.i(TAG, "some error occurred");
+                    mydb.close();
+                    return false;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }else{
+            Toast.makeText(ApplicationController.this, "Some error occurred!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
 
     /*---------------------------------------------------------------------------*/
 
