@@ -107,10 +107,6 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
                 linearLayout.addView(discountLabel);
                 linearLayout.addView(discountamount);
                 holder.linear_discounts.addView(linearLayout);
-
-            //    myTextViews[i] = linearLayout;
-                Log.i(TAG,"check linear count---" + myTextViews[i]);
-            //    myTextViews[i] = discountamount;
             }
         }
 
@@ -206,7 +202,6 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
                             }catch (Exception e){
                                 Log.i(TAG,"error---=-" + e.getMessage());
                             }
-                        //    tax_compo_array[j] = tax_compo;
                         }
                     }
                 }

@@ -1,24 +1,22 @@
 package inquirly.com.inquirlycatalogue.rest;
 
-import android.util.Log;
 import java.util.Map;
+import android.os.Build;
+import android.util.Log;
 import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.util.ArrayList;
 import com.google.gson.Gson;
 import org.json.JSONException;
 import android.content.Context;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import android.annotation.TargetApi;
 import com.android.volley.VolleyError;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.JsonObjectRequest;
-
-import inquirly.com.inquirlycatalogue.models.BillResponse;
 import inquirly.com.inquirlycatalogue.models.OrderItem;
-import inquirly.com.inquirlycatalogue.models.ItemBillReq;
 import inquirly.com.inquirlycatalogue.utils.ApiConstants;
 import inquirly.com.inquirlycatalogue.ApplicationController;
 
@@ -113,7 +111,6 @@ public class ApiRequest {
 
         };
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 60, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
         ApplicationController.getInstance().addToRequestQueue(request);
     }
 
@@ -192,9 +189,6 @@ public class ApiRequest {
     }
 
     public static void getClientTheme(final String security_token, final IRequestCallback callback) {
-//        Map<String,String> jsonParams = new HashMap<>();
-//        jsonParams.put("security_token", security_token);
-//        jsonParams.put("company_id", String.valueOf(tenant_id));
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
@@ -259,7 +253,6 @@ public class ApiRequest {
         }
 
         Log.i(TAG,"final post JSON----->" + jsonObject.toString());
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
                 ApiConstants.API_CAFE_ORDER,
@@ -291,8 +284,8 @@ public class ApiRequest {
         ApplicationController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
-
-    public static void postBillJson(String catalog_group,String items,
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public static void postBillJson(String catalog_group, String items,
                                     final String security_token, final IRequestCallback callback){
         Log.i(TAG,"check items received---" + catalog_group+ "----" + items + "---" + security_token);
         JSONObject jsonObject = new JSONObject();
@@ -300,7 +293,19 @@ public class ApiRequest {
             JSONArray itemsArray = new JSONArray(items);
             jsonObject.put("catalog_group",catalog_group);
             jsonObject.put("items",itemsArray);
+            Log.i(TAG,"itemsArray--" + itemsArray);
 
+            for(int i=0;i<itemsArray.length();i++){
+                Log.i(TAG,"check size--" +itemsArray.length()+"---"+ itemsArray.getJSONObject(i).
+                        getJSONArray("itemProperties").length());
+
+                for(int j=0;j<itemsArray.getJSONObject(i).getJSONArray("itemProperties").length();j++){
+
+                    Object obj = itemsArray.getJSONObject(i).getJSONArray("itemProperties").
+                                    getJSONObject(j).get("nameValuePairs");
+                    itemsArray.getJSONObject(i).getJSONArray("itemProperties").put(j,obj);
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -323,7 +328,7 @@ public class ApiRequest {
                         callback.onError(volleyError);
                     }
                 }
-        ) {
+        ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();

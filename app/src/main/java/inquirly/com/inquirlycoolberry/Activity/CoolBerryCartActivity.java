@@ -269,22 +269,23 @@ public class CoolBerryCartActivity extends AppCompatActivity {
 
             Log.i(TAG,"check cart item name 0-----" + CoolberryCartAdapter.mItems.get(i).getItemName());
             String itemProperties = appInstance.getCustomItemData(CoolberryCartAdapter.mItems.get(i).getItemCode());
-            Log.i(TAG,"check item look----" + items);
+            if(itemProperties!=null) {
+                Log.i(TAG, "check item look----" + itemProperties);
 
-            try {
-                ArrayList<JSONObject> itemPropertiesList = new ArrayList<>();
-                JSONObject jsonObject = new JSONObject(itemProperties);
-                for(int k=0;k<jsonObject.getJSONArray(CoolberryCartAdapter.mItems.get(i).getItemCode()).length();k++) {
-                    Log.i(TAG,"json array is ---" + jsonObject.getJSONArray(CoolberryCartAdapter.
-                            mItems.get(i).getItemCode()).getJSONObject(k));
-                    itemPropertiesList.add(jsonObject.getJSONArray(CoolberryCartAdapter.mItems.get(i).getItemCode()).getJSONObject(k));
-                    items.setItemProperties(itemPropertiesList);
-                    Log.i(TAG,"check itemProps--" + gson.toJson(items));
+                try {
+                    ArrayList<JSONObject> itemPropertiesList = new ArrayList<>();
+                    JSONObject jsonObject = new JSONObject(itemProperties);
+                    for (int k = 0; k < jsonObject.getJSONArray(CoolberryCartAdapter.mItems.get(i).getItemCode()).length(); k++) {
+                        Log.i(TAG, "json array is ---" + jsonObject.getJSONArray(CoolberryCartAdapter.
+                                mItems.get(i).getItemCode()).getJSONObject(k));
+                        itemPropertiesList.add(jsonObject.getJSONArray(CoolberryCartAdapter.mItems.get(i).getItemCode()).getJSONObject(k));
+                        items.setItemProperties(itemPropertiesList);
+                        Log.i(TAG, "check itemProps--" + gson.toJson(items));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-
             itemList.add(items);
             itemsData = gson.toJson(itemList);
         }

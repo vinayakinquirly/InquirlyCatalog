@@ -188,7 +188,9 @@ public class SQLiteDataBase {
                 cart.close();
                 return database.insertWithOnConflict(TABLE_ITEM_NAME, null, cv, SQLiteDatabase.CONFLICT_REPLACE) != 0;
             }
-        }return false;
+        }
+        cart.close();
+        return false;
     }
 
     public ArrayList<CartItem> getItemsList(){
@@ -196,7 +198,6 @@ public class SQLiteDataBase {
         Cursor cursorCart = database.rawQuery(query, null);
         Log.i(TAG,"getCount" + cursorCart.getCount() +"---" +cursorCart.moveToFirst());
         ArrayList<CartItem> cartItemList = new ArrayList<>();
-        //Log.i(TAG,"if first entered");
 
         if(cursorCart.getCount()!= 0) {
             do{
@@ -213,6 +214,7 @@ public class SQLiteDataBase {
             }while (cursorCart.moveToNext());
             cursorCart.close();
         }
+        cursorCart.close();
         return cartItemList;
     }
 
@@ -247,7 +249,6 @@ public class SQLiteDataBase {
             Log.i(TAG, "if entered");
             String whereToPut = CUSTOM_ITEM_NAME + "= '" + itemName + "'";
             cv.put(CUSTOM_ITEM_JSON,json);
-            //Update the values
             cart.close();
             return database.update(TABLE_CUSTOM_ITEM, cv, whereToPut, null) != 0;
         } else {
@@ -273,6 +274,7 @@ public class SQLiteDataBase {
             }while (customItem.moveToNext());
             customItem.close();
         }
+        customItem.close();
         return json;
     }
 
@@ -302,7 +304,6 @@ public class SQLiteDataBase {
 
         Log.d("uuid", uuid);
         Log.d("name", name);
-
         database.insertWithOnConflict(CAMPAIGN_TABLE, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
@@ -328,8 +329,8 @@ public class SQLiteDataBase {
             cv.put(TYPE, item.getType());
             cv.put(PRICE, item.getPrice());
             database.insertWithOnConflict(CAMPAIGNDETAILS_TABLE, null, cv, SQLiteDatabase.CONFLICT_NONE);
-            mydb.close();
 
+            mydb.close();
             Log.i(TAG, "inserting categoryname=" + item.getCategoryName());
         }
     }
@@ -359,9 +360,6 @@ public class SQLiteDataBase {
 
                 Log.d(TAG, "keyuuid : " + id);
                 Log.d(TAG, "keyname : " + name);
-                Log.d(TAG, "keyhastag : " + hastag);
-                Log.d(TAG, "keypreview : " + preview);
-                Log.d(TAG, "keydate : " + validtill);
             }
             while (c.moveToNext());
             c.close();
@@ -434,10 +432,6 @@ public class SQLiteDataBase {
 
                 items.add(campaignDbItem);
                 Log.i("inserting campId", camp_id);
-                Log.i("inseting descriptionm", description);
-                Log.i("inserting item code", item_code);
-                Log.i("inserting itemname", item_name);
-                Log.i("inserting type",type);Log.i("inserting price",price);
 
             }
             while(c.moveToNext());
