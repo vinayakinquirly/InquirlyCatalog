@@ -7,9 +7,11 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:layout_above="@+id/linear_login_base"
-        android:src="@mipmap/img_inquirly_logo"/>
+        android:src="@mipmap/img_inquirly_logo"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_above="@+id/linear_login_base" />
     <LinearLayout
         android:id="@+id/linear_login_base"
         android:layout_width="match_parent"
@@ -21,13 +23,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login"
-            android:textSize="20dp"
+            android:textSize="24dp"
             android:layout_gravity="center_horizontal"/>
         <inquirly.com.inquirlycatalogue.utils.CustomEditTextView
             android:id="@+id/edit_login_email"
-            android:layout_width="400dp"
+            android:layout_width="550dp"
             android:layout_height="wrap_content"
-            android:minHeight="45dp"
+            android:minHeight="55dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/background_edit_text"
             style="@style/label_small_hint_default"
@@ -37,9 +39,9 @@
             android:inputType="textEmailAddress"/>
         <inquirly.com.inquirlycatalogue.utils.CustomEditTextView
             android:id="@+id/edit_login_password"
-            android:layout_width="400dp"
+            android:layout_width="550dp"
             android:layout_height="wrap_content"
-            android:minHeight="45dp"
+            android:minHeight="55dp"
             android:background="@drawable/background_edit_text"
             android:layout_marginTop="10dp"
             style="@style/label_small_hint_default"
@@ -51,12 +53,14 @@
 
         <inquirly.com.inquirlycatalogue.utils.CustomTextView
             android:id="@+id/txt_login_btn"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
+            android:layout_width="200dp"
+            android:layout_height="70dp"
             style="@style/button_white"
             android:layout_marginTop="20dp"
             android:text="Go"
-            android:layout_gravity="center_horizontal"/>
+            android:background="@drawable/background_button_login"
+            android:layout_gravity="center_horizontal"
+            android:textSize="28sp" />
 
         <inquirly.com.inquirlycatalogue.utils.CustomTextView
             android:id="@+id/txt_login_error"

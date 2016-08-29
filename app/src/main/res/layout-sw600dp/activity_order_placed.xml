@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,7 +14,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbar_order_place"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -30,26 +31,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/background_image"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/order_back_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#88000000" />
+
+            <ImageView
+                android:id="@+id/order_back_2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#88000000" />
+            <ImageView
+                android:id="@+id/order_back_3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#88000000" />
+        </LinearLayout>
 
         <ImageView
-            android:layout_width="260dp"
-            android:layout_height="150dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
             android:id="@+id/logo_image"
-            android:src="@drawable/paratha"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentRight="false"
-            android:layout_alignWithParentIfMissing="false"
+            android:layout_marginBottom="250dp"
             android:layout_centerHorizontal="true" />
 
         <LinearLayout
-            android:layout_marginTop="50dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="160dp"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical">
 
@@ -64,7 +83,7 @@
                 android:paddingTop="10dp"
                 android:id="@+id/message_large"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="#000" />
 
@@ -75,14 +94,14 @@
                 android:paddingLeft="20dp"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="New Text"
                 android:textSize="20sp"
-                android:textScaleX="1.1"
+                android:text="New Text"
                 android:id="@+id/message_small"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:textColor="#000" />
 
         </LinearLayout>
+
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

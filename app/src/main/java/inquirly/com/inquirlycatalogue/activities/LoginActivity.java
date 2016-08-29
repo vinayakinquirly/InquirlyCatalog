@@ -56,12 +56,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_login);
-
         this.mErrorTextView = (CustomTextView) findViewById(R.id.txt_login_error);
         this.mLoginButton = (CustomTextView) findViewById(R.id.txt_login_btn);
         this.mEmailText = (CustomEditTextView) findViewById(R.id.edit_login_email);
         this.mPasswordText = (CustomEditTextView) findViewById(R.id.edit_login_password);
-
         Typeface font = Typeface.createFromAsset(this.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         mLoginButton.setTypeface(font);
         mEmailText.setTypeface(font);
@@ -70,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         this.mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String email = mEmailText.getText().toString();
                 String password = mPasswordText.getText().toString();
                 if ((password.length() == 0) || (email.length() == 0)) {
@@ -175,7 +174,6 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Object doInBackground(Object[] objects) {
-
             ApiRequest.getClientTheme(
                     userAuth.getResponse().getUserSecurityToken(),
                     new IRequestCallback() {
@@ -197,6 +195,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.i(TAG, "Custom Theme loaded=" + customSettingsRes.getConfig().getTheme().toString());
                                 SharedPreferences.Editor sharedPrefs = getSharedPreferences(CatalogSharedPrefs.KEY_CUSTOM_THEME, Context.MODE_PRIVATE).edit();
                                 sharedPrefs.putString(CatalogSharedPrefs.CATALOG_VIEW, customSettingsRes.getConfig().getCatalog_view());
+                                sharedPrefs.putString(CatalogSharedPrefs.COMPANY_NAME, customSettingsRes.getConfig().getCompany_name());
                                 sharedPrefs.putBoolean(CatalogSharedPrefs.SHOW_CATALOG, customSettingsRes.getConfig().isShow_catalog());
                                 sharedPrefs.putBoolean(CatalogSharedPrefs.SHOW_FEEDBACK, customSettingsRes.getConfig().isShow_feedback());
                                 sharedPrefs.putString(CatalogSharedPrefs.CATALOG_GROUP, customSettingsRes.getConfig().getCatalog_group());

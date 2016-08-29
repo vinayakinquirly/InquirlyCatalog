@@ -41,9 +41,22 @@ public class CustomSettingsRes implements Serializable {
         private String catalog_group;
         private String catalog_view;
         private int pipeline_id;
+        private String company_name;
         private boolean show_catalog;
         private Boolean show_feedback;
         private CustomeTheme theme;
+
+        public String getCompany_name() {
+            return company_name;
+        }
+
+        public void setCompany_name(String company_name) {
+            this.company_name = company_name;
+        }
+
+        public Boolean getShow_feedback() {
+            return show_feedback;
+        }
 
         public String getCatalog_group() {
             return catalog_group;

@@ -21,5 +21,4 @@ public class ApiConstants {
     public static final String CAMPAIGN_TYPE_CATALOG="CATALOG";
     public static final String CAMPAIGN_FEEDBACK_LINK = "FEEDBACK_LINK";
     public static final String CAMPAIGN_ID = "CAMPAIGN_ID";
-
 }

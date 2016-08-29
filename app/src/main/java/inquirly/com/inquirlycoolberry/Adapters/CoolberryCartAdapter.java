@@ -1,11 +1,10 @@
 package inquirly.com.inquirlycoolberry.Adapters;
 
 import android.util.Log;
+import java.util.HashMap;
 import android.view.View;
 import android.os.Handler;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.widget.Toast;
 import android.widget.Button;
 import android.view.ViewGroup;
@@ -31,10 +30,9 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
     private int isClicked=0;
     private String propJson;
     private Context mContext;
+    private SharedPreferences sharedPreferences;
     public static ArrayList<CartItem> mItems;
     public CartItem cartItem = new CartItem();
-    private SharedPreferences sharedPreferences;
-    private LinearLayoutManager linearLayoutManager;
     public ArrayList<Integer> qtyToSent = new ArrayList<>();
     private static final String TAG = "RecyclerCartAdapter";
     private CustomizeCartItemAdapter customizeCartItemAdapter;
@@ -44,7 +42,8 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
     public CoolberryCartAdapter(Context context, ArrayList<CartItem> items) {
         this.mContext = context;
         this.mItems = items;
-        Log.i(TAG,"--items--"+items.size());
+        Log.v(TAG,"--items--"+items.size());
+        sharedPreferences = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -52,8 +51,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
         View itemLayoutView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.layout_cart_parent, null);
 
-        ViewHolder viewHolder = new ViewHolder(itemLayoutView);
-        return viewHolder;
+        return new ViewHolder(itemLayoutView);
     }
 
     @Override
@@ -64,10 +62,10 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
         viewHolder.item_price.setText(item.getItemPrice());
         final int itemCount = item.getItemQuantity();
         final int qty = item.getItemQuantity();
-        Log.i("qty is:", String.valueOf(qty));
+        Log.v("qty is:", String.valueOf(qty));
         viewHolder.item_quantity.setText(String.valueOf(appInstance.getCartItems().
                 get(position).getItemQuantity()));
-        Log.i(TAG,"check position---" + position + "--qty--" + qty + "--name--" + item.getItemName());
+        Log.v(TAG,"check position---" + position + "--qty--" + qty + "--name--" + item.getItemName());
         qtyToSent.add(qty);
 
         Typeface font = Typeface.createFromAsset(mContext.getApplicationContext().
@@ -77,17 +75,16 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
         viewHolder.item_quantity.setTypeface(font);
 
         Picasso.with(mContext).load("file://" + item.getItemImage()).resize(120,83)
-        .placeholder(R.drawable.placeholder_check_2).centerCrop().into(viewHolder.item_img);
+                .placeholder(R.drawable.placeholder_check_2).centerCrop().into(viewHolder.item_img);
 
         viewHolder.customizeCartItemList.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, true);
         viewHolder.customizeCartItemList.setLayoutManager(linearLayoutManager);
 
         viewHolder.cancel_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"check position---" + position);
-                int deletePosition = position-1;
+                Log.v(TAG,"check position---" + position);
                 ApplicationController.getInstance().deleteCartItem(mItems.get(position));
                 ApplicationController.getInstance().deleteCustomData(item.getItemCode());
                 mItems.remove(position);
@@ -107,14 +104,9 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
             }
         });
 
-        Log.i(TAG,"item--" + item.getItemName() + "--id--" + item.getCampaignId());
+        Log.v(TAG,"item--" + item.getItemName() + "--id--" + item.getCampaignId());
+        Log.v(TAG,"propJson----" + propJson);
 
-        sharedPreferences = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
-        propJson = sharedPreferences.getString(item.getCampaignId() + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, null);
-        Log.i(TAG,"propJson----" + propJson);
-
-        final float[] currentTotalPrice = new float[1];
-        final float[] newTotalPrice = new float[1];
         final int[] currentQty = new int[1];
         final int[] currentPrice = new int[1];
         final int[] newPrice = new int[1];
@@ -123,16 +115,16 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
         viewHolder.food_cart_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG,"add item clicked");
+                Log.v(TAG,"add item clicked");
                 currentQty[0] = Integer.parseInt(viewHolder.item_quantity.getText().toString());
                 currentPrice[0] = Integer.parseInt(viewHolder.item_price.getText().toString());
                 newPrice[0] = (currentPrice[0] / currentQty[0]);
 
-                Log.i(TAG, " currentQty--->" + currentQty[0] + " currentPrice--->" + currentPrice[0]);
+                Log.v(TAG, " currentQty--->" + currentQty[0] + " currentPrice--->" + currentPrice[0]);
                 newQty[0] = currentQty[0] + 1;
                 newPrice[0] = (newPrice[0] * newQty[0]);
 
-                Log.i(TAG, "Qty-->" + newQty[0] + " Price--->" + newPrice[0] +"---" +itemCount +
+                Log.v(TAG, "Qty-->" + newQty[0] + " Price--->" + newPrice[0] +"---" +itemCount +
                         "----position----" + position);
                 cartItem.setItemQuantity(newQty[0]);
                 cartItem.setItemName(item.getItemName());
@@ -143,16 +135,14 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                 cartItem.setCampaignId(item.getCampaignId());
                 appInstance.saveItemInDb(cartItem);
 
-                customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
-                        cartItem.getItemQuantity(),propJson,item.getItemType(),item.getItemCode());
-
                 viewHolder.item_quantity.setText(String.valueOf(newQty[0]));
                 viewHolder.item_price.setText(String.valueOf(newPrice[0]));
 
-                currentTotalPrice[0] = Float.parseFloat(CoolBerryCartActivity.mTxtTotalPrice.getText().toString());
-                newTotalPrice[0] = currentTotalPrice[0] - currentPrice[0] + newPrice[0];
+                propJson = sharedPreferences.getString(item.getCampaignId() + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, null);
+                customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
+                        cartItem.getItemQuantity(),propJson,item.getItemType(),item.getItemCode());
 
-                CoolBerryCartActivity.mTxtTotalPrice.setText(String.valueOf(newTotalPrice[0]));
+                //CoolBerryCartActivity.mTxtTotalPrice.setText(String.valueOf(newTotalPrice[0]));
                 viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
             }
         });
@@ -167,23 +157,20 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     Toast.makeText(mContext, "minimum Quantity reached.", Toast.LENGTH_SHORT).show();
                 }else {
                     newPrice[0] = (currentPrice[0] / currentQty[0]);
-                    Log.i(TAG, " currentQty--->" + currentQty[0] + " currentPrice--->" + currentPrice[0]);
+                    Log.v(TAG, " currentQty--->" + currentQty[0] + " currentPrice--->" + currentPrice[0]);
                     newQty[0] = currentQty[0] - 1;
                     newPrice[0] = (newPrice[0] * newQty[0]);
 
-                    Log.i(TAG, "Qty-->" + newQty[0] + " Price--->" + newPrice[0]);
+                    Log.v(TAG, "Qty-->" + newQty[0] + " Price--->" + newPrice[0]);
                     qtyToSent.remove(position);
                     qtyToSent.add(newQty[0]);
 
-                    Log.i(TAG,"newQty---" + newQty[0]);
+                    Log.v(TAG,"newQty---" + newQty[0]);
                     int num = newQty[0]+1;
                     appInstance.deleteCustomItemDataJson(item.getItemCode(),num);
 
                     viewHolder.item_quantity.setText(String.valueOf(newQty[0]));
                     viewHolder.item_price.setText(String.valueOf(newPrice[0]));
-
-                    currentTotalPrice[0] = Float.parseFloat(CoolBerryCartActivity.mTxtTotalPrice.getText().toString());
-                    newTotalPrice[0] = currentTotalPrice[0] - currentPrice[0] + newPrice[0];
 
                     cartItem.setItemQuantity(newQty[0]);
                     cartItem.setItemName(item.getItemName());
@@ -194,10 +181,11 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     cartItem.setCampaignId(item.getCampaignId());
                     appInstance.saveItemInDb(cartItem);
 
+                    propJson = sharedPreferences.getString(item.getCampaignId() + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, null);
                     customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
                             cartItem.getItemQuantity(), propJson,item.getItemType(),item.getItemCode());
 
-                    CoolBerryCartActivity.mTxtTotalPrice.setText(String.valueOf(newTotalPrice[0]));
+                    //CoolBerryCartActivity.mTxtTotalPrice.setText(String.valueOf(newTotalPrice[0]));
                     viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
                 }
             }
@@ -209,33 +197,30 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
             public void onClick(View view) {
                 if(isClicked==1) {
                     isClicked=2;
-                    Log.i(TAG,"isClicked---if--"+ isClicked + CoolberryItemsTabFragment.mItems);
+                    Log.v(TAG,"isClicked---if--"+ isClicked + CoolberryItemsTabFragment.mItems);
                     ViewGroup.LayoutParams params = viewHolder.cart_item_card.getLayoutParams();
-                    //params.height = 600;
-                    params.height = -2;
+                    //params.height = 350;
+                    params.height = 300;
                     viewHolder.cart_item_card.setLayoutParams(params);
                     int itemQty = appInstance.getCartItems().get(position).getItemQuantity();
+                    propJson = sharedPreferences.getString(item.getCampaignId() + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, null);
                     customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
-                           itemQty , propJson,item.getItemType(),item.getItemCode());
+                            itemQty , propJson,item.getItemType(),item.getItemCode());
                     viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
-                    CoolBerryCartActivity.mRecyclerView.stopScroll();
                 }else {
                     isClicked=1;
-                    Log.i(TAG,"isClicked---else--"+ isClicked);
+                    Log.v(TAG,"isClicked---else--"+ isClicked);
                     ViewGroup.LayoutParams params = viewHolder.cart_item_card.getLayoutParams();
-                    params.height = 160;
+                    params.height = 130;
                     viewHolder.cart_item_card.setLayoutParams(params);
                 }
-                Log.i(TAG,"isClicked---"+ isClicked);
+                Log.v(TAG,"isClicked---"+ isClicked);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        if(mItems.size()==0){
-            CoolBerryCartActivity.mTxtTotalPrice.setText("0");
-        }
         return mItems.size();
     }
 

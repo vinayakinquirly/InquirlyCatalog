@@ -110,7 +110,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                 cartItem.setCampaignId(item.getCampaignId());
                 Log.i(TAG,"check type---" + item.getType() +"----" +  item.getCampaignId());
                 appInstance.saveItemInDb(cartItem);
-               }
+            }
         });
 
         viewHolder.item_sub.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +156,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
             String path = item.getPrimaryImage();
             Uri uri = Uri.fromFile(new File(item.getPrimaryImage()));
             Log.i(TAG,"tab images---" + uri);
-           // original .resize(600,350)
+            // original .resize(600,350)
             // original .resize(900,465)
 
             Picasso.with(mContext).load(uri).resize(900,470).centerCrop().placeholder(R.drawable.placeholder_check_2)

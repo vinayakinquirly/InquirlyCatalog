@@ -63,13 +63,13 @@ public class CampaignTypeActivity extends AppCompatActivity {
         mSharedPrefs.getBoolean(CatalogSharedPrefs.KEY_TABLE_ID_SELECTED, false);
         setContentView(R.layout.activity_campaign_type);
 
-        card_feedback = (CardView) findViewById(R.id.card_feedback);
-        card_catalogue = (CardView) findViewById(R.id.card_catalogue);
+//        card_feedback = (CardView) findViewById(R.id.card_feedback);
+//        card_catalogue = (CardView) findViewById(R.id.card_catalogue);
         btn_feedback = (Button) findViewById(R.id.btn_feedback);
         btn_catalogue = (Button) findViewById(R.id.btn_catalogue);
 
         if(!showFeedback){
-            card_feedback.setVisibility(View.GONE);
+            btn_feedback.setVisibility(View.GONE);
         }
 
         if(catalougeView!=null&& (showFeedback!=null)&& (color_1!=null) && (color_2!=null) ){
@@ -86,9 +86,9 @@ public class CampaignTypeActivity extends AppCompatActivity {
         type_back_3 = (ImageView)findViewById(R.id.type_back_3);
         type_logo = (ImageView)findViewById(R.id.type_logo);
 
-        Picasso.with(this).load(instance.getImage("bg_1")).resize(530,100).into(type_back_1);
-        Picasso.with(this).load(instance.getImage("bg_1")).resize(530,100).into(type_back_2);
-        Picasso.with(this).load(instance.getImage("bg_1")).resize(530,100).into(type_back_3);
+        Picasso.with(this).load(instance.getImage("bg_1")).resize(700,120).into(type_back_1);
+        Picasso.with(this).load(instance.getImage("bg_1")).resize(700,120).into(type_back_2);
+        Picasso.with(this).load(instance.getImage("bg_1")).resize(700,120).into(type_back_3);
         Picasso.with(this).load(instance.getImage("logo")).resize(500,0).into(type_logo);
 
         Typeface font = Typeface.createFromAsset(getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
@@ -99,7 +99,6 @@ public class CampaignTypeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"view check----" + catalougeView);
-
                 if(catalougeView!=null) {
                     if (catalougeView.equals("food_menu_view")) {
                         Log.i(TAG, "food menu entered");

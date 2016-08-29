@@ -25,6 +25,7 @@ public class CatalogSharedPrefs {
     /*--------------------------------------CUSTOM THEME------------------------------------------*/
 
     public static final String KEY_CUSTOM_THEME = "custom_theme";
+    public static final String COMPANY_NAME = "company_name";
     public static final String CATALOG_GROUP = "catalog_group";
     public static final String CATALOG_VIEW = "catalog_view";
     public static final String PIPELINE_ID = "pipeline_id";

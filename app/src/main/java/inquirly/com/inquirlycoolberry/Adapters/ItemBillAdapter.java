@@ -55,6 +55,7 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
         holder.setIsRecyclable(false);
 
         billItems = billItemsList.get(position);
+
         holder.item_num.setText(String.valueOf(billItems.getSerial_num()));
         holder.item_name.setText(billItems.getName());
         holder.item_price.setText(String.valueOf(billItems.getItem_price()));
@@ -107,6 +108,10 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
                 linearLayout.addView(discountLabel);
                 linearLayout.addView(discountamount);
                 holder.linear_discounts.addView(linearLayout);
+
+            //    myTextViews[i] = linearLayout;
+                Log.i(TAG,"check linear count---" + myTextViews[i]);
+            //    myTextViews[i] = discountamount;
             }
         }
 
@@ -133,8 +138,8 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
                             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
                     LinearLayout.LayoutParams paramsTax2 = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    paramsTax.weight = 9.0f;
-                    paramsTax2.weight = 1.0f;
+                    paramsTax.weight = 9.6f;
+                    paramsTax2.weight = 0.4f;
 
                     taxMainLabel.setLayoutParams(paramsTax);
                     taxableAmount.setLayoutParams(paramsTax2);
@@ -202,6 +207,7 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
                             }catch (Exception e){
                                 Log.i(TAG,"error---=-" + e.getMessage());
                             }
+                        //    tax_compo_array[j] = tax_compo;
                         }
                     }
                 }

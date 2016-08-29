@@ -151,10 +151,19 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
         setSupportActionBar(toolbar);
 
         Typeface font = Typeface.createFromAsset(getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
-        TextView toolbar_title = (TextView)findViewById(R.id.food_tab_title);
-        toolbar_title.setText("Catalogue");
-        toolbar_title.setTypeface(font);
-
+        for(int i = 0; i < toolbar.getChildCount(); i++){
+            View view = toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView tv = (TextView) view;
+                if(tv.getText().equals(this.getTitle())) {
+                    tv.setTypeface(font);
+                    tv.setTextSize(18);
+                    tv.setTextColor(getResources().getColor(R.color.white));
+                    tv.setAllCaps(true);
+                    break;
+                }
+            }
+        }
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);

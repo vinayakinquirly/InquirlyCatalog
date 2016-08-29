@@ -17,15 +17,6 @@
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways" >
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/food_tab_title"
-                android:textAllCaps="true"
-                android:gravity="center|start"
-                android:textSize="18dp"
-                android:textColor="#ffffff" />
-
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout

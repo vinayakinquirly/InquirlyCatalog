@@ -120,14 +120,14 @@ public class CoolBerryCartActivity extends AppCompatActivity {
 
         Log.i(TAG,"campaign_id---->" + mCampaignId);
         noItems = (TextView)findViewById(R.id.noItems);
-        btn_Shop = (Button) findViewById(R.id.btn_food_shop);
+       // btn_Shop = (Button) findViewById(R.id.btn_food_shop);
         btn_CheckOut = (Button) findViewById(R.id.btn_food_checkout);
 
-        mTxtTotalPrice = (TextView) findViewById(R.id.food_total_price);
+        //mTxtTotalPrice = (TextView) findViewById(R.id.food_total_price);
         TextView mCartEmpty = (TextView) findViewById(R.id.food_cart_empty);
         btn_CheckOut.setBackgroundColor(Color.parseColor(color));
-        mTxtTotalPrice.setTypeface(font);
-        btn_Shop.setTypeface(font);
+//        mTxtTotalPrice.setTypeface(font);
+//        btn_Shop.setTypeface(font);
         btn_CheckOut.setTypeface(font);
 
         prefs = getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);

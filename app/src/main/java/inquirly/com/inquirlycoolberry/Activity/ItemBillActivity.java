@@ -3,6 +3,7 @@ package inquirly.com.inquirlycoolberry.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.test.ApplicationTestCase;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MenuItem;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import inquirly.com.inquirlycatalogue.ApplicationController;
 import inquirly.com.inquirlycatalogue.R;
 import inquirly.com.inquirlycatalogue.activities.CustomerDetailActivity;
 import inquirly.com.inquirlycatalogue.models.BillResponse;
@@ -51,6 +54,7 @@ public class ItemBillActivity extends AppCompatActivity implements View.OnClickL
     private BillResponse billResponse = new BillResponse();
     private ArrayList<BillResponse.Taxes> billTaxesList = new ArrayList<>();
     private ArrayList<BillResponse.BillItems> billItemsList = new ArrayList<>();
+    private ApplicationController appInstance = ApplicationController.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +111,7 @@ public class ItemBillActivity extends AppCompatActivity implements View.OnClickL
         food_bill_list = (RecyclerView)findViewById(R.id.food_bill_list);
         sharedPreferences = getSharedPreferences(CatalogSharedPrefs.KEY_CUSTOM_THEME,MODE_PRIVATE);
         btn_payment = (Button)findViewById(R.id.btn_make_payment);
-
+        btn_payment.setBackgroundColor(Color.parseColor(appInstance.getImage("color_1")));
         itemBillAdapter = new ItemBillAdapter(ItemBillActivity.this,billRes.getBill().getTotal(),billTaxesList,billItemsList);
         food_bill_list.setLayoutManager(linearLayoutManager);
         //food_bill_list.setHasFixedSize(true);

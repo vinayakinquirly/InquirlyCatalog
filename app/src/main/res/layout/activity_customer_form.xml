@@ -135,6 +135,7 @@
                     android:layout_weight="1"
                     android:layout_marginTop="10dp"
                     android:hint="E-mail"
+                    android:inputType="textEmailAddress"
                     android:gravity="center_vertical|center_horizontal"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -146,11 +147,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enter E-mail to get Invoice"
+                    android:text="Non Mandatory"
                     android:id="@+id/textView9"
-                    android:layout_gravity="top|right"
+                    android:layout_gravity="top|left"
                     android:textSize="12sp"
-                    android:textStyle="bold|italic"
+                    android:textStyle="italic"
                     android:textColor="@color/mainColor" />
             </LinearLayout>
 

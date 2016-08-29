@@ -81,9 +81,9 @@ public class OrderPlacedActivity extends AppCompatActivity {
         Log.i(TAG,"large---" + image_url + "--small--" + logo_url);
 
         Picasso.with(this).load(logo_url).into(logo_image);
-        Picasso.with(this).load(image_url).resize(570,100).into(order_back_1);
-        Picasso.with(this).load(image_url).resize(570,100).into(order_back_2);
-        Picasso.with(this).load(image_url).resize(570,100).into(order_back_3);
+        Picasso.with(this).load(image_url).resize(700,112).into(order_back_1);
+        Picasso.with(this).load(image_url).resize(700,112).into(order_back_2);
+        Picasso.with(this).load(image_url).resize(700,112).into(order_back_3);
 
         message_large.setText(large);
         message_small.setText(small);

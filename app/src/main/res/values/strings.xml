@@ -35,12 +35,12 @@
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_place_order">PlaceOrderActivity</string>
     <string name="title_activity_coolberry_main">CoolberryMainActivity</string>
-    <string name="title_activity_coolberry_items_tab">CoolberryItemsTabActivity</string>
+    <string name="title_activity_coolberry_items_tab">Menu Card</string>
     <string name="sample_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s. </string>
     <string name="title_activity_cool_berry_cart"></string>
     <string name="title_activity_item_bill">My Bill</string>
     <string name="title_activity_customer_form">CustomerFormActivity</string>
     <string name="title_activity_order_placed">OrderPlacedActivity</string>
-    <string name="title_activity_coolberry_search">CoolberrySearchActivity</string>
+    <string name="title_activity_coolberry_search">Search</string>
 
 </resources>

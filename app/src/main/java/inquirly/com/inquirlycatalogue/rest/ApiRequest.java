@@ -1,22 +1,26 @@
 package inquirly.com.inquirlycatalogue.rest;
 
-import java.util.Map;
+import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.Log;
+import java.util.Map;
 import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.util.ArrayList;
 import com.google.gson.Gson;
 import org.json.JSONException;
 import android.content.Context;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import android.annotation.TargetApi;
 import com.android.volley.VolleyError;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.JsonObjectRequest;
+
+import inquirly.com.inquirlycatalogue.models.BillResponse;
 import inquirly.com.inquirlycatalogue.models.OrderItem;
+import inquirly.com.inquirlycatalogue.models.ItemBillReq;
 import inquirly.com.inquirlycatalogue.utils.ApiConstants;
 import inquirly.com.inquirlycatalogue.ApplicationController;
 
@@ -111,6 +115,7 @@ public class ApiRequest {
 
         };
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 60, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         ApplicationController.getInstance().addToRequestQueue(request);
     }
 
@@ -189,6 +194,9 @@ public class ApiRequest {
     }
 
     public static void getClientTheme(final String security_token, final IRequestCallback callback) {
+//        Map<String,String> jsonParams = new HashMap<>();
+//        jsonParams.put("security_token", security_token);
+//        jsonParams.put("company_id", String.valueOf(tenant_id));
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
@@ -253,6 +261,7 @@ public class ApiRequest {
         }
 
         Log.i(TAG,"final post JSON----->" + jsonObject.toString());
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
                 ApiConstants.API_CAFE_ORDER,
@@ -302,7 +311,7 @@ public class ApiRequest {
                 for(int j=0;j<itemsArray.getJSONObject(i).getJSONArray("itemProperties").length();j++){
 
                     Object obj = itemsArray.getJSONObject(i).getJSONArray("itemProperties").
-                                    getJSONObject(j).get("nameValuePairs");
+                            getJSONObject(j).get("nameValuePairs");
                     itemsArray.getJSONObject(i).getJSONArray("itemProperties").put(j,obj);
                 }
             }
@@ -341,4 +350,5 @@ public class ApiRequest {
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 60, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         ApplicationController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
+
 }

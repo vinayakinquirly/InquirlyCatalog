@@ -234,7 +234,7 @@ public class SQLiteDataBase {
     }
 
     public boolean deleteAllItems() {
-      return database.delete(TABLE_ITEM_NAME,null,null)!=0;
+        return database.delete(TABLE_ITEM_NAME,null,null)!=0;
     }
 
     public boolean saveCustomItem(String itemName,String json){
@@ -387,7 +387,7 @@ public class SQLiteDataBase {
             while (c.moveToNext());
             c.close();
         }
-       return subcategory;
+        return subcategory;
     }
 
     public ArrayList<CampaignDbItem> getCampaignDetailForSubCategory(String campaignId, String subcategoryName) {
@@ -489,7 +489,7 @@ public class SQLiteDataBase {
             while(c.moveToNext());
             c.close();
         }
-       else {
+        else {
             Toast.makeText(mContext, "Sorry...no items for that search exist", Toast.LENGTH_SHORT).show();
         }
         return items;

@@ -77,7 +77,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
     private static final int ID_NO = 4;
 
 
-    public DetailsViewInfinitePagerAdapter(Context context, ArrayList<CampaignDbItem> items, int position, String campaignId) {
+    public DetailsViewInfinitePagerAdapter(Context context, ArrayList<CampaignDbItem> items, int position, String campaignId)
+    {
         mItems = items;
         mContext = context;
         mPosition = position;
@@ -128,6 +129,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         itemPrice.setTypeface(font);
         itemDesc.setTypeface(font);
 
+
         SharedPreferences prefs = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
         String TandC = prefs.getString(mCampaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, null);
 //        Log.d(TAG, TandC);
@@ -135,18 +137,22 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         termsConditions.setTypeface(font);
         termsConditions.startScroll();
 
+
         final CampaignDbItem selectedItem = mSelectedItem;
         if(mSelectedItem.getMediaImg1() != null) {
             Picasso.with(mContext).load("file://" +selectedItem.getMediaImg1()).resize(220, 240).into(itemSmallImage1);
             itemSmallImage1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     Picasso.with(mContext).load(selectedItem.getMediaImg1()).resize(1100, 900).into(itemLargeImage);
                     highlight(0, ImageView);
+
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage1.setVisibility(View.GONE);
         }
 
@@ -161,7 +167,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage2.setVisibility(View.GONE);
         }
         if(mSelectedItem.getMediaImg3() != null) {
@@ -176,7 +183,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage3.setVisibility(View.GONE);
         }
         if(mSelectedItem.getMediaImg4() != null) {
@@ -191,7 +199,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage4.setVisibility(View.GONE);
         }
         if(mSelectedItem.getMediaImg5() != null) {
@@ -206,7 +215,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else {
+        else
+        {
             itemSmallImage5.setVisibility(View.GONE);
         }
 
@@ -230,7 +240,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
 
                 //bring up the item specs chooser dialogs
 
-                buildSpecsDialog(contentLayout, propertyList.get(selectedItem.getType()));
+                DetailsViewInfinitePagerAdapter.this.buildSpecsDialog(contentLayout, propertyList.get(selectedItem.getType()));
 
                 dialogBuilder.setView(dialogView);
                 dialogBuilder.setTitle("Specify Options");
@@ -264,12 +274,14 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                             if (text.getText().toString().equals("")) {
                                 Toast.makeText(mContext, "Please fill all the fields", Toast.LENGTH_SHORT).show();
                             }
-                            else {
+                            else
+                            {
                                 dialog.dismiss();
                                 generateitemdetails(selectedItem);
                             }
                         }
-                        else {
+                        else
+                        {
                             dialog.dismiss();
                             generateitemdetails(selectedItem);
                         }
@@ -285,7 +297,8 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         return layout;
     }
 
-    public void generateitemdetails(CampaignDbItem selItem) {
+    public void generateitemdetails(CampaignDbItem selItem)
+    {
         CartItem cartItem = new CartItem();
         cartItem.setCampaignId(DetailsViewInfinitePagerAdapter.this.mCampaignId);
         int basePrice = selItem.getPrice();

@@ -90,6 +90,7 @@ public class CoolberryMainActivity extends AppCompatActivity {
                 if(tv.getText().equals(this.getTitle())) {
                     tv.setTypeface(font);
                     tv.setTextSize(18);
+                    tv.setText(appInstance.getImage("company_name"));
                     tv.setAllCaps(true);
                     break;
                 }
@@ -106,7 +107,9 @@ public class CoolberryMainActivity extends AppCompatActivity {
         type = getIntent().getStringExtra(ApiConstants.CAMPAIGN_TYPE);
         if (type != null) {
             if(type.equals(ApiConstants.CAMPAIGN_TYPE_CATALOG)) {
-                actionBar.setTitle("CoolBerry");
+                if (actionBar != null) {
+                    actionBar.setTitle(appInstance.getImage("company_name"));
+                }
                 if (!isCampaignListLoaded) {
                     if(InternetConnectionStatus.checkConnection(this)) {
                         pDialog.setMessage("Loading...");

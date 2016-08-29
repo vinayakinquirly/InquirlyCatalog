@@ -55,7 +55,7 @@ public class CoolberryMainAdapter extends RecyclerView.Adapter<CoolberryMainAdap
         try {
             String path = item.getPreview().getImage();
             // original - 920,480
-            Picasso.with(mContext).load("file://" + path).resize(920,480).placeholder(R.drawable.placeholder_check_2)
+            Picasso.with(mContext).load("file://" + path).resize(900,405).placeholder(R.drawable.placeholder_check_2)
                     .centerCrop().into(viewHolder.imgViewIcon);
             //Bitmap bitmap = BitmapFactory.decodeFile(item.getPreview().getImage());
         } catch (Exception e) {

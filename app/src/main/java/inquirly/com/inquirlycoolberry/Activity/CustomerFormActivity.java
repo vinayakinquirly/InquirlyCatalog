@@ -103,9 +103,9 @@ public class CustomerFormActivity extends AppCompatActivity {
         form_back_3 = (ImageView)findViewById(R.id.form_back_3);
         bill_total = (TextView)findViewById(R.id.billTotal);
         view_bill = (TextView)findViewById(R.id.food_view_bill);
-        Picasso.with(this).load(instance.getImage("bg_1")).resize(570,100).into(form_back_1);
-        Picasso.with(this).load(instance.getImage("bg_1")).resize(570,100).into(form_back_2);
-        Picasso.with(this).load(instance.getImage("bg_1")).resize(570,100).into(form_back_3);
+        Picasso.with(this).load(instance.getImage("bg_1")).resize(700,110).into(form_back_1);
+        Picasso.with(this).load(instance.getImage("bg_1")).resize(700,110).into(form_back_2);
+        Picasso.with(this).load(instance.getImage("bg_1")).resize(700,110).into(form_back_3);
 
         float total = billRes.getBill().getTotal();
         bill_total.setText(String.valueOf(total));
@@ -165,6 +165,7 @@ public class CustomerFormActivity extends AppCompatActivity {
         btn_pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (user_mob.getText().toString().equals(null) ||
                         user_mob.getText().toString().equals("")) {
                     Toast.makeText(CustomerFormActivity.this, "Mobile number is mandatory!", Toast.LENGTH_SHORT).show();

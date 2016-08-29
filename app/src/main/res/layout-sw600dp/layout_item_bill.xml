@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <!--    <android.support.v7.widget.CardView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="vertical"
-            card_view:cardElevation="3dp"
-            card_view:cardCornerRadius="6dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp">-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,8 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
             android:weightSum="18">
 
             <TableRow
@@ -35,18 +22,23 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:layout_width="70dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="1"
                     android:id="@+id/bill_item_num"
                     android:textColor="#000"
                     android:layout_marginLeft="5dp"
-                    android:paddingLeft="3dp"
+                    android:paddingLeft="25dp"
                     android:gravity="left"
-                    android:textSize="20sp" />
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp" />
+
 
                 <TextView
-                    android:layout_width="450dp"
+                    android:layout_width="520dp"
                     android:layout_height="wrap_content"
                     android:text="Kitkat Shake with IceCream"
                     android:id="@+id/bill_item_name"
@@ -54,10 +46,14 @@
                     android:layout_marginLeft="5dp"
                     android:paddingLeft="3dp"
                     android:gravity="left"
-                    android:textSize="20sp" />
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp" />
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="75"
                     android:id="@+id/bill_item_price"
@@ -65,7 +61,11 @@
                     android:layout_marginLeft="5dp"
                     android:paddingLeft="3dp"
                     android:gravity="left"
-                    android:textSize="20sp" />
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp" />
 
                 <TextView
                     android:layout_width="120dp"
@@ -75,7 +75,11 @@
                     android:textColor="#000"
                     android:paddingLeft="3dp"
                     android:gravity="center_horizontal"
-                    android:textSize="20sp" />
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp" />
 
                 <TextView
                     android:layout_width="140dp"
@@ -88,7 +92,11 @@
                     android:gravity="center_horizontal"
                     android:layout_marginRight="10dp"
                     android:paddingRight="10dp"
-                    android:textSize="20sp" />
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp" />
             </TableRow>
 
         </LinearLayout>
@@ -139,7 +147,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/mainColor">
+        android:background="#717171">
     </TextView>
 
     <LinearLayout

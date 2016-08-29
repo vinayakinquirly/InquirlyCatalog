@@ -41,7 +41,7 @@ public class ApplicationController extends Application {
     private static Float mTotalCartAmount = 0.0f;
     private static ApplicationController mInstance;
     public static HashMap<String,ArrayList<Fields>> mItemFields;
-    public static final String TAG = ApplicationController.class.getSimpleName();
+    public static final String TAG = "ApplicationController";
 
     @Override
     public void onCreate() {
@@ -327,7 +327,6 @@ public class ApplicationController extends Application {
         }
     }
 
-
     /*---------------------------------------------------------------------------*/
 
     //set item specifications
@@ -382,6 +381,11 @@ public class ApplicationController extends Application {
 
             case "color_1":
                 url = sharedPreferences.getString(CatalogSharedPrefs.COLOR_1,null);
+                urlfinal = url;
+                break;
+
+            case "company_name":
+                url = sharedPreferences.getString(CatalogSharedPrefs.COMPANY_NAME,null);
                 urlfinal = url;
                 break;
         }
