@@ -319,7 +319,6 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         dialogBuilder.setCancelable(false);
 
         final AlertDialog dialog = dialogBuilder.create();
-//        dialog.getWindow().setLayout(500,-2);
         dialog.show();
 
         save_custom_item.setOnClickListener(new View.OnClickListener() {
@@ -398,9 +397,9 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
 
                 LinearLayout innerLayout = new LinearLayout(mContext);
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT){
-                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(700,
+                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(650,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
-                    innerLayout.setPadding(0, 0, 0, 10);
+                    innerLayout.setPadding(0, 0, 0, 5);
                 }else{
                     Log.i(TAG,"check SDK VERSION---" + Build.VERSION.SDK_INT);
                     innerLayout.setLayoutParams(new ViewGroup.LayoutParams(400,
@@ -488,7 +487,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                 }else if(field.getType().equals("multiple_choice")){
                     LinearLayout labelVertical = new LinearLayout(mContext);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT, 50,1.8f);
+                            ViewGroup.LayoutParams.MATCH_PARENT, 60,1.8f);
                     labelVertical.setOrientation(LinearLayout.VERTICAL);
                     labelVertical.setLayoutParams(params);
                     Log.v(TAG,"entered--" + "multiple choice");
@@ -499,7 +498,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                     multiLabel.setTextSize(14);
                     multiLabel.setPadding(20,0,0,0);
                     if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        multiLabel.setWidth(150);
+//                        multiLabel.setWidth(150);
                     }else{
                         multiLabel.setWidth(150);
                     }
@@ -526,8 +525,8 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                     spinnerMulti.setAdapter(myAdapter);
 
                     if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(180,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,1.5f));
+                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
                     }else{
                         spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));

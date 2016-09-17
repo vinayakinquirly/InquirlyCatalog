@@ -156,7 +156,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                 boolean hasChild = false;
                 LinearLayout innerLayout = new LinearLayout(mContext);
                 if(Build.VERSION.SDK_INT>Build.VERSION_CODES.KITKAT){
-                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(700,
+                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(650,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
                     innerLayout.setPadding(0, 0, 0, 5);
                 }else{
@@ -169,6 +169,9 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
                 text = new EditText(mContext);
                 ArrayAdapter<String> spinnerArrayAdapter;
+                LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1.8f);
+
                 if (field.getType().equals("number_input") || field.getType().equals("text_input") ) {
                     Log.i(TAG, "entered--" + "number input");
                     if (!field.getLabel().equals("Quantity")) {
@@ -177,11 +180,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                         label.setTypeface(font);
                         label.setTextSize(14);
                         label.setPadding(20,0,0,0);
-                        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                            label.setWidth(150);
-                        }else{
-                            label.setWidth(150);
-                        }
+                        label.setLayoutParams(labelParams);
                         if (label.getParent() != null)
                             ((ViewGroup) label.getParent()).removeView(label);
                         innerLayout.addView(label);
@@ -192,11 +191,8 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                         } else {
                             text.setInputType(InputType.TYPE_CLASS_TEXT);
                         }
-                        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        }else{
-                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        }
+                            text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
                         text.setGravity(Gravity.START);
                         text.setTag(field.getLabel());
                         hasEditText = true;
@@ -207,16 +203,14 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                 }
                 else if(field.getType().equals("single_choice") || field.getType().equals("pricing_input")) {
                     Log.i(TAG,"entered--" + "single choice");
+
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
+                    label.setLayoutParams(labelParams);
+
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
@@ -227,11 +221,10 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                             android.R.layout.simple_spinner_item, field.getOptions());
                     spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerSingle.setAdapter(spinnerArrayAdapter);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }else{
-                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }
+
+                    spinnerSingle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+
                     innerLayout.addView(spinnerSingle);
                     hasChild = true;
                     mOptionWidgets.put(field.getLabel(), spinnerSingle);
@@ -240,28 +233,22 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                 }else if(field.getType().equals("multiple_choice")){
                     Log.i(TAG,"entered--" + "multiple choice");
                     LinearLayout labelVertical = new LinearLayout(mContext);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, 50,1.8f);
+                    labelParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, 60,1.8f);
 
                     labelVertical.setOrientation(LinearLayout.VERTICAL);
-                    labelVertical.setLayoutParams(params);
+                    labelVertical.setLayoutParams(labelParams);
 
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
 
                     TextView labelItemSel = new TextView(mContext);
                     labelItemSel.setText("0 selected");
                     labelItemSel.setTypeface(font);
                     labelItemSel.setTextSize(13);
-                    labelItemSel.setWidth(100);
                     labelItemSel.setPadding(20,0,0,0);
 
                     if(label.getParent() != null)
@@ -277,13 +264,10 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     ArrayAdapter<String> myAdapter = new CustomArrayAdapter(mContext, R.layout.layout_spinner,
                             field.getOptions(),items,field.getLabel(),labelItemSel);
                     spinnerMulti.setAdapter(myAdapter);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-                    }else{
-                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-                    }
+
+                    spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+
                     innerLayout.addView(spinnerMulti);
                     hasChild = true;
                     mOptionWidgets.put(field.getLabel(), spinnerMulti);
@@ -297,22 +281,16 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
+                    label.setLayoutParams(labelParams);
+
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     text = new EditText(mContext);
                     text.setMaxLines(3);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }else{
-                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }
+                    text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
                     text.setGravity(Gravity.START);
                     text.setTag(field.getLabel());
                     text.setPadding(5,0,20,0);
@@ -329,22 +307,17 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
+                    label.setLayoutParams(labelParams);
+
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     RadioGroup rbGroup = new RadioGroup(mContext);
                     rbGroup.setPadding(0,0,20,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }else{
-                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }
+
+                    rbGroup.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
                     rbGroup.setTag("GENDER");
                     RadioButton male = new RadioButton(mContext);
                     male.setText("Male");
@@ -368,11 +341,8 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
+                    label.setLayoutParams(labelParams);
+
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
@@ -421,7 +391,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
                 LinearLayout innerLayout = new LinearLayout(mContext);
                 if(Build.VERSION.SDK_INT>Build.VERSION_CODES.KITKAT){
-                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(700,
+                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(650,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
                     innerLayout.setPadding(0, 0, 0, 5);
                 }else{
@@ -433,7 +403,10 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                 innerLayout.setWeightSum(3.0f);
 
                 text = new EditText(mContext);
+                LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, 60,1.8f);
                 ArrayAdapter<String> spinnerArrayAdapter;
+
                 if (field.getType().equals("number_input") || field.getType().equals("text_input") ) {
                     Log.i(TAG, "entered--" + "number input");
                     if (!field.getLabel().equals("Quantity")) {
@@ -442,12 +415,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                         label.setTypeface(font);
                         label.setTextSize(14);
                         label.setPadding(20,0,0,0);
-                        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                            label.setWidth(150);
-                        }else{
-                            label.setWidth(150);
-                        }
-
+                        label.setLayoutParams(labelParams);
                         if (label.getParent() != null)
                             ((ViewGroup) label.getParent()).removeView(label);
                         innerLayout.addView(label);
@@ -458,11 +426,9 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                             text.setInputType(InputType.TYPE_CLASS_TEXT);
                         }
 
-                        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        }else{
-                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        }
+                        text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+
                         text.setGravity(Gravity.START);
                         text.setTag(field.getLabel());
                         text.setText(data.getString(field.getLabel()));
@@ -479,11 +445,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
+                    label.setLayoutParams(labelParams);
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
@@ -494,11 +456,9 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                             android.R.layout.simple_spinner_item, field.getOptions());
                     spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerSingle.setAdapter(spinnerArrayAdapter);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }else{
-                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }
+                    spinnerSingle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+
                     int j=0;
                     for(int i=0;i<field.getOptions().length;i++){
                         Log.i(TAG,"field options--" + field.getOptions()[i] + "---" + data.get(field.getLabel()));
@@ -515,22 +475,17 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                 }else if(field.getType().equals("multiple_choice")){
                     Log.v(TAG,"entered--" + "multiple choice");
                     LinearLayout labelVertical = new LinearLayout(mContext);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, 50,1.8f);
+                    labelParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, 60,1.8f);
 
                     labelVertical.setOrientation(LinearLayout.VERTICAL);
-                    labelVertical.setLayoutParams(params);
+                    labelVertical.setLayoutParams(labelParams);
 
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
 
                     TextView labelItemSel  = new TextView(mContext);
                     labelItemSel.setText("0 selected");
@@ -557,13 +512,8 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     CustomArrayAdapter myAdapter = new CustomArrayAdapter(mContext, R.layout.layout_spinner,
                             field.getOptions(),itemsArray,field.getLabel(),labelItemSel);
                     spinnerMulti.setAdapter(myAdapter);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
                         spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-                    }else{
-                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-                    }
 
                     innerLayout.addView(spinnerMulti);
                     hasChild = true;
@@ -579,22 +529,17 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
+                    label.setLayoutParams(labelParams);
+
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     text = new EditText(mContext);
                     text.setMaxLines(3);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }else{
-                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }
+                    text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+
                     text.setGravity(Gravity.START);
                     text.setTag(field.getLabel());
                     text.setText(data.getString(field.getLabel()));
@@ -611,23 +556,17 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
-//                    label.setPadding(20,6,0,0);
+                    label.setLayoutParams(labelParams);
+
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     RadioGroup rbGroup = new RadioGroup(mContext);
                     rbGroup.setPadding(0,0,20,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }else{
-                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }
+                    rbGroup.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+
                     rbGroup.setTag("GENDER");
                     RadioButton male = new RadioButton(mContext);
                     male.setText("Male");
@@ -659,11 +598,8 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     label.setTypeface(font);
                     label.setTextSize(14);
                     label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
+                    label.setLayoutParams(labelParams);
+
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
