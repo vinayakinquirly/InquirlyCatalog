@@ -4,13 +4,14 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:orientation="vertical"
-        android:layout_margin="4dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="6dp"
         card_view:cardElevation="3dp"
         android:id="@+id/cart_item_card"
         card_view:cardCornerRadius="4dp">
@@ -23,7 +24,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="120dp">
+                android:layout_height="110dp">
 
                 <ImageView
                     android:layout_width="150dp"
@@ -39,48 +40,76 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.6">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Large Text"
-                        android:id="@+id/food_item_name"
-                        android:textSize="20sp"
-                        android:paddingTop="12dp"
-                        android:paddingLeft="2dp"
-                        android:textScaleX="1.1"
-                        android:layout_weight="1"
-                        android:textColor="#363636" />
-
                     <LinearLayout
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rs."
-                            android:id="@+id/textView2"
-                            android:layout_gravity="center_vertical"
-                            android:textSize="18sp"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:paddingLeft="2dp"
-                            android:paddingBottom="5dp" />
+                        android:gravity="center_vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="Large Text"
-                            android:id="@+id/food_cart_price"
+                            android:text="Vanilla Ice-Cream"
+                            android:id="@+id/food_item_name"
+                            android:textSize="20sp"
                             android:textScaleX="1.1"
-                            android:paddingBottom="5dp"
-                            android:paddingLeft="2dp"
-                            android:textSize="18sp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="5dp" />
+                            android:textColor="#363636"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginLeft="10dp" />
+
+                        <TableRow
+                            android:id="@+id/tag_customize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:id="@+id/imageView"
+                                android:src="@mipmap/ic_edit_white_48dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Click to customize"
+                                android:id="@+id/item_customize"
+                                android:textColor="@android:color/holo_blue_dark"
+                                android:textSize="16sp"
+                                android:visibility="visible"
+                                android:layout_marginLeft="10dp" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Rs."
+                                android:id="@+id/textView2"
+                                android:layout_gravity="center_vertical"
+                                android:textSize="18sp"
+                                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="75"
+                                android:id="@+id/food_cart_price"
+                                android:textScaleX="1.1"
+                                android:textSize="18sp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="5dp" />
+                        </TableRow>
+
                     </LinearLayout>
 
                 </LinearLayout>
@@ -95,10 +124,10 @@
                     android:layout_gravity="center_vertical">
 
                     <android.support.v7.widget.CardView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:layout_gravity="center"
-                        card_view:cardCornerRadius="20dp"
+                        card_view:cardCornerRadius="23dp"
                         card_view:cardElevation="4dp">
 
                         <Button
@@ -130,10 +159,10 @@
                         android:paddingLeft="10dp"/>
 
                     <android.support.v7.widget.CardView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:layout_gravity="center"
-                        card_view:cardCornerRadius="20dp"
+                        card_view:cardCornerRadius="23dp"
                         card_view:cardElevation="4dp">
 
                         <Button
@@ -151,29 +180,28 @@
 
                 <LinearLayout
                     android:orientation="vertical"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="2.6"
+                    android:gravity="center_horizontal">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="5dp"
                         android:id="@+id/food_item_delete"
-                        android:padding="5dp"
                         android:src="@android:drawable/ic_delete"/>
                 </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/customizeCartItemList"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:id="@+id/customizeCartItemList"
-            android:layout_marginTop="120dp"
-            android:visibility="visible"/>
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 

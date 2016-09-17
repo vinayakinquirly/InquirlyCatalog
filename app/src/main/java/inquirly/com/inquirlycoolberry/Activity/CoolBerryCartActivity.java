@@ -1,49 +1,67 @@
 package inquirly.com.inquirlycoolberry.Activity;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import java.util.ArrayList;
-import android.view.Window;
-import android.widget.Toast;
-import com.google.gson.Gson;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.graphics.Color;
-import android.content.Intent;
-import org.json.JSONException;
-import android.widget.TextView;
-import android.content.Context;
-import android.widget.ImageView;
-import android.graphics.Typeface;
-import android.view.WindowManager;
+import android.app.Activity;
 import android.app.ProgressDialog;
-import com.android.volley.VolleyError;
-import inquirly.com.inquirlycatalogue.R;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.Button;
+import android.content.Intent;
+import android.widget.TextView;
+import android.graphics.Typeface;
+import android.widget.RelativeLayout;
+import inquirly.com.inquirlycatalogue.R;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.app.AppCompatActivity;
-import inquirly.com.inquirlycatalogue.models.Fields;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import inquirly.com.inquirlycatalogue.models.CartItem;
-import inquirly.com.inquirlycatalogue.rest.ApiRequest;
-import inquirly.com.inquirlycatalogue.models.ItemBillReq;
+
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import inquirly.com.inquirlycatalogue.models.BillResponse;
 import inquirly.com.inquirlycatalogue.models.CampaignDbItem;
+import inquirly.com.inquirlycatalogue.models.CartItem;
+import inquirly.com.inquirlycatalogue.models.Fields;
+import inquirly.com.inquirlycatalogue.models.ItemBillReq;
+import inquirly.com.inquirlycatalogue.models.PlaceOrderRes;
+import inquirly.com.inquirlycatalogue.rest.ApiRequest;
 import inquirly.com.inquirlycatalogue.rest.IRequestCallback;
+import inquirly.com.inquirlycatalogue.utils.ApiConstants;
 import inquirly.com.inquirlycatalogue.ApplicationController;
+import inquirly.com.inquirlycatalogue.activities.MainActivity;
 import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
-import inquirly.com.inquirlycoolberry.Adapters.CoolberryCartAdapter;
 import inquirly.com.inquirlycatalogue.utils.InternetConnectionStatus;
+import inquirly.com.inquirlycatalogue.utils.RecyclerItemClickListener;
+import inquirly.com.inquirlycoolberry.Adapters.CoolberryCartAdapter;
 
 public class CoolBerryCartActivity extends AppCompatActivity {
 
     private Fields field;
-    public Intent intent;
     public int cartCount;
+    public static Intent intent;
+    private static Activity context;
     private ItemBillReq billResponse;
     public ImageView cart_back_image;
     private ProgressDialog billDialog;
@@ -51,16 +69,14 @@ public class CoolBerryCartActivity extends AppCompatActivity {
     private ArrayList<Fields> fieldList;
     public ArrayList<CartItem> cartItems;
     public CoolberryCartAdapter mAdapter;
-    public String bill,itemsData,propsJson;
-    public static RecyclerView mRecyclerView;
-    public static String mCampaignId,back_image;
-    public static TextView mTxtTotalPrice,noItems;
+    public String color,itemsData,propsJson;
+    private static RecyclerView mRecyclerView;
+    public  static String mCampaignId,back_image;
+    public  static TextView mTxtTotalPrice,noItems;
     public SharedPreferences prefs,sharedPreferences;
     public String catalougeView,catalog_group,sec_token;
     private static final String TAG = "CoolBerryCartActivity";
-    private ArrayList<CampaignDbItem> dbItem = new ArrayList<>();
     private ArrayList<ItemBillReq.Items> itemList = new ArrayList<>();
-    private ApplicationController instance = ApplicationController.getInstance();
     private ApplicationController appInstance = ApplicationController.getInstance();
 
     @Override
@@ -69,13 +85,16 @@ public class CoolBerryCartActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setTheme(R.style.CoolberryTheme);
         super.onCreate(savedInstanceState);
-        String color = appInstance.getImage("color_1");
-        setContentView(R.layout.activity_coolberry_cart);
+
         intent = getIntent();
+        context = CoolBerryCartActivity.this;
+        color = appInstance.getImage("color_1");
+        setContentView(R.layout.activity_coolberry_cart);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.food_cart_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setBackgroundColor(Color.parseColor(color));
+
         billDialog = new ProgressDialog(this);
         cart_back_image = (ImageView)findViewById(R.id.food_cartbackground);
 
@@ -106,6 +125,8 @@ public class CoolBerryCartActivity extends AppCompatActivity {
         back_image = sharedPreferences.getString(CatalogSharedPrefs.BG_IMAGE_1,null);
         Log.i(TAG,"check view----" + catalougeView + "--grp--" + catalog_group);
 
+        //Picasso.with(this).load(back_image).resize(1650,850).placeholder(R.drawable.placeholder_large).into(cart_back_image);
+
         for(int i = 0; i < toolbar.getChildCount(); i++){
             View view = toolbar.getChildAt(i);
             if(view instanceof TextView){
@@ -120,15 +141,16 @@ public class CoolBerryCartActivity extends AppCompatActivity {
 
         Log.i(TAG,"campaign_id---->" + mCampaignId);
         noItems = (TextView)findViewById(R.id.noItems);
-       // btn_Shop = (Button) findViewById(R.id.btn_food_shop);
+        btn_Shop = (Button) findViewById(R.id.btn_food_shop);
         btn_CheckOut = (Button) findViewById(R.id.btn_food_checkout);
 
-        //mTxtTotalPrice = (TextView) findViewById(R.id.food_total_price);
+        mTxtTotalPrice = (TextView) findViewById(R.id.food_total_price);
         TextView mCartEmpty = (TextView) findViewById(R.id.food_cart_empty);
         btn_CheckOut.setBackgroundColor(Color.parseColor(color));
-//        mTxtTotalPrice.setTypeface(font);
-//        btn_Shop.setTypeface(font);
+        mTxtTotalPrice.setTypeface(font);
+        btn_Shop.setTypeface(font);
         btn_CheckOut.setTypeface(font);
+        mCartEmpty.setTypeface(font);
 
         prefs = getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
         propsJson = prefs.getString(mCampaignId + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, null);
@@ -136,7 +158,7 @@ public class CoolBerryCartActivity extends AppCompatActivity {
         Log.i(TAG,"check propsjson--->" + propsJson + "---" + mCampaignId + "--token--" + sec_token);
 
         if(propsJson==null){
-            instance.deleteAllCartItems();
+            appInstance.deleteAllCartItems();
         }
 
         mRecyclerView = (RecyclerView) findViewById(R.id.food_cart_list);
@@ -147,6 +169,7 @@ public class CoolBerryCartActivity extends AppCompatActivity {
         } else {
             mCartEmpty.setVisibility(View.GONE);
             btn_CheckOut.setVisibility(View.VISIBLE);
+            //mTxtTotalPrice.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.VISIBLE);
             btn_CheckOut.setEnabled(true);
             cartItems = ApplicationController.getInstance().getCartItems();
@@ -162,6 +185,7 @@ public class CoolBerryCartActivity extends AppCompatActivity {
         btn_CheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (InternetConnectionStatus.checkConnection(getApplicationContext())) {
                     if (ApplicationController.getInstance().getCartItemCount() == 0) {
                         Toast.makeText(getApplicationContext(),"Cart cannot be empty...",Toast.LENGTH_SHORT).show();
@@ -176,7 +200,6 @@ public class CoolBerryCartActivity extends AppCompatActivity {
                 }else{
                     Toast.makeText(CoolBerryCartActivity.this, "Unable to connect to server." +
                             " please check your network connection", Toast.LENGTH_SHORT).show();
-                    startActivity(getIntent());
                     finish();
                 }
             }
@@ -213,10 +236,10 @@ public class CoolBerryCartActivity extends AppCompatActivity {
                 Log.i(TAG, "Getting item properties for key=" + key);
                 JSONArray jsonArray = itemProperties.getJSONArray(key);
                 fieldList = new ArrayList<>();
+
                 Log.i(TAG, "jsonArray json" + jsonArray.length() + "---jsonArray--" + jsonArray.toString());
 
                 for (int index = 0; index < jsonArray.length(); index++) {
-                    //read all the item properties
                     JSONObject obj = jsonArray.getJSONObject(index);
                     field = new Fields();
                     field.setType(obj.getString("type"));
@@ -225,7 +248,6 @@ public class CoolBerryCartActivity extends AppCompatActivity {
                     JSONArray optionsArray = obj.getJSONArray("options");
                     String[] options = new String[optionsArray.length()];
 
-                    //loop through options array
                     for (int c = 0; c < optionsArray.length(); c++) {
                         Log.i(TAG, "optionsArray--->" + optionsArray.getString(c));
                         options[c] = optionsArray.getString(c);
@@ -236,8 +258,6 @@ public class CoolBerryCartActivity extends AppCompatActivity {
                     Log.i(TAG,"field size---" + field.getType() + "---" + fieldList.size());
                 }
                 Log.i(TAG,"field--->" + fieldList.size() + fieldList.get(keyIndex).getLabel());
-//              propertyList.put(key, fieldList);
-//              Log.i(TAG,"propertyList--->" + propertyList.get(0) +"---" + propertyList.size());
             }
         }catch (Exception ex) {
             Log.e(TAG, "Error parsing item properties from shared prefs:" + ex.getMessage());
@@ -271,20 +291,24 @@ public class CoolBerryCartActivity extends AppCompatActivity {
             String itemProperties = appInstance.getCustomItemData(CoolberryCartAdapter.mItems.get(i).getItemCode());
             if(itemProperties!=null) {
                 Log.i(TAG, "check item look----" + itemProperties);
-
                 try {
                     ArrayList<JSONObject> itemPropertiesList = new ArrayList<>();
                     JSONObject jsonObject = new JSONObject(itemProperties);
+                    Log.i(TAG,"check jsonObject--" + jsonObject.toString());
                     for (int k = 0; k < jsonObject.getJSONArray(CoolberryCartAdapter.mItems.get(i).getItemCode()).length(); k++) {
                         Log.i(TAG, "json array is ---" + jsonObject.getJSONArray(CoolberryCartAdapter.
+                                mItems.get(i).getItemCode()).length());
+                        itemPropertiesList.add(jsonObject.getJSONArray(CoolberryCartAdapter.
                                 mItems.get(i).getItemCode()).getJSONObject(k));
-                        itemPropertiesList.add(jsonObject.getJSONArray(CoolberryCartAdapter.mItems.get(i).getItemCode()).getJSONObject(k));
                         items.setItemProperties(itemPropertiesList);
-                        Log.i(TAG, "check itemProps--" + gson.toJson(items));
+                        Log.i(TAG, "check itemProps--" + itemPropertiesList.toString() +"---" +gson.toJson(items));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }else{
+                ArrayList<JSONObject> itemPropertyList = new ArrayList<>();
+                items.setItemProperties(itemPropertyList);
             }
             itemList.add(items);
             itemsData = gson.toJson(itemList);
@@ -293,7 +317,7 @@ public class CoolBerryCartActivity extends AppCompatActivity {
         postBillJson();
     }
 
-    public void postBillJson() {
+    public void postBillJson(){
         ApiRequest.postBillJson(
                 catalog_group,
                 itemsData,
@@ -305,7 +329,6 @@ public class CoolBerryCartActivity extends AppCompatActivity {
                         Gson gson = new Gson();
                         billResponse = gson.fromJson(response.toString(),ItemBillReq.class);
                         billDialog.dismiss();
-
                         if(billResponse.getResCode()!=200){
                             Toast.makeText(CoolBerryCartActivity.this,"Unable to generate Bill!", Toast.LENGTH_SHORT).show();
                             finish();
@@ -327,5 +350,11 @@ public class CoolBerryCartActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    public static void restartActivity(){
+
+        context.startActivity(intent);
+        context.finish();
     }
 }

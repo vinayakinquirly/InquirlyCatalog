@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_margin="10dp">
+
+        <LinearLayout
+            android:layout_width="350dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="35dp">
+
+                <EditText
+                    android:id="@+id/friend_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="14sp"
+                    android:textColor="#000"
+                    android:hint="Enter Friend&apos;s name"
+                    android:layout_weight="1"
+                    android:paddingLeft="5dp"
+                    android:background="@drawable/custom_edittext"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="5dp" />
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/holo_blue_light"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/item_count"
+                    android:layout_weight="7"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="1"
+                    android:textSize="16sp"
+                    android:textColor="#000" />
+            </TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/holo_blue_light"/>
+
+            <LinearLayout
+                android:id="@+id/custom_data_area"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/holo_blue_light"/>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:text="CANCEL"
+                    android:textColor="#fff"
+                    android:id="@+id/btn_cancel_item"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@android:color/holo_blue_light"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:text="ADD"
+                    android:id="@+id/btn_save_item"
+                    android:textColor="#fff"
+                    android:layout_marginLeft="5dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@android:color/holo_red_light"/>
+
+            </TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="**Extra Rs.10/topping on more than 1 topping of each type."
+                android:textSize="12sp"
+                android:textScaleX="1.1"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/holo_blue_dark"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/saving_progress"
+            android:visibility="gone"
+            android:src="@drawable/progress_image"
+            android:layout_gravity="center_horizontal|center_vertical"/>
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:background="#88000000"
+            android:id="@+id/text_loading"
+            android:visibility="gone"
+            android:textColor="#fff"
+            android:text="Loading"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center_horizontal|center_vertical"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

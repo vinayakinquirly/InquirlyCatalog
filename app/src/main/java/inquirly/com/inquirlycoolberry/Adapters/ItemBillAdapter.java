@@ -23,9 +23,8 @@ import inquirly.com.inquirlycatalogue.models.BillResponse;
  */
 public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHolder> {
 
-    LinearLayout[] myTextViews;
-    private Context context;
     private float total;
+    private Context context;
     private static final String TAG = "ItembillAdapter";
     private BillResponse.Taxes billTaxes = new BillResponse.Taxes();
     private BillResponse.BillItems billItems = new BillResponse.BillItems();
@@ -53,7 +52,6 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         holder.setIsRecyclable(false);
-
         billItems = billItemsList.get(position);
 
         holder.item_num.setText(String.valueOf(billItems.getSerial_num()));
@@ -62,29 +60,29 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
         holder.item_qty.setText("X "+String.valueOf(billItems.getQuantity()));
         holder.item_total.setText(String.valueOf(billItems.getTotal()));
 
+        Log.i(TAG,"check sizes--" + billItems.getDiscounts().size()+"---" + billItems.getExtras().size());
+
         if(billItems.getDiscounts().size()!=0){
             int discountTypes = billItems.getDiscounts().size();
             holder.linear_discounts.setVisibility(View.VISIBLE);
-
-            LinearLayout[] myTextViews = new LinearLayout[discountTypes];
 
             for (int i = 0; i < discountTypes; i++) {
                 final LinearLayout linearLayout = new LinearLayout(context);
                 linearLayout.setOrientation(LinearLayout.HORIZONTAL);
                 linearLayout.setWeightSum(10);
-                linearLayout.setPadding(200,0,0,0);
+                linearLayout.setPadding(150,0,0,0);
 
                 final TextView discountLabel = new TextView(context);
                 final TextView discountamount = new TextView(context);
 
-                discountLabel.setTextColor(context.getResources().getColor(R.color.accent_material_light));
-                discountamount.setTextColor(context.getResources().getColor(R.color.accent_material_light));
+                discountLabel.setTextColor(context.getResources().getColor(R.color.customColor));
+                discountamount.setTextColor(context.getResources().getColor(R.color.customColor));
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
                 LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                params.weight = 9.0f;
-                params2.weight = 1.0f;
+                params.weight = 9.5f;
+                params2.weight = 0.5f;
 
                 discountLabel.setLayoutParams(params);
                 discountamount.setLayoutParams(params2);
@@ -92,8 +90,8 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
                 discountLabel.setGravity(Gravity.LEFT);
                 discountamount.setGravity(Gravity.CENTER);
 
-                discountLabel.setTypeface(null, Typeface.BOLD);
-                discountamount.setTypeface(null, Typeface.BOLD);
+//                discountLabel.setTypeface(null, Typeface.BOLD);
+//                discountamount.setTypeface(null, Typeface.BOLD);
 
                 discountamount.setPadding(30,0,20,0);
 
@@ -108,14 +106,57 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
                 linearLayout.addView(discountLabel);
                 linearLayout.addView(discountamount);
                 holder.linear_discounts.addView(linearLayout);
-
-            //    myTextViews[i] = linearLayout;
-                Log.i(TAG,"check linear count---" + myTextViews[i]);
-            //    myTextViews[i] = discountamount;
             }
         }
 
-        if(billItemsList.size()-1 == position){
+        if(billItems.getExtras().size()!=0){
+            int extraTypes = billItems.getExtras().size();
+            holder.linear_extras.setVisibility(View.VISIBLE);
+
+            for (int i = 0; i < extraTypes; i++) {
+                final LinearLayout extraLayout = new LinearLayout(context);
+                extraLayout.setOrientation(LinearLayout.HORIZONTAL);
+                extraLayout.setWeightSum(10);
+                extraLayout.setPadding(150,0,0,0);
+
+                final TextView extraLabel = new TextView(context);
+                final TextView extraAmount = new TextView(context);
+
+                extraLabel.setTextColor(context.getResources().getColor(R.color.mobileMainColor));
+                extraAmount.setTextColor(context.getResources().getColor(R.color.mobileMainColor));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                params.weight = 9.5f;
+                params2.weight = 0.5f;
+
+                extraLabel.setLayoutParams(params);
+                extraAmount.setLayoutParams(params2);
+
+                extraLabel.setGravity(Gravity.LEFT);
+                extraAmount.setGravity(Gravity.CENTER);
+
+//                extraLabel.setTypeface(null, Typeface.BOLD);
+//                extraAmount.setTypeface(null, Typeface.BOLD);
+
+                extraAmount.setPadding(30,0,20,0);
+
+                extraLabel.setTextSize(14);
+                extraAmount.setTextSize(14);
+
+                // set some properties of rowTextView or something
+                extraLabel.setText(billItems.getExtras().get(i).getLabel());
+                extraAmount.setText(String.valueOf("+"+billItems.getExtras().get(i).getAmount()));
+                // add the textview to the linearlayout
+
+                extraLayout.addView(extraLabel);
+                extraLayout.addView(extraAmount);
+                holder.linear_extras.addView(extraLayout);
+            }
+        }
+
+/*        if(billItemsList.size()-1 == position){
             Log.i(TAG,"entered if---" + billItemsList.size());
             if(billTaxesList.size()!=0){
                 holder.table_taxes.setVisibility(View.VISIBLE);
@@ -211,17 +252,22 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
                         }
                     }
                 }
-            }if(billTaxesList.size()==myTextViews.length){
+            }
+        }*/
+        if(billItemsList.size()-1 == position) {
+            holder.tableRow.setPadding(0,0,0,20);
+            Log.i(TAG, "entered if---" + billItemsList.size());
+            //if (billTaxesList.size() == myTextViews.length) {
                 holder.linear_total.setVisibility(View.VISIBLE);
                 final TextView billAmount = new TextView(context);
-                billAmount.setTextSize(16);
-                billAmount.setPadding(0,5,10,5);
+                billAmount.setTextSize(18);
+                billAmount.setPadding(0, 5, 10, 5);
                 billAmount.setGravity(Gravity.RIGHT);
-                billAmount.setTypeface(null,Typeface.BOLD);
+                billAmount.setTypeface(null, Typeface.BOLD);
                 billAmount.setTextColor(context.getResources().getColor(android.R.color.white));
-                billAmount.setText("Grand Total: "+String.valueOf(total));
+                billAmount.setText("Grand Total: " + String.valueOf(total));
                 holder.linear_total.addView(billAmount);
-            }
+            //}
         }
     }
 
@@ -232,6 +278,7 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        TableRow tableRow;
         final LinearLayout table_taxes;
         LinearLayout linear_extras,linear_discounts,linear_total;
         TextView item_num,item_name,item_price,item_qty,item_total;
@@ -240,6 +287,7 @@ public class ItemBillAdapter extends RecyclerView.Adapter<ItemBillAdapter.ViewHo
         public ViewHolder(View itemView) {
             super(itemView);
 
+            tableRow = (TableRow)itemView.findViewById(R.id.bill_item_table);
             item_num = (TextView)itemView.findViewById(R.id.bill_item_num);
             item_name = (TextView)itemView.findViewById(R.id.bill_item_name);
             item_price = (TextView)itemView.findViewById(R.id.bill_item_price);

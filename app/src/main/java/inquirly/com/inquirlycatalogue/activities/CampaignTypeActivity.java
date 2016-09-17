@@ -105,11 +105,13 @@ public class CampaignTypeActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), CoolberryMainActivity.class);
                         intent.putExtra(ApiConstants.CAMPAIGN_TYPE, ApiConstants.CAMPAIGN_TYPE_CATALOG);
                         startActivity(intent);
+                        finish();
                     } else {
                         Log.i(TAG, "no client");
                         Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         i.putExtra(ApiConstants.CAMPAIGN_TYPE, ApiConstants.CAMPAIGN_TYPE_CATALOG);
                         startActivity(i);
+                        finish();
                     }
                 }else {
                     Toast.makeText(CampaignTypeActivity.this, "Please Re-Login to get started.", Toast.LENGTH_SHORT).show();

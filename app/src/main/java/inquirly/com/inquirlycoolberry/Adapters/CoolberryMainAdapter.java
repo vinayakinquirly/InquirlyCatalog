@@ -1,20 +1,18 @@
 package inquirly.com.inquirlycoolberry.Adapters;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
+import android.view.ViewGroup;
+import android.content.Context;
+import android.widget.TextView;
+import android.widget.ImageView;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
+import com.squareup.picasso.Picasso;
 import inquirly.com.inquirlycatalogue.R;
-import inquirly.com.inquirlycatalogue.models.CampaignItemData;
+import android.support.v7.widget.RecyclerView;
 import inquirly.com.inquirlycatalogue.utils.SQLiteDataBase;
+import inquirly.com.inquirlycatalogue.models.CampaignItemData;
 
 /**
  * Created by Vinayak on 7/13/2016.

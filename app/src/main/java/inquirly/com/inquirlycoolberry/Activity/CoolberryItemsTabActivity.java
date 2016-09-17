@@ -54,7 +54,6 @@ import inquirly.com.inquirlycatalogue.ApplicationController;
 import inquirly.com.inquirlycatalogue.models.CampaignDbItem;
 import inquirly.com.inquirlycatalogue.rest.IRequestCallback;
 import inquirly.com.inquirlycatalogue.helpers.CampaignHelper;
-import inquirly.com.inquirlycatalogue.models.CustomSettingsRes;
 import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
 import inquirly.com.inquirlycatalogue.activities.WebViewActivity;
 import inquirly.com.inquirlycatalogue.utils.InternetConnectionStatus;
@@ -62,20 +61,18 @@ import inquirly.com.inquirlycoolberry.Fragments.CoolberryItemsTabFragment;
 
 public class CoolberryItemsTabActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
-    private Menu mMenu;
+    private static Menu mMenu;
     private Intent intent;
-    public String mCampaignId;
+    public String mCampaignId,color;
     private String mCampaignType;
     private ProgressDialog pDialog;
     private static Context context;
-    CustomSettingsRes customSettingsRes;
-    private ImageView food_tabBackground;
     private SharedPreferences mSharedPrefs;
     public  ArrayList<Campaign> campaignList;
     public  ArrayList<CampaignDbItem> itemList;
     private static CoordinatorLayout coordinatorLayout;
     private static final String TAG = "CoolTabActivity";
-    private ApplicationController instance = ApplicationController.getInstance();
+    private ApplicationController appInstance = ApplicationController.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +81,13 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setTheme(R.style.CoolberryTheme);
         super.onCreate(savedInstanceState);
-
+        color =appInstance.getImage("color_1");
         intent = getIntent();
         setContentView(R.layout.activity_coolberry_items_tab);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.food_tab);
+        setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(Color.parseColor(color));
+
         coordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordinatorTabLayout);
         context = CoolberryItemsTabActivity.this;
         initToolbar();
@@ -143,6 +144,15 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
             LayerDrawable icon = (LayerDrawable) item.getIcon();
             int size = ApplicationController.getInstance().getCartItemCount();
             CartCount.setBadgeCount(this, icon, size);
+        }
+    }
+
+    public static void setCartCount(){
+        if (mMenu != null) {
+            MenuItem item = mMenu.findItem(R.id.action_count);
+            LayerDrawable icon = (LayerDrawable) item.getIcon();
+            int size = ApplicationController.getInstance().getCartItemCount();
+            CartCount.setBadgeCount(context, icon, size);
         }
     }
 
@@ -209,6 +219,7 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
 
         viewPager.setAdapter(pagerAdapter);
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.food_tabLayout);
+        tabLayout.setBackgroundColor(Color.parseColor(color));
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.post(new Runnable() {
@@ -499,16 +510,10 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
             }
             return null;
         }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            //    pDialog.dismiss();
-        }
     }
 
     public static void addProduct(String itemName){
         Snackbar snackbar = Snackbar.make(coordinatorLayout ,itemName + " - is added to your cart",Snackbar.LENGTH_SHORT);
-
         View snackView = snackbar.getView();
         TextView textView = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(context.getResources().getColor(R.color.customColor));

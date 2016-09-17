@@ -28,7 +28,7 @@ import inquirly.com.inquirlycatalogue.ApplicationController;
  * Created by binvij on 11/12/15.
  */
 public class ApiRequest {
-    private static final String TAG = ApiRequest.class.getSimpleName();
+    private static final String TAG = "ApiRequest";
     Context mContext;
 
     public static void postOrder(OrderItem item, String url, final IRequestCallback callback) {
@@ -240,6 +240,18 @@ public class ApiRequest {
             JSONArray itemsArray = new JSONArray(items);
             JSONArray itemsResArray = new JSONArray(itemRes);
             JSONArray taxesArray = new JSONArray(bill);
+
+            for(int i=0;i<itemsArray.length();i++){
+                Log.i(TAG,"check size--" +itemsArray.length()+"---"+ itemsArray.getJSONObject(i).
+                        getJSONArray("itemProperties").length());
+
+                for(int j=0;j<itemsArray.getJSONObject(i).getJSONArray("itemProperties").length();j++){
+
+                    Object obj = itemsArray.getJSONObject(i).getJSONArray("itemProperties").
+                            getJSONObject(j).get("nameValuePairs");
+                    itemsArray.getJSONObject(i).getJSONArray("itemProperties").put(j,obj);
+                }
+            }
 
             Log.i(TAG,"itemsArray -----" + itemsArray);
             Log.i(TAG,"taxesArray -----" + taxesArray);

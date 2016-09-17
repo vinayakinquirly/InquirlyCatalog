@@ -30,12 +30,6 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/food_cartbackground"
-            android:background="#c5c5c5" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -54,17 +48,19 @@
             android:layout_weight="10"
             android:background="#00000000" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/food_cart_list"
-            android:layout_width="match_parent"
-            android:layout_weight="10"
-            android:layout_marginRight="10dp"
-            android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_height="match_parent"
-            android:visibility="visible" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/food_cart_list"
+                android:layout_width="match_parent"
+                android:layout_weight="10"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
 
-        <TextView
+
+            <TextView
             android:id="@+id/noItems"
             android:layout_width="match_parent"
             android:clipToPadding="false"
@@ -84,13 +80,16 @@
             android:layout_weight="1"
             android:background="#00000000" />
 
+        </LinearLayout>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal"
             android:layout_gravity="end|right"
-            android:layout_weight=".1"
-            android:background="#00000000">
+            android:background="#D9FFFFFF"
+            android:layout_alignParentBottom="true"
+            android:gravity="right">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -142,13 +141,25 @@
                     android:textStyle="bold" />
             </android.support.v7.widget.CardView>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="*All Images are for representational purpose only."
+                android:id="@+id/textView17"
+                android:layout_gravity="center_vertical|bottom"
+                android:layout_marginRight="40dp"
+                android:textSize="14sp"
+                android:textStyle="italic"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/mainColor" />
+
             <android.support.v7.widget.CardView
                 android:layout_width="120dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="6dp"
-                android:layout_marginRight="20dp">
+                android:layout_marginRight="15dp">
 
                 <Button
                     android:layout_width="match_parent"
@@ -162,8 +173,6 @@
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
-
-    </LinearLayout>
 
     </RelativeLayout>
 

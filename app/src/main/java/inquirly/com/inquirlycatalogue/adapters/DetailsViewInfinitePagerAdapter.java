@@ -51,22 +51,20 @@ import inquirly.com.inquirlycatalogue.utils.ScrollTextView;
 
 public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
 
-    private Context mContext;
-    private ArrayList<CampaignDbItem> mItems;
-    private CampaignDbItem mSelectedItem;
-    private String mCampaignId;
     private int mPosition;
-    private HashMap<String, ArrayList<Fields>> propertyList;
-    boolean hasEditText = false;
-    LinearLayout contentLayout ;
-
-    ApplicationController appInstance = ApplicationController.getInstance();
-
-    EditText text ;
-
+    private EditText text ;
     private Typeface font;
-    private static final String TAG = DetailsViewInfinitePagerAdapter.class.getSimpleName();
+    private Context mContext;
+    private String mCampaignId;
+    boolean hasEditText = false;
+    private LinearLayout contentLayout ;
+    private CampaignDbItem mSelectedItem;
+    private ArrayList<CampaignDbItem> mItems;
+    private HashMap<String, ArrayList<Fields>> propertyList;
+    private static final String TAG = "DetailsInfiniteAdapter";
     private static HashMap<String,View> mOptionWidgets = new HashMap<>();
+    private ApplicationController appInstance = ApplicationController.getInstance();
+
     @IdRes
     private static final int ID_MALE = 1;
     @IdRes
@@ -77,8 +75,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
     private static final int ID_NO = 4;
 
 
-    public DetailsViewInfinitePagerAdapter(Context context, ArrayList<CampaignDbItem> items, int position, String campaignId)
-    {
+    public DetailsViewInfinitePagerAdapter(Context context, ArrayList<CampaignDbItem> items, int position, String campaignId) {
         mItems = items;
         mContext = context;
         mPosition = position;
@@ -129,7 +126,6 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         itemPrice.setTypeface(font);
         itemDesc.setTypeface(font);
 
-
         SharedPreferences prefs = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
         String TandC = prefs.getString(mCampaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, null);
 //        Log.d(TAG, TandC);
@@ -151,8 +147,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else
-        {
+        else {
             itemSmallImage1.setVisibility(View.GONE);
         }
 
@@ -167,8 +162,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else
-        {
+        else {
             itemSmallImage2.setVisibility(View.GONE);
         }
         if(mSelectedItem.getMediaImg3() != null) {
@@ -183,8 +177,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                 }
             });
         }
-        else
-        {
+        else {
             itemSmallImage3.setVisibility(View.GONE);
         }
         if(mSelectedItem.getMediaImg4() != null) {
@@ -232,19 +225,14 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
             public void onClick(View v) {
 
                 Context context = DetailsViewInfinitePagerAdapter.this.mContext;
-
                 final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-
                 View dialogView = LayoutInflater.from(context).inflate(R.layout.item_specs_dialog, null);
                 contentLayout = (LinearLayout) dialogView.findViewById(R.id.dlg_specs_content);
 
                 //bring up the item specs chooser dialogs
-
                 DetailsViewInfinitePagerAdapter.this.buildSpecsDialog(contentLayout, propertyList.get(selectedItem.getType()));
-
                 dialogBuilder.setView(dialogView);
                 dialogBuilder.setTitle("Specify Options");
-
                 dialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -252,7 +240,6 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                     }
 
                 });
-
                 dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -274,14 +261,12 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
                             if (text.getText().toString().equals("")) {
                                 Toast.makeText(mContext, "Please fill all the fields", Toast.LENGTH_SHORT).show();
                             }
-                            else
-                            {
+                            else {
                                 dialog.dismiss();
                                 generateitemdetails(selectedItem);
                             }
                         }
-                        else
-                        {
+                        else {
                             dialog.dismiss();
                             generateitemdetails(selectedItem);
                         }
@@ -297,8 +282,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         return layout;
     }
 
-    public void generateitemdetails(CampaignDbItem selItem)
-    {
+    public void generateitemdetails(CampaignDbItem selItem) {
         CartItem cartItem = new CartItem();
         cartItem.setCampaignId(DetailsViewInfinitePagerAdapter.this.mCampaignId);
         int basePrice = selItem.getPrice();
@@ -332,13 +316,11 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
 //                selectedQuantity = Integer.parseInt(qty_value);
                 options.put(key, new String[]{qty_value});
             }
-            else if (widget instanceof Spinner)
-            {
+            else if (widget instanceof Spinner) {
                 Spinner spinner = (Spinner) widget;
                 String value = spinner.getSelectedItem().toString();
                 if (key.equals("Weight")) {
-                    if (value.equals("0.5"))
-                    {
+                    if (value.equals("0.5")) {
                         String price = pricingModel.Weight[0].getPrice();
                         int weightPrice = Integer.parseInt(price.substring(1, price.length()));
                         basePrice += weightPrice;
@@ -586,6 +568,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         }
 
     }
+
     public void highlight(int index, ImageView[] imgView) {
 
         for(int i=0;i<5;i++) {
@@ -610,7 +593,6 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
         }
         return pricingJSON;
     }
-
 
     public void buildItemProperties() {
         SharedPreferences prefs = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
@@ -649,6 +631,7 @@ public class DetailsViewInfinitePagerAdapter extends PagerAdapter {
             }
         }
     }
+
     @Override
     public int getItemPosition(Object object) {
         // POSITION_NONE makes it possible to reload the PagerAdapter

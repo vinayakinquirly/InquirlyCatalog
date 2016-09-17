@@ -1,14 +1,13 @@
 package inquirly.com.inquirlycoolberry.Activity;
 
-import java.util.Map;
-
-import android.graphics.Color;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
 import java.util.HashMap;
 import org.json.JSONArray;
 import java.util.ArrayList;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import android.view.Window;
 import com.google.gson.Gson;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.content.Intent;
+import android.graphics.Color;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ImageView;
@@ -37,6 +37,7 @@ import inquirly.com.inquirlycatalogue.ApplicationController;
 import inquirly.com.inquirlycatalogue.rest.IRequestCallback;
 import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
 import inquirly.com.inquirlycatalogue.utils.InternetConnectionStatus;
+import inquirly.com.inquirlycoolberry.Adapters.CoolberryCartAdapter;
 
 public class CustomerFormActivity extends AppCompatActivity {
 
@@ -54,15 +55,13 @@ public class CustomerFormActivity extends AppCompatActivity {
     public ArrayList<ItemBillReq.Items> itemDetails;
     private EditText user_name, user_mob, user_email;
     public SharedPreferences prefs, sharedPreferences;
-    private BillResponse billResponse = new BillResponse();
+    public ImageView form_back_1,form_back_2,form_back_3;
     private static final String TAG = "CustomerFormActivity";
     private ArrayList<String> valuesList = new ArrayList<>();
-    public ImageView back,form_back_1,form_back_2,form_back_3;
     private ArrayList<String> attributesList = new ArrayList<>();
     private ArrayList<ItemBillReq.Items> itemList = new ArrayList<>();
     private ArrayList<BillResponse.Taxes> taxesList = new ArrayList<>();
-    private Map<String, ItemBillReq.Items> itemDetailsMap = new HashMap<>();
-    private String itemsJsonList = null, customerString = null,logo_url,bill;
+    private String itemsJsonList = null, customerString = null,logo_url;
     private ArrayList<BillResponse.BillItems> billItemsList = new ArrayList<>();
     private ApplicationController instance = ApplicationController.getInstance();
     private ApplicationController appInstance = ApplicationController.getInstance();
@@ -165,31 +164,29 @@ public class CustomerFormActivity extends AppCompatActivity {
         btn_pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String mobEntered = user_mob.getText().toString();
+                Log.i(TAG,"mobile entered---" + mobEntered);
+                if (!mobEntered.isEmpty()&& (mobEntered.charAt(0)=='7'||mobEntered.charAt(0)=='8'
+                        ||mobEntered.charAt(0)=='9') && mobEntered.length()==10) {
 
-                if (user_mob.getText().toString().equals(null) ||
-                        user_mob.getText().toString().equals("")) {
-                    Toast.makeText(CustomerFormActivity.this, "Mobile number is mandatory!", Toast.LENGTH_SHORT).show();
-                }else{
-                    if((user_mob.getText().length() <10)) {
-                        Toast.makeText(CustomerFormActivity.this, "Please check your number!", Toast.LENGTH_SHORT).show();
-                    }else{
-                        if (InternetConnectionStatus.checkConnection(getApplicationContext())) {
-                            orderDialog.setMessage("Please wait! while we place your Order.");
-                            orderDialog.setCancelable(false);
-                            orderDialog.show();
-                            valuesList.add(user_name.getText().toString());
-                            valuesList.add(user_mob.getText().toString());
-                            valuesList.add(user_email.getText().toString());
-                            Log.i(TAG, "values entered----" + valuesList.get(0) + "--" +
-                                    valuesList.get(1) + "---" + valuesList.get(2));
-                            buildFieldList(propsJson);
-                            createBillJson();
-                        } else {
-                            Toast.makeText(CustomerFormActivity.this, "Unable to connect to server. " +
-                                    "please check your network connection", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
+                    if (InternetConnectionStatus.checkConnection(getApplicationContext())) {
+                        orderDialog.setMessage("Please wait! while we place your Order.");
+                        orderDialog.setCancelable(false);
+                        orderDialog.show();
+                        valuesList.add(user_name.getText().toString());
+                        valuesList.add(user_mob.getText().toString());
+                        valuesList.add(user_email.getText().toString());
+                        Log.i(TAG, "values entered----" + valuesList.get(0) + "--" +
+                                valuesList.get(1) + "---" + valuesList.get(2));
+                        buildFieldList(propsJson);
+                        createBillJson();
+                    } else {
+                        Toast.makeText(CustomerFormActivity.this, "Unable to connect to server. " +
+                                "please check your network connection", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
+                }else {
+                    Toast.makeText(CustomerFormActivity.this, "Please check your number!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -233,6 +230,31 @@ public class CustomerFormActivity extends AppCompatActivity {
                 items.setItemDetails(itemDetailsList);
                 Log.i(TAG, "itemList---" + i + "--a--" + itemsJsonList);
             }
+
+            Log.i(TAG,"check cart item name 0-----" + CoolberryCartAdapter.mItems.get(i).getItemName());
+            String itemProperties = appInstance.getCustomItemData(CoolberryCartAdapter.mItems.get(i).getItemCode());
+            if(itemProperties!=null) {
+                Log.i(TAG, "check item look----" + itemProperties);
+                try {
+                    ArrayList<JSONObject> itemPropertiesList = new ArrayList<>();
+                    JSONObject jsonObject = new JSONObject(itemProperties);
+                    Log.i(TAG,"check jsonObject--" + jsonObject.toString());
+                    for (int k = 0; k < jsonObject.getJSONArray(CoolberryCartAdapter.mItems.get(i).getItemCode()).length(); k++) {
+                        Log.i(TAG, "json array is ---" + jsonObject.getJSONArray(CoolberryCartAdapter.
+                                mItems.get(i).getItemCode()).length());
+                        itemPropertiesList.add(jsonObject.getJSONArray(CoolberryCartAdapter.
+                                mItems.get(i).getItemCode()).getJSONObject(k));
+                        items.setItemProperties(itemPropertiesList);
+                        Log.i(TAG, "check itemProps--" + itemPropertiesList.toString() +"---" +gson.toJson(items));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                ArrayList<JSONObject> itemPropertyList = new ArrayList<>();
+                items.setItemProperties(itemPropertyList);
+            }
+
             itemList.add(items);
             itemsJsonList = gson.toJson(itemList);
         }
@@ -268,9 +290,13 @@ public class CustomerFormActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(JSONObject response) {
                         Log.i(TAG, "JSON received----" + response.toString());
+
                         appInstance.deleteAllCartItems();
+                        appInstance.deleteAllCustomItems();
+
                         orderDialog.dismiss();
                         PlaceOrderRes placeOrderRes = gson.fromJson(response.toString(), PlaceOrderRes.class);
+
                         if(placeOrderRes.getStatus()!=200){
                             Toast.makeText(CustomerFormActivity.this, placeOrderRes.getResMessage(), Toast.LENGTH_SHORT).show();
                         }else{

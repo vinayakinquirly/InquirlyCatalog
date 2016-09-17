@@ -6,16 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<!--    <android.support.v7.widget.CardView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="vertical"
-        card_view:cardElevation="3dp"
-        card_view:cardCornerRadius="6dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp">-->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +22,8 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:id="@+id/bill_item_table">
 
                     <TextView
                         android:layout_width="50dp"
@@ -42,7 +33,8 @@
                         android:textColor="#000"
                         android:layout_marginLeft="5dp"
                         android:paddingLeft="3dp"
-                        android:gravity="left" />
+                        android:gravity="left"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="300dp"
@@ -52,7 +44,8 @@
                         android:textColor="#000"
                         android:layout_marginLeft="5dp"
                         android:paddingLeft="3dp"
-                        android:gravity="left" />
+                        android:gravity="left"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="80dp"
@@ -62,7 +55,8 @@
                         android:textColor="#000"
                         android:layout_marginLeft="5dp"
                         android:paddingLeft="3dp"
-                        android:gravity="left" />
+                        android:gravity="left"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="50dp"
@@ -72,7 +66,8 @@
                         android:textColor="#000"
                         android:layout_marginLeft="5dp"
                         android:paddingLeft="3dp"
-                        android:gravity="center_horizontal" />
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="100dp"
@@ -84,7 +79,8 @@
                         android:paddingLeft="3dp"
                         android:gravity="center_horizontal"
                         android:layout_marginRight="10dp"
-                        android:paddingRight="10dp" />
+                        android:paddingRight="10dp"
+                        android:textSize="16sp" />
                 </TableRow>
 
             </LinearLayout>
@@ -92,39 +88,18 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:id="@+id/bill_linear_extras"
                 android:visibility="gone">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Extras"
-                    android:id="@+id/bill_item_extra"
-                    android:layout_weight="8"
-                    android:paddingLeft="30dp"
-                    android:textColor="@color/colorAccent"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="20dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="-50"
-                    android:id="@+id/bill_amount_extra"
-                    android:layout_weight="2"
-                    android:paddingRight="30dp"
-                    android:gravity="right"
-                    android:textColor="@color/colorAccent" />
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:id="@+id/bill_linear_discount"
                 android:visibility="gone">
 

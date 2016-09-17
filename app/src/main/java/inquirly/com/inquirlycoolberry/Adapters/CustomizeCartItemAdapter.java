@@ -1,14 +1,16 @@
 package inquirly.com.inquirlycoolberry.Adapters;
 
+import android.os.Build;
 import android.util.Log;
-import java.util.HashMap;
 
-import android.view.MotionEvent;
+import java.util.Arrays;
+import java.util.HashMap;
 import android.view.View;
 import android.os.Handler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.List;
 import android.view.Gravity;
 import android.widget.Toast;
 import android.widget.Button;
@@ -19,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.content.Context;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.graphics.Typeface;
 import android.widget.RadioGroup;
@@ -26,6 +29,7 @@ import android.widget.RadioButton;
 import android.widget.LinearLayout;
 import android.widget.ArrayAdapter;
 import android.view.LayoutInflater;
+import android.widget.CompoundButton;
 import android.support.annotation.IdRes;
 import inquirly.com.inquirlycatalogue.R;
 import android.support.v7.widget.RecyclerView;
@@ -37,13 +41,14 @@ import inquirly.com.inquirlycatalogue.ApplicationController;
  */
 public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCartItemAdapter.MyViewHolder> {
 
+    private EditText text;
     private Typeface font;
     private int itemCount ;
-    private String itemName;
-    private String itemType;
     private Context mContext;
     boolean hasEditText = false;
     public ArrayList<Fields> fieldList;
+    private String itemName,itemType;
+    public JSONObject jsonObject = new JSONObject();
     private static final String TAG = "CustomCartItemAdapter";
     public  HashMap<String, ArrayList<Fields>>  propertyList = new HashMap<>();
     private ApplicationController appInstance =  ApplicationController.getInstance();
@@ -67,8 +72,8 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
         this.itemCount = itemCount;
         this.itemType = itemType;
         this.itemName = itemName;
-        Log.v(TAG,"check propsjson--->" +itemType +"---" +  itemCount+"---" + propJson);
-        font = Typeface.createFromAsset(mContext.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
+        Log.i(TAG,"check propsjson--->" +itemType +"---" +  itemCount+"---" + propJson);
+        font  = Typeface.createFromAsset(mContext.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         buildItemProperties(propJson);
     }
 
@@ -83,58 +88,51 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final HashMap<String,View> mOptionWidgets = new HashMap<>();
+        final HashMap<String,String> mOptionValues = new HashMap<>();
+
         final int itemNum= position+1;
         holder.setIsRecyclable(false);
         holder.itemCount.setText(String.valueOf(itemNum));
 
         String jsonString =appInstance.getCustomItemData(itemName);
         JSONObject jsonObject = null;
-        Log.v(TAG,"itemCount---" + itemCount + "---" + jsonString);
+        Log.i(TAG,"itemCount---" + itemCount + "---" + jsonString);
         int po = position+1;
-        Log.v(TAG,"itemCount---" + itemCount + "---" + position +"---" );
         if(jsonString!=null) {
             try {
                 jsonObject = new JSONObject(jsonString);
-                Log.v(TAG, "array---"  + "-----" + jsonObject.getJSONArray(itemName).length());
+                Log.i(TAG, "array---"  + "-----" + jsonObject.getJSONArray(itemName).length());
                 if (jsonObject.getJSONArray(itemName).length()>=po){
                     JSONObject jsonObject1 = jsonObject.getJSONArray(itemName).getJSONObject(position);
-                    Log.v(TAG, "check json---" + position + "---" + jsonObject1);
-                    holder.friends_name.setText(jsonObject1.getString("name"));
-                    buildSpecsDialogWithValue(mOptionWidgets,holder.contentLayout, fieldList, jsonObject1);
+                    Log.i(TAG, "check json---" + position + "---" + jsonObject1);
+                    holder.friends_name.setText(jsonObject1.getString("tag"));
+                    buildSpecsDialogWithValue(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList, jsonObject1);
                     holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
                     holder.save_custom_item.setText("SAVED");
-                    Log.v(TAG, "json Object---" + jsonObject);
+                    Log.i(TAG, "json Object---" + jsonObject);
                 } else {
-                    buildSpecsDialog(mOptionWidgets,holder.contentLayout, fieldList);
+                    buildSpecsDialog(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }else{
-            buildSpecsDialog(mOptionWidgets,holder.contentLayout, fieldList);
+            buildSpecsDialog(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList);
         }
-
-        holder.contentLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_red_light));
-                holder.save_custom_item.setText("SAVE");
-                return false;
-            }
-        });
 
         holder.save_custom_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String name = holder.friends_name.getText().toString();
                 final int num = Integer.parseInt(holder.itemCount.getText().toString());
-                Log.v(TAG,"check position on save----" + position);
+                Log.i(TAG,"check position on save----" + position);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            if(appInstance.saveCustomItemJson(itemName,num,generateItemDetails(mOptionWidgets,name,num,holder.contentLayout))){
-                                Log.v(TAG,"saved successfully");
+                            if(appInstance.saveCustomItemJson(itemName,num,
+                                    generateItemDetails(mOptionWidgets,mOptionValues,name,num,holder.contentLayout))){
+                                Log.i(TAG,"saved successfully");
                                 holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
                                 holder.save_custom_item.setText("SAVED");
                                 Toast.makeText(mContext, "item saved successfully!", Toast.LENGTH_SHORT).show();
@@ -151,113 +149,170 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
         });
     }
 
-    public void buildSpecsDialog(HashMap<String,View> mOptionWidgets,LinearLayout layout, ArrayList<Fields> itemFields) {
+    public void buildSpecsDialog(HashMap<String,View> mOptionWidgets,HashMap<String,String> mOptionValues,
+                                 LinearLayout layout, ArrayList<Fields> itemFields) {
         try{
             for(Fields field : itemFields) {
                 boolean hasChild = false;
-
                 LinearLayout innerLayout = new LinearLayout(mContext);
-                innerLayout.setLayoutParams(new ViewGroup.LayoutParams(600,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
-                innerLayout.setPadding(5, 10, 5, 10);
+                if(Build.VERSION.SDK_INT>Build.VERSION_CODES.KITKAT){
+                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(700,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+                    innerLayout.setPadding(0, 0, 0, 5);
+                }else{
+                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(400,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+                    innerLayout.setPadding(0, 0, 0, 5);
+                }
                 innerLayout.setOrientation(LinearLayout.HORIZONTAL);
+                innerLayout.setWeightSum(3.0f);
 
-                EditText text;
+                text = new EditText(mContext);
                 ArrayAdapter<String> spinnerArrayAdapter;
                 if (field.getType().equals("number_input") || field.getType().equals("text_input") ) {
-                    Log.v(TAG,"entered--" + "number input");
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setWidth(200);
-                    label.setPadding(20,0,0,0);
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
+                    Log.i(TAG, "entered--" + "number input");
+                    if (!field.getLabel().equals("Quantity")) {
+                        TextView label = new TextView(mContext);
+                        label.setText(field.getLabel());
+                        label.setTypeface(font);
+                        label.setTextSize(14);
+                        label.setPadding(20,0,0,0);
+                        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                            label.setWidth(150);
+                        }else{
+                            label.setWidth(150);
+                        }
+                        if (label.getParent() != null)
+                            ((ViewGroup) label.getParent()).removeView(label);
+                        innerLayout.addView(label);
 
-                    text = new EditText(mContext);
-                    if(field.getType().equals("number_input")){
-                        text.setInputType(InputType.TYPE_CLASS_PHONE);
-                    }else{
-                        text.setInputType(InputType.TYPE_CLASS_TEXT);
+                        text = new EditText(mContext);
+                        if (field.getType().equals("number_input")) {
+                            text.setInputType(InputType.TYPE_CLASS_PHONE);
+                        } else {
+                            text.setInputType(InputType.TYPE_CLASS_TEXT);
+                        }
+                        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        }else{
+                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        }
+                        text.setGravity(Gravity.START);
+                        text.setTag(field.getLabel());
+                        hasEditText = true;
+                        innerLayout.addView(text);
+                        hasChild = true;
+                        mOptionWidgets.put(field.getLabel(), text);
                     }
-                    text.setLayoutParams(new ViewGroup.LayoutParams(150, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    text.setGravity(Gravity.START);
-                    text.setTag(field.getLabel());
-                    text.setPadding(0,0,20,0);
-                    hasEditText = true;
-                    innerLayout.addView(text);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), text);
                 }
                 else if(field.getType().equals("single_choice") || field.getType().equals("pricing_input")) {
-                    Log.v(TAG,"entered--" + "single choice");
+                    Log.i(TAG,"entered--" + "single choice");
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     Spinner spinnerSingle = new Spinner(mContext);
                     spinnerSingle.setTag(field.getLabel());
-                    spinnerSingle.setPadding(0,0,20,0);
-                    spinnerArrayAdapter = new ArrayAdapter<String>(mContext,
-                            android.R.layout.simple_spinner_item,
-                            field.getOptions()
-                    ); //selected item will look like a spinner set from XML
+                    spinnerArrayAdapter = new ArrayAdapter<>(mContext,
+                            android.R.layout.simple_spinner_item, field.getOptions());
                     spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerSingle.setAdapter(spinnerArrayAdapter);
-                    spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(200, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }else{
+                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }
                     innerLayout.addView(spinnerSingle);
                     hasChild = true;
                     mOptionWidgets.put(field.getLabel(), spinnerSingle);
+                    mOptionValues.put(field.getLabel(),null);
 
                 }else if(field.getType().equals("multiple_choice")){
-                    Log.v(TAG,"entered--" + "multiple choice");
+                    Log.i(TAG,"entered--" + "multiple choice");
+                    LinearLayout labelVertical = new LinearLayout(mContext);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, 50,1.8f);
+
+                    labelVertical.setOrientation(LinearLayout.VERTICAL);
+                    labelVertical.setLayoutParams(params);
+
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
+
+                    TextView labelItemSel = new TextView(mContext);
+                    labelItemSel.setText("0 selected");
+                    labelItemSel.setTypeface(font);
+                    labelItemSel.setTextSize(13);
+                    labelItemSel.setWidth(100);
+                    labelItemSel.setPadding(20,0,0,0);
+
                     if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
+                         ((ViewGroup)label.getParent()).removeView(label);
+                    labelVertical.addView(label);
+                    labelVertical.addView(labelItemSel);
+                    innerLayout.addView(labelVertical);
 
                     Spinner spinnerMulti = new Spinner(mContext);
-                    spinnerMulti.setPadding(0,0,20,0);
                     spinnerMulti.setTag(field.getLabel());
-                    spinnerArrayAdapter = new ArrayAdapter<>(mContext,
-                            android.R.layout.simple_spinner_item,
-                            field.getOptions()
-                    ); //selected item will look like a spinner set from XML
-                    spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerMulti.setAdapter(spinnerArrayAdapter);
-                    spinnerMulti.setLayoutParams(new ViewGroup.LayoutParams(200, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                    ArrayList<String> items = new ArrayList<>();
+                    ArrayAdapter<String> myAdapter = new CustomArrayAdapter(mContext, R.layout.layout_spinner,
+                            field.getOptions(),items,field.getLabel(),labelItemSel);
+                    spinnerMulti.setAdapter(myAdapter);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+                    }else{
+                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+                    }
                     innerLayout.addView(spinnerMulti);
                     hasChild = true;
                     mOptionWidgets.put(field.getLabel(), spinnerMulti);
+                    mOptionValues.put(field.getLabel(),field.getOptions()[0]);
+                    Log.i(TAG,"moptionValue--->" + mOptionValues.get(field.getLabel()));
 
                 }else if(field.getType().equals("multiline_text")) {
-                    Log.v(TAG,"entered--" + "multiline text");
+                    Log.i(TAG,"entered--" + "multiline text");
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     text = new EditText(mContext);
                     text.setMaxLines(3);
-                    text.setLayoutParams(new ViewGroup.LayoutParams(200, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }else{
+                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }
                     text.setGravity(Gravity.START);
                     text.setTag(field.getLabel());
                     text.setPadding(5,0,20,0);
@@ -267,21 +322,29 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     mOptionWidgets.put(field.getLabel(), text);
 
                 }else if(field.getType().equals("gender_toggle")) {
-                    Log.v(TAG,"entered--" + "gender toggle");
+                    Log.i(TAG,"entered--" + "gender toggle");
                     //radio button
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     RadioGroup rbGroup = new RadioGroup(mContext);
                     rbGroup.setPadding(0,0,20,0);
-                    rbGroup.setLayoutParams(new ViewGroup.LayoutParams(200, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }else{
+                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }
                     rbGroup.setTag("GENDER");
                     RadioButton male = new RadioButton(mContext);
                     male.setText("Male");
@@ -299,19 +362,22 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     mOptionWidgets.put(field.getLabel(), rbGroup);
 
                 }else if(field.getType().equals("yes_no_toggle")) {
-                    Log.v(TAG,"entered--" + "yes no toggle");
+                    Log.i(TAG,"entered--" + "yes no toggle");
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     RadioGroup rbGroup = new RadioGroup(mContext);
-                    rbGroup.setPadding(0,0,20,0);
                     rbGroup.setOrientation(RadioGroup.HORIZONTAL);
                     rbGroup.setTag(field.getLabel());
 
@@ -333,7 +399,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     mOptionWidgets.put(field.getLabel(), rbGroup);
                 }
                 if(hasChild) {
-                    Log.v(TAG, "Adding child" );
+                    Log.i(TAG, "Adding child" );
                     layout.addView(innerLayout);
                 }
             }
@@ -346,72 +412,96 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
         }
     }
 
-    public void buildSpecsDialogWithValue(HashMap<String,View> mOptionWidgets,LinearLayout layout, ArrayList<Fields> itemFields,JSONObject data) {
+    public void buildSpecsDialogWithValue(HashMap<String,View> mOptionWidgets,HashMap<String,String> mOptionValues,
+                                          LinearLayout layout, ArrayList<Fields> itemFields,JSONObject data) {
+        Log.i(TAG,"check data rec--" + data.toString());
         try{
             for(Fields field : itemFields) {
                 boolean hasChild = false;
 
                 LinearLayout innerLayout = new LinearLayout(mContext);
-                innerLayout.setLayoutParams(new ViewGroup.LayoutParams(400,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
-                innerLayout.setPadding(5, 10, 5, 10);
+                if(Build.VERSION.SDK_INT>Build.VERSION_CODES.KITKAT){
+                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(700,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+                    innerLayout.setPadding(0, 0, 0, 5);
+                }else{
+                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(400,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
+                    innerLayout.setPadding(0, 0, 0, 5);
+                }
                 innerLayout.setOrientation(LinearLayout.HORIZONTAL);
+                innerLayout.setWeightSum(3.0f);
 
-                EditText text;
+                text = new EditText(mContext);
                 ArrayAdapter<String> spinnerArrayAdapter;
                 if (field.getType().equals("number_input") || field.getType().equals("text_input") ) {
-                    Log.v(TAG,"entered--" + "number input");
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setWidth(200);
-                    label.setPadding(20,0,0,0);
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
+                    Log.i(TAG, "entered--" + "number input");
+                    if (!field.getLabel().equals("Quantity")) {
+                        TextView label = new TextView(mContext);
+                        label.setText(field.getLabel());
+                        label.setTypeface(font);
+                        label.setTextSize(14);
+                        label.setPadding(20,0,0,0);
+                        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                            label.setWidth(150);
+                        }else{
+                            label.setWidth(150);
+                        }
 
-                    text = new EditText(mContext);
-                    if(field.getType().equals("number_input")){
-                        text.setInputType(InputType.TYPE_CLASS_PHONE);
-                    }else{
-                        text.setInputType(InputType.TYPE_CLASS_TEXT);
+                        if (label.getParent() != null)
+                            ((ViewGroup) label.getParent()).removeView(label);
+                        innerLayout.addView(label);
+
+                        if (field.getType().equals("number_input")) {
+                            text.setInputType(InputType.TYPE_CLASS_PHONE);
+                        } else {
+                            text.setInputType(InputType.TYPE_CLASS_TEXT);
+                        }
+
+                        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        }else{
+                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        }
+                        text.setGravity(Gravity.START);
+                        text.setTag(field.getLabel());
+                        text.setText(data.getString(field.getLabel()));
+                        hasEditText = true;
+                        innerLayout.addView(text);
+                        hasChild = true;
+                        mOptionWidgets.put(field.getLabel(), text);
                     }
-                    text.setLayoutParams(new ViewGroup.LayoutParams(100, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    text.setGravity(Gravity.START);
-                    text.setTag(field.getLabel());
-                    text.setPadding(5,0,20,0);
-                    text.setText(data.getString(field.getLabel()));
-                    hasEditText = true;
-                    innerLayout.addView(text);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), text);
                 }
                 else if(field.getType().equals("single_choice") || field.getType().equals("pricing_input")) {
-                    Log.v(TAG,"entered--" + "single choice");
+                    Log.i(TAG,"entered--" + "single choice");
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(200);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     Spinner spinnerSingle = new Spinner(mContext);
                     spinnerSingle.setTag(field.getLabel());
-                    spinnerSingle.setPadding(0,0,20,0);
                     spinnerArrayAdapter = new ArrayAdapter<String>(mContext,
-                            android.R.layout.simple_spinner_item,
-                            field.getOptions()
-                    ); //selected item will look like a spinner set from XML
+                            android.R.layout.simple_spinner_item, field.getOptions());
                     spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerSingle.setAdapter(spinnerArrayAdapter);
-                    spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(200, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }else{
+                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }
                     int j=0;
                     for(int i=0;i<field.getOptions().length;i++){
-                        Log.v(TAG,"field options--" + field.getOptions()[i] + "---" + data.get(field.getLabel()));
+                        Log.i(TAG,"field options--" + field.getOptions()[i] + "---" + data.get(field.getLabel()));
                         if(field.getOptions()[i].equals(data.get(field.getLabel()))){
                             spinnerSingle.setSelection(j);
                         }
@@ -420,59 +510,93 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     innerLayout.addView(spinnerSingle);
                     hasChild = true;
                     mOptionWidgets.put(field.getLabel(), spinnerSingle);
+                    mOptionValues.put(field.getLabel(),null);
 
                 }else if(field.getType().equals("multiple_choice")){
                     Log.v(TAG,"entered--" + "multiple choice");
+                    LinearLayout labelVertical = new LinearLayout(mContext);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, 50,1.8f);
+
+                    labelVertical.setOrientation(LinearLayout.VERTICAL);
+                    labelVertical.setLayoutParams(params);
+
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(300);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
+
+                    TextView labelItemSel  = new TextView(mContext);
+                    labelItemSel.setText("0 selected");
+                    labelItemSel.setTypeface(font);
+                    labelItemSel.setTextSize(13);
+                    labelItemSel.setWidth(100);
+                    labelItemSel.setPadding(20,0,0,0);
+
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
+                    labelVertical.addView(label);
+                    labelVertical.addView(labelItemSel);
+                    innerLayout.addView(labelVertical);
 
                     Spinner spinnerMulti = new Spinner(mContext);
-                    spinnerMulti.setPadding(0,0,20,0);
                     spinnerMulti.setTag(field.getLabel());
-                    spinnerArrayAdapter = new ArrayAdapter<>(mContext,
-                            android.R.layout.simple_spinner_item,
-                            field.getOptions()
-                    ); //selected item will look like a spinner set from XML
-                    spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerMulti.setAdapter(spinnerArrayAdapter);
-                    spinnerMulti.setLayoutParams(new ViewGroup.LayoutParams(280, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    int j=0;
-                    for(int i=0;i<field.getOptions().length;i++){
-                        Log.v(TAG,"fiel options--" + field.getOptions()[i] + "---" + data.get(field.getLabel()));
-                        if(field.getOptions()[i].equals(data.get(field.getLabel()))){
-                            spinnerMulti.setSelection(j);
-                        }
-                        j++;
+                    List<String> items = Arrays.asList(data.getString(field.getLabel()).split("\\s*,\\s*"));
+                    ArrayList<String> itemsArray = new ArrayList<>();
+                    Log.i(TAG,"check item array--" + itemsArray.toString());
+                    for(int i=0;i<items.size();i++){
+                        itemsArray.add(items.get(i));
                     }
+                    labelItemSel.setText(String.valueOf(items.size())+ " selected");
+                    CustomArrayAdapter myAdapter = new CustomArrayAdapter(mContext, R.layout.layout_spinner,
+                            field.getOptions(),itemsArray,field.getLabel(),labelItemSel);
+                    spinnerMulti.setAdapter(myAdapter);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+                    }else{
+                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+                    }
+
                     innerLayout.addView(spinnerMulti);
                     hasChild = true;
+
                     mOptionWidgets.put(field.getLabel(), spinnerMulti);
+                    mOptionValues.put(field.getLabel(),field.getOptions()[0]);
+                    Log.i(TAG,"moptionValue--->" + mOptionValues.get(field.getLabel()));
 
                 }else if(field.getType().equals("multiline_text")) {
-                    Log.v(TAG,"entered--" + "multiline text");
+                    Log.i(TAG,"entered--" + "multiline text");
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(300);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     text = new EditText(mContext);
                     text.setMaxLines(3);
-                    text.setLayoutParams(new ViewGroup.LayoutParams(280, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }else{
+                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }
                     text.setGravity(Gravity.START);
                     text.setTag(field.getLabel());
-                    text.setPadding(5,0,20,0);
                     text.setText(data.getString(field.getLabel()));
                     hasEditText = true;
                     innerLayout.addView(text);
@@ -480,21 +604,30 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     mOptionWidgets.put(field.getLabel(), text);
 
                 }else if(field.getType().equals("gender_toggle")) {
-                    Log.v(TAG,"entered--" + "gender toggle");
+                    Log.i(TAG,"entered--" + "gender toggle");
                     //radio button
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(300);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
+//                    label.setPadding(20,6,0,0);
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
 
                     RadioGroup rbGroup = new RadioGroup(mContext);
                     rbGroup.setPadding(0,0,20,0);
-                    rbGroup.setLayoutParams(new ViewGroup.LayoutParams(280, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }else{
+                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
+                    }
                     rbGroup.setTag("GENDER");
                     RadioButton male = new RadioButton(mContext);
                     male.setText("Male");
@@ -520,13 +653,17 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     mOptionWidgets.put(field.getLabel(), rbGroup);
 
                 }else if(field.getType().equals("yes_no_toggle")) {
-                    Log.v(TAG,"entered--" + "yes no toggle");
+                    Log.i(TAG,"entered--" + "yes no toggle");
                     TextView label = new TextView(mContext);
                     label.setText(field.getLabel());
                     label.setTypeface(font);
                     label.setTextSize(14);
-                    label.setWidth(300);
                     label.setPadding(20,0,0,0);
+                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
+                        label.setWidth(150);
+                    }else{
+                        label.setWidth(150);
+                    }
                     if(label.getParent() != null)
                         ((ViewGroup)label.getParent()).removeView(label);
                     innerLayout.addView(label);
@@ -550,7 +687,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     rbGroup.addView(no);
                     innerLayout.addView(rbGroup);
 
-                    Log.v(TAG,"for radio---" + field.getLabel() + "---" + data.getString(field.getLabel()));
+                    Log.i(TAG,"for radio---" + field.getLabel() + "---" + data.getString(field.getLabel()));
 
                     if(data.getString(field.getLabel()).equals("yes")){
                         yes.setChecked(true);
@@ -564,7 +701,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     mOptionWidgets.put(field.getLabel(), rbGroup);
                 }
                 if(hasChild) {
-                    Log.v(TAG, "Adding child" );
+                    Log.i(TAG, "Adding child" );
                     layout.addView(innerLayout);
                 }
             }
@@ -575,18 +712,18 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
     }
 
     public void buildItemProperties(String propsJson) {
-        Log.v(TAG,"check propsJson---" + propsJson);
+        Log.i(TAG,"check propsJson---" + propsJson);
         if(propsJson == null ){
-            Log.v(TAG, "item properites json is null");
+            Log.i(TAG, "item properites json is null");
         }else {
             try {
                 JSONObject itemProperties = new JSONObject(propsJson);
                 for (int keyIndex = 0; keyIndex < itemProperties.names().length(); keyIndex++) {
-                    Log.v(TAG, "Getting item properties for key=" + itemType);
+                    Log.i(TAG, "Getting item properties for key=" + itemType);
                     JSONArray jsonArray = itemProperties.getJSONArray(itemType);
                     fieldList = new ArrayList<>();
 
-                    Log.v(TAG, "jsonArray json" + jsonArray.length() + "---jsonArray--" + jsonArray.toString());
+                    Log.i(TAG, "jsonArray json" + jsonArray.length() + "---jsonArray--" + jsonArray.toString());
                     for (int index = 0; index < jsonArray.length(); index++) {
                         JSONObject obj = jsonArray.getJSONObject(index);
                         Fields field = new Fields();
@@ -596,17 +733,17 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                         String[] options = new String[optionsArray.length()];
 
                         for (int c = 0; c < optionsArray.length(); c++) {
-                            Log.v(TAG, "optionsArray--->" + optionsArray.getString(c));
+                            Log.i(TAG, "optionsArray--->" + optionsArray.getString(c));
                             options[c] = optionsArray.getString(c);
                         }
 
                         field.setOptions(options);
                         fieldList.add(field);
-                        Log.v(TAG,"field size---" + field.getType() + "---" + fieldList.size());
+                        Log.i(TAG,"field size---" + field.getType() + "---" + fieldList.size());
                     }
-                    Log.v(TAG,"field--->" + fieldList.size() + fieldList.get(keyIndex).getLabel());
+                    Log.i(TAG,"field--->" + fieldList.size() + fieldList.get(keyIndex).getLabel());
                     propertyList.put(itemType, fieldList);
-                    Log.v(TAG,"propertyList--->" + propertyList.get(0) +"---" + propertyList.size());
+                    Log.i(TAG,"propertyList--->" + propertyList.get(0) +"---" + propertyList.size());
                 }
             }catch (Exception ex) {
                 Log.e(TAG, "Error parsing item properties from shared prefs:" + ex.getMessage());
@@ -614,57 +751,68 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
         }
     }
 
-    public String generateItemDetails(HashMap<String,View> mOptionWidgets,String name,int num,LinearLayout contentLayout) throws JSONException {
+    public String generateItemDetails(HashMap<String,View> mOptionWidgets,HashMap<String,String> mOptionValues,
+                                      String name,int num, LinearLayout contentLayout) throws JSONException {
         HashMap<String, String[]> options = new HashMap<>();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name",name);
-        jsonObject.put("itemNum",num);
+        jsonObject.put("tag",name);
+        String numValue = String.valueOf(num);
+        jsonObject.put("itemNum",numValue);
 
         for (int iChild = 0; iChild < contentLayout.getChildCount(); iChild++) {
             LinearLayout innerLayout = (LinearLayout) contentLayout.getChildAt(iChild);
             String key = (String) innerLayout.getChildAt(1).getTag();
             View widget = mOptionWidgets.get(key);
-            Log.v(TAG,"key value---" + key + widget);
+            Log.i(TAG,"key value---" + key +"---" +widget.getTag());
 
             if (widget instanceof EditText) {
                 String qty_value = ((EditText) widget).getText().toString();
-                Log.v(TAG, "edittext value--" + qty_value);
+                Log.i(TAG, "edittext value--" + qty_value);
                 options.put(key, new String[]{qty_value});
                 jsonObject.put(key, qty_value);
 
             }else if (widget instanceof Spinner) {
+                Log.i(TAG,"entered in spinner");
                 Spinner spinner = (Spinner) widget;
                 String itemSelected = spinner.getSelectedItem().toString();
-                Log.v(TAG, "check spinner---" + itemSelected);
+                Log.i(TAG, "check spinner---" + itemSelected);
                 options.put(key, new String[]{itemSelected});
-                jsonObject.put(key, itemSelected);
+                Log.i(TAG,"jsonObject is---" + jsonObject.toString());
+                if(mOptionValues!=null){
+                    String type = mOptionValues.get(key);
+                    if(type==null){
+                        jsonObject.put(key, itemSelected);
+                    }
+                }else{
+                    jsonObject.put(key, itemSelected);
+                }
 
             }else if ((widget instanceof RadioGroup) || (widget instanceof RadioButton)) {
-                Log.v(TAG, "inside radio button group condition");
+                Log.i(TAG, "inside radio button group condition");
                 RadioGroup rg = (RadioGroup) widget;
-                Log.v(TAG,"check tag ---" + rg.getTag());
+                Log.i(TAG,"check tag ---" + rg.getTag());
                 if (rg.getCheckedRadioButtonId() == ID_FEMALE) {
                     options.put(key, new String[]{"female"});
-                    Log.v(TAG, "female");
+                    Log.i(TAG, "female");
                     jsonObject.put(key, "female");
 
                 }else if (rg.getCheckedRadioButtonId() == ID_MALE) {
-                    Log.v(TAG, "male");
+                    Log.i(TAG, "male");
                     options.put(key, new String[]{"male"});
                     jsonObject.put(key, "male");
 
                 }else if (rg.getCheckedRadioButtonId() == ID_YES) {
-                    Log.v(TAG, "yes");
+                    Log.i(TAG, "yes");
                     options.put(key, new String[]{"yes"});
                     jsonObject.put(key, "yes");
 
                 }else if (rg.getCheckedRadioButtonId() == ID_NO) {
-                    Log.v(TAG, "no");
+                    Log.i(TAG, "no");
                     options.put(key, new String[]{"no"});
                     jsonObject.put(key, "no");
                 }
             }
         }
+        Log.i(TAG,"check json here itslef--" + jsonObject.toString());
         return jsonObject.toString();
     }
 
@@ -675,7 +823,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private EditText friends_name;
+         private EditText friends_name;
         public TextView itemCount,text_loading;
         public ImageView saving_progress;
         public Button save_custom_item;
@@ -690,6 +838,109 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
             save_custom_item = (Button)itemView.findViewById(R.id.save_custom_item);
             text_loading = (TextView)itemView.findViewById(R.id.text_loading);
             saving_progress = (ImageView)itemView.findViewById(R.id.saving_progress);
+        }
+    }
+
+    public class CustomArrayAdapter extends ArrayAdapter<String> {
+
+        private View row;
+        private String[] objects;
+        private Context context;
+        public CheckBox checkBox;
+        private TextView labelItemSel;
+        private ArrayList<String> items = new ArrayList<>();
+        private String fieldLabel,itemNumSel="[0] selected";
+
+        public CustomArrayAdapter(Context context, int resourceId, String[] objects,
+                                  ArrayList<String> items,String fieldLabel,TextView labelItemSel) {
+
+            super(context, resourceId, objects);
+            this.objects = objects;
+            this.context = context;
+            this.items = items;
+            this.fieldLabel = fieldLabel;
+            this.labelItemSel = labelItemSel;
+            Log.i(TAG,"check items received---" + fieldLabel+"---" + items.toString());
+        }
+
+        @Override
+        public View getDropDownView(final int position, View convertView, final ViewGroup parent) {
+            Log.i(TAG,"check lenghts--" + items.size()+"--" + objects.length);
+            return getCustomView(position, convertView, parent);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, final ViewGroup parent) {
+            Log.i(TAG,"check parent view--" + parent.getTag() + "--" + parent.getChildAt(position)
+                    +"--" + parent.getChildCount());
+            return getCustomView(position, convertView, parent);
+        }
+
+        @Override
+        public String getItem(int position) {
+            return objects[position];
+        }
+
+        public View getCustomView(final int position, View convertView, final ViewGroup parent) {
+            LayoutInflater inflater=(LayoutInflater) context.getSystemService(  Context.LAYOUT_INFLATER_SERVICE );
+            row=inflater.inflate(R.layout.layout_spinner_adapter, parent, false);
+            TextView label=(TextView)row.findViewById(R.id.list_text);
+            checkBox=(CheckBox) row.findViewById(R.id.checkBox);
+            label.setText(objects[position]);
+            Log.i(TAG,"check item selected parent--" + parent.getTag());
+
+            checkBox.setChecked(false);
+            if(items.indexOf(label.getText().toString())>=0){
+                itemNumSel ="[" +String.valueOf(items.size())+ "] selected";
+                labelItemSel.setText(String.valueOf(items.size())+ " selected");
+                checkBox.setChecked(true);
+                try {
+                    String extraString = items.toString().replace("[","").replace("]","");
+                    jsonObject.put(fieldLabel,extraString);
+                    Log.i(TAG,"see json object--" + jsonObject.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Log.i(TAG,"check index--" + items.indexOf(label.getText().toString()));
+
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.i(TAG, "check item selected--" + fieldLabel + objects[position] + objects.length);
+                    if (isChecked) {
+                        items.add(objects[position]);
+                        Log.i(TAG, "get itemsList---" + items.size() + "--" + items.toString());
+                        String extras = items.toString().replace("[", "").replace("]", "");
+                        Log.i(TAG, "after removal---" + extras);
+
+                        try {
+                            jsonObject.put(fieldLabel, extras);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        //itemNumSel ="[" +String.valueOf(items.size())+ "] selected";
+                        labelItemSel.setText(String.valueOf(items.size())+ " selected");
+                        Log.i(TAG, "check jsonObject--->" + jsonObject.toString());
+                    } else {
+                        items.remove(objects[position]);
+                        Log.i(TAG, "get itemsList---" + items.size() + "--" + items.toString());
+                        String extras = items.toString().replace("[", "").replace("]", "");
+                        Log.i(TAG, "after removal---" + extras);
+
+                        try {
+                            jsonObject.put(fieldLabel, extras);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        labelItemSel.setText(String.valueOf(items.size())+ " selected");
+
+                        Log.i(TAG, "check jsonObject--->" + jsonObject.toString());
+                    }
+                }
+            });
+            return row;
         }
     }
 }

@@ -25,6 +25,7 @@
             android:text="Login"
             android:textSize="20dp"
             android:layout_gravity="center_horizontal"/>
+
         <inquirly.com.inquirlycatalogue.utils.CustomEditTextView
             android:id="@+id/edit_login_email"
             android:layout_width="400dp"
@@ -35,11 +36,14 @@
             style="@style/label_small_hint_default"
             android:hint="Email Id"
             android:paddingLeft="10dp"
+            android:imeOptions="flagNoExtractUi"
             android:layout_gravity="center"
             android:inputType="textEmailAddress"/>
+
         <inquirly.com.inquirlycatalogue.utils.CustomEditTextView
             android:id="@+id/edit_login_password"
             android:layout_width="400dp"
+            android:imeOptions="flagNoExtractUi"
             android:layout_height="wrap_content"
             android:minHeight="45dp"
             android:background="@drawable/background_edit_text"

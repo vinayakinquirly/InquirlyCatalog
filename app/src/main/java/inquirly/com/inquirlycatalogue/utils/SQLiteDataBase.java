@@ -293,6 +293,10 @@ public class SQLiteDataBase {
         }
     }
 
+    public boolean deleteAllCustomItems() {
+        return database.delete(TABLE_CUSTOM_ITEM,null,null)!=0;
+    }
+
     public void createCampaignList(String uuid, String name,String state,String hashtag, String imagepath, String validtill) {
         ContentValues cv = new ContentValues();
         cv.put(CAMPAIGN_UUID, uuid);

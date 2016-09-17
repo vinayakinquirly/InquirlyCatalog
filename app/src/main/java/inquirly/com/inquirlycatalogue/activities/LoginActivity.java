@@ -71,6 +71,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 String email = mEmailText.getText().toString();
                 String password = mPasswordText.getText().toString();
+
+                Log.i(TAG,"check credentials---" + email+"---" + password);
+
                 if ((password.length() == 0) || (email.length() == 0)) {
                     Toast.makeText(LoginActivity.this, "Email or Password is missing!", Toast.LENGTH_LONG).show();
                 } else {

@@ -1,47 +1,56 @@
 package inquirly.com.inquirlycatalogue;
 
-import android.os.Build;
-import android.util.Log;
-import java.util.HashMap;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import java.util.ArrayList;
-import android.text.TextUtils;
-import org.json.JSONException;
-import android.app.Application;
-import android.content.Context;
-import io.branch.referral.Branch;
-import com.android.volley.Request;
-import com.facebook.stetho.Stetho;
 import android.annotation.TargetApi;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
+import android.app.Application;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.os.Build;
+import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
-import inquirly.com.inquirlycatalogue.models.Fields;
+import com.android.volley.toolbox.Volley;
+import com.facebook.stetho.Stetho;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import inquirly.com.inquirlycatalogue.models.CartItem;
+import inquirly.com.inquirlycatalogue.models.Fields;
+import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
 import inquirly.com.inquirlycatalogue.utils.LruBitmapCache;
 import inquirly.com.inquirlycatalogue.utils.SQLiteDataBase;
-import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
+import io.branch.referral.Branch;
 
 /**
  * Created by binvij on 11/12/15.
  */
 public class ApplicationController extends Application {
 
+    private int position;
     private Context context;
     private SQLiteDataBase mydb;
     private ImageLoader mImageLoader;
     private RequestQueue mRequestQueue;
     private static String mFeedbackLink;
+    private String itemPresent,itemReceived;
+    private ProgressDialog addingItemDialog;
     private  ArrayList<CartItem> mCartItems;
     private SharedPreferences sharedPreferences;
     private static Float mTotalCartAmount = 0.0f;
     private static ApplicationController mInstance;
+    private HashSet<String> cartItemName = new HashSet<>();
     public static HashMap<String,ArrayList<Fields>> mItemFields;
-    public static final String TAG = "ApplicationController";
+    public static final String TAG = ApplicationController.class.getSimpleName();
 
     @Override
     public void onCreate() {
@@ -322,9 +331,17 @@ public class ApplicationController extends Application {
             }
             return true;
         }else{
-            Toast.makeText(ApplicationController.this, "Some error occurred!", Toast.LENGTH_SHORT).show();
+            Log.i(TAG,"custom item list is null");
+            //Toast.makeText(ApplicationController.this, "Some error occurred!", Toast.LENGTH_SHORT).show();
             return false;
         }
+    }
+
+    public void deleteAllCustomItems(){
+        Log.i(TAG,"delete all entered");
+        mydb.open();
+        if(mydb.deleteAllCustomItems());
+        mydb.close();
     }
 
     /*---------------------------------------------------------------------------*/

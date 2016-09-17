@@ -26,6 +26,4 @@ public class CartCount {
         icon.mutate();
         icon.setDrawableByLayerId(R.id.ic_badge, badge);
     }
-
-
 }

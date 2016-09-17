@@ -78,17 +78,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/user_name"
-                    android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_weight="1"
                     android:layout_marginTop="10dp"
                     android:hint="Name"
                     android:gravity="center_vertical|center_horizontal"
                     android:textStyle="bold"
                     android:textSize="18sp"
-                    android:textColor="@color/mobileMainColor"
+                    android:singleLine="true"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
-                    android:layout_alignWithParentIfMissing="false" />
+                    android:imeOptions="flagNoExtractUi" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -104,17 +103,16 @@
                     android:layout_height="match_parent"
                     android:id="@+id/user_phone"
                     android:maxLength="10"
-                    android:layout_gravity="center_horizontal|center_vertical"
                     android:layout_weight="1"
                     android:layout_marginTop="10dp"
                     android:hint="Mobile*"
                     android:gravity="center_vertical|center_horizontal"
                     android:textStyle="bold"
                     android:textSize="18sp"
-                    android:textColor="@color/mobileMainColor"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
-                    android:layout_alignWithParentIfMissing="false"
+                    android:imeOptions="flagNoExtractUi"
+                    android:singleLine="true"
                     android:inputType="number" />
 
                 <TextView
@@ -131,7 +129,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/user_email"
-                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:imeOptions="flagNoExtractUi"
+                    android:singleLine="true"
                     android:layout_weight="1"
                     android:layout_marginTop="10dp"
                     android:hint="E-mail"
@@ -139,10 +138,8 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:textStyle="bold"
                     android:textSize="18sp"
-                    android:textColor="@color/mobileMainColor"
                     android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:layout_alignWithParentIfMissing="false" />
+                    android:paddingRight="20dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -234,29 +231,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="8"
-            android:paddingRight="40dp">
+            android:paddingRight="20dp">
 
             <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="4dp"
-                card_view:cardElevation="8dp"
-                card_view:cardCornerRadius="8dp"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
                 android:layout_gravity="right"
-                android:layout_marginBottom="10dp">
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="6dp"
+                android:layout_marginRight="20dp">
 
                 <Button
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="42dp"
                     android:text="ORDER NOW"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:textColor="#fff"
                     android:textScaleX="1.1"
+                    android:textSize="14sp"
                     android:id="@+id/btn_pay"
-                    android:layout_weight="9"
-                    android:background="@color/mainColor" />
+                    android:background="@color/mainColor"
+                    android:textColor="#ffffff" />
 
             </android.support.v7.widget.CardView>
 

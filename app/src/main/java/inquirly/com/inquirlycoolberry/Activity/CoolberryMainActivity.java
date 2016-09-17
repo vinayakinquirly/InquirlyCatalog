@@ -2,8 +2,6 @@ package inquirly.com.inquirlycoolberry.Activity;
 
 import java.net.URL;
 import java.io.File;
-
-import android.graphics.Color;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,20 +9,20 @@ import android.view.View;
 import org.json.JSONObject;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.io.OutputStream;
-
 import android.view.Window;
-import android.view.WindowManager;
+import java.io.OutputStream;
 import android.widget.Toast;
 import android.os.AsyncTask;
 import android.view.MenuItem;
 import java.net.URLConnection;
 import android.content.Intent;
+import android.graphics.Color;
 import android.widget.TextView;
 import android.content.Context;
 import java.io.FileOutputStream;
 import android.graphics.Typeface;
 import android.app.ProgressDialog;
+import android.view.WindowManager;
 import java.io.BufferedInputStream;
 import android.database.SQLException;
 import com.android.volley.VolleyError;
@@ -66,8 +64,6 @@ public class CoolberryMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        setTheme(R.style.CoolberryTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coolberry_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -90,7 +86,6 @@ public class CoolberryMainActivity extends AppCompatActivity {
                 if(tv.getText().equals(this.getTitle())) {
                     tv.setTypeface(font);
                     tv.setTextSize(18);
-                    tv.setText(appInstance.getImage("company_name"));
                     tv.setAllCaps(true);
                     break;
                 }
@@ -353,8 +348,6 @@ public class CoolberryMainActivity extends AppCompatActivity {
         pDialog.dismiss();
         startActivity(getIntent());
         finish();
-//        buildCampaignList(ApiConstants.CAMPAIGN_TYPE_CATALOG);
-//        finish();
     }
 
     private class DownloadFile extends AsyncTask<Object, Object, Object> {
