@@ -3,7 +3,6 @@ package inquirly.com.inquirlycoolberry.Adapters;
 import java.io.File;
 import java.util.List;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import java.util.HashMap;
@@ -11,26 +10,17 @@ import android.os.Handler;
 import org.json.JSONArray;
 import java.util.ArrayList;
 import org.json.JSONObject;
-import android.view.Gravity;
-import android.widget.TableRow;
 import android.widget.Toast;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Spinner;
 import android.view.ViewGroup;
 import android.graphics.Color;
 import org.json.JSONException;
-import android.text.InputType;
 import android.widget.TextView;
 import android.content.Context;
 import android.app.AlertDialog;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.graphics.Typeface;
-import android.widget.RadioGroup;
-import android.widget.RadioButton;
 import android.widget.LinearLayout;
-import android.widget.ArrayAdapter;
 import android.view.LayoutInflater;
 import com.squareup.picasso.Picasso;
 import android.widget.CompoundButton;
@@ -51,15 +41,12 @@ import inquirly.com.inquirlycoolberry.Activity.CoolberryItemsTabActivity;
  */
 public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItemsTabAdapter.ViewHolder> {
 
-    private Typeface font;
     private Context mContext;
     private CartItem cartItem;
     public String mCampaignId;
-    public TextView multiLabel;
     public ArrayList<Fields> fieldList;
     public static String callFrom,color;
     private LinearLayout contentLayout ;
-    private boolean hasEditText = false;
     public ArrayList<CampaignDbItem> dbitem;
     public JSONObject jsonObject = new JSONObject();
     private static final String TAG = "CoolItemsTabAdapter";
@@ -68,18 +55,6 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
     final HashMap<String,String> mOptionValues = new HashMap<>();
     private HashMap<String, ArrayList<Fields>> propertyList = new HashMap<>();
     private ApplicationController appInstance = ApplicationController.getInstance();
-
-    @IdRes
-    private static final int ID_MALE = 1;
-
-    @IdRes
-    private static final int ID_FEMALE = 2;
-
-    @IdRes
-    private static final int ID_YES = 3;
-
-    @IdRes
-    private static final int ID_NO = 4;
 
     public CoolberryItemsTabAdapter(ArrayList<CampaignDbItem> itemsData,
                                     String mCampaignId,String callFrom,Context ctx) {
@@ -92,7 +67,6 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         cartItemList = appInstance.getCartItems();
         Log.i(TAG,"size----" +cartItemList.size());
         color = appInstance.getImage("color_1");
-        font  = Typeface.createFromAsset(mContext.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         buildItemProperties();
     }
 
@@ -312,7 +286,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
 
         itemNum.setText(String.valueOf(itemQty));
 
-        addSpecificationsToDialog(mOptionWidgets,contentLayout,propertyList.get(type));
+        CommonMethods.addSpecificationsToDialog(mOptionWidgets,mOptionValues,contentLayout,propertyList.get(type),mContext);
         dialogBuilder.setView(dialogView);
 
         dialogBuilder.setTitle("Select Options");
@@ -331,7 +305,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                     public void run() {
                             try {
                                 if (appInstance.saveCustomItemJson(itemName, num,
-                                        generateItemDetails(mOptionWidgets,mOptionValues, name, num, contentLayout))) {
+                                        CommonMethods.generateItemDetails(mOptionWidgets,mOptionValues, name, num, contentLayout))) {
                                     Log.v(TAG, "saved successfully");
                                     save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
                                     save_custom_item.setText("SAVED");
@@ -369,7 +343,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                         final int num = Integer.parseInt(itemNum.getText().toString());
                         try {
                             if (appInstance.saveCustomItemJson(itemName, num,
-                                    generateItemDetails(mOptionWidgets,mOptionValues, name, num, contentLayout))) {
+                                    CommonMethods.generateItemDetails(mOptionWidgets,mOptionValues, name, num, contentLayout))) {
                                 Log.v(TAG, "saved successfully");
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
@@ -385,421 +359,5 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                 },180);
             }
         });
-    }
-
-    public void addSpecificationsToDialog(HashMap<String,View> mOptionWidgets,
-                                          LinearLayout layout, ArrayList<Fields> itemFields){
-        Log.i(TAG,"check fieldList received--" + fieldList.size() + fieldList.toString());
-
-        try{
-            for(Fields field : itemFields) {
-                boolean hasChild = false;
-
-                LinearLayout innerLayout = new LinearLayout(mContext);
-                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT){
-                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(650,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
-                    innerLayout.setPadding(0, 0, 0, 5);
-                }else{
-                    Log.i(TAG,"check SDK VERSION---" + Build.VERSION.SDK_INT);
-                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(400,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
-                    innerLayout.setPadding(0, 0, 0, 5);
-                }
-                innerLayout.setOrientation(LinearLayout.HORIZONTAL);
-                innerLayout.setWeightSum(3.0f);
-
-                EditText text;
-                ArrayAdapter<String> spinnerArrayAdapter;
-                if (field.getType().equals("number_input") || field.getType().equals("text_input") ) {
-                    Log.v(TAG, "entered--" + "number input");
-                    if (!field.getLabel().equals("Quantity")) {
-                        TextView label = new TextView(mContext);
-                        label.setText(field.getLabel());
-                        label.setTypeface(font);
-                        label.setTextSize(14);
-                        label.setPadding(20,0,0,0);
-                        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT){
-                            label.setWidth(150);
-                        }else{
-                            multiLabel.setWidth(150);
-                        }
-
-                        if (label.getParent() != null)
-                            ((ViewGroup) label.getParent()).removeView(label);
-                        innerLayout.addView(label);
-
-                        text = new EditText(mContext);
-                        if (field.getType().equals("number_input")) {
-                            text.setInputType(InputType.TYPE_CLASS_PHONE);
-                        } else {
-                            text.setInputType(InputType.TYPE_CLASS_TEXT);
-                        }
-
-                        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        }else{
-                            text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        }
-
-                        text.setGravity(Gravity.START);
-                        text.setTag(field.getLabel());
-                        hasEditText = true;
-                        innerLayout.addView(text);
-                        hasChild = true;
-                        mOptionWidgets.put(field.getLabel(), text);
-                    }
-                }
-                else if(field.getType().equals("single_choice") || field.getType().equals("pricing_input")) {
-                    Log.v(TAG,"entered--" + "single choice");
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
-
-                    Spinner spinnerSingle = new Spinner(mContext);
-                    spinnerSingle.setTag(field.getLabel());
-                    spinnerArrayAdapter = new ArrayAdapter<String>(mContext,
-                            android.R.layout.simple_spinner_item,
-                            field.getOptions()
-                    ); //selected item will look like a spinner set from XML
-                    spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerSingle.setAdapter(spinnerArrayAdapter);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }else{
-                        spinnerSingle.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }
-                    innerLayout.addView(spinnerSingle);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), spinnerSingle);
-                    mOptionValues.put(field.getLabel(),null);
-
-                }else if(field.getType().equals("multiple_choice")){
-                    LinearLayout labelVertical = new LinearLayout(mContext);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT, 60,1.8f);
-                    labelVertical.setOrientation(LinearLayout.VERTICAL);
-                    labelVertical.setLayoutParams(params);
-                    Log.v(TAG,"entered--" + "multiple choice");
-
-                    multiLabel = new TextView(mContext);
-                    multiLabel.setText(field.getLabel());
-                    multiLabel.setTypeface(font);
-                    multiLabel.setTextSize(14);
-                    multiLabel.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-//                        multiLabel.setWidth(150);
-                    }else{
-                        multiLabel.setWidth(150);
-                    }
-
-                    TextView labelItemSel = new TextView(mContext);
-                    labelItemSel.setText("0 selected");
-                    labelItemSel.setTypeface(font);
-                    labelItemSel.setTextSize(13);
-                    labelItemSel.setWidth(100);
-                    labelItemSel.setPadding(20,0,0,0);
-
-                    if(multiLabel.getParent() != null)
-                        ((ViewGroup)multiLabel.getParent()).removeView(multiLabel);
-                    labelVertical.addView(multiLabel);
-                    labelVertical.addView(labelItemSel);
-                    innerLayout.addView(labelVertical);
-
-                    Spinner spinnerMulti = new Spinner(mContext);
-                    spinnerMulti.setTag(field.getLabel());
-                    spinnerMulti.setScrollBarFadeDuration(0);
-
-                    ArrayAdapter<String> myAdapter = new CustomArrayAdapter(mContext,
-                            android.R.layout.simple_spinner_item, field.getOptions(),field.getLabel(),labelItemSel);
-                    spinnerMulti.setAdapter(myAdapter);
-
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-                    }else{
-                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-                    }
-
-                    innerLayout.addView(spinnerMulti);
-                    hasChild = true;
-
-                    mOptionWidgets.put(field.getLabel(), spinnerMulti);
-                    mOptionValues.put(field.getLabel(),field.getOptions()[0]);
-                    Log.i(TAG,"moptionValue--->" + mOptionValues.get(field.getLabel()));
-
-                }else if(field.getType().equals("multiline_text")) {
-                    Log.v(TAG,"entered--" + "multiline text");
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
-
-                    text = new EditText(mContext);
-                    text.setMaxLines(3);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }else{
-                        text.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }
-                    text.setGravity(Gravity.START);
-                    text.setTag(field.getLabel());
-                    hasEditText = true;
-                    innerLayout.addView(text);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), text);
-
-                }else if(field.getType().equals("gender_toggle")) {
-                    Log.v(TAG,"entered--" + "gender toggle");
-                    //radio button
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
-
-                    RadioGroup rbGroup = new RadioGroup(mContext);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }else{
-                        rbGroup.setLayoutParams(new ViewGroup.LayoutParams(180, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    }
-                    rbGroup.setTag("GENDER");
-                    RadioButton male = new RadioButton(mContext);
-                    male.setText("Male");
-                    male.setId(ID_MALE);
-
-                    RadioButton female = new RadioButton(mContext);
-                    female.setText("Female");
-                    female.setId(ID_FEMALE);
-
-                    rbGroup.addView(female);
-                    rbGroup.addView(male);
-
-                    innerLayout.addView(rbGroup);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), rbGroup);
-
-                }else if(field.getType().equals("yes_no_toggle")) {
-                    Log.v(TAG,"entered--" + "yes no toggle");
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setPadding(20,0,0,0);
-                    if(Build.VERSION.SDK_INT> Build.VERSION_CODES.KITKAT){
-                        label.setWidth(150);
-                    }else{
-                        label.setWidth(150);
-                    }
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
-
-                    RadioGroup rbGroup = new RadioGroup(mContext);
-                    rbGroup.setOrientation(RadioGroup.HORIZONTAL);
-                    rbGroup.setTag(field.getLabel());
-
-                    RadioButton yes = new RadioButton(mContext);
-                    yes.setText("Yes");
-                    yes.setTag("Yes");
-                    yes.setId(ID_YES);
-                    rbGroup.addView(yes);
-
-                    RadioButton no = new RadioButton(mContext);
-                    no.setText("No");
-                    no.setTag("No");
-                    no.setId(ID_NO);
-                    no.setChecked(true);
-                    rbGroup.addView(no);
-
-                    innerLayout.addView(rbGroup);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), rbGroup);
-                }
-                if(hasChild) {
-                    Log.v(TAG, "Adding child" );
-                    layout.addView(innerLayout);
-                }
-            }
-            for(int i=0;i<mOptionWidgets.size();i++){
-                mOptionWidgets.remove(i);
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String generateItemDetails(HashMap<String,View> mOptionWidgets, HashMap<String,String> mOptionValues,
-                                      String name,int num,LinearLayout contentLayout) throws JSONException {
-
-        HashMap<String, String[]> options = new HashMap<>();
-        String numValue = String.valueOf(num);
-        jsonObject.put("tag",name);
-        jsonObject.put("itemNum",numValue);
-
-        for (int iChild = 0; iChild < contentLayout.getChildCount(); iChild++) {
-            LinearLayout innerLayout = (LinearLayout) contentLayout.getChildAt(iChild);
-            String key = (String) innerLayout.getChildAt(1).getTag();
-            View widget = mOptionWidgets.get(key);
-            Log.v(TAG,"key value---" + key +"--" + widget);
-
-            if (widget instanceof EditText) {
-                String qty_value = ((EditText) widget).getText().toString();
-                Log.v(TAG, "edittext value--" + qty_value);
-                options.put(key, new String[]{qty_value});
-                jsonObject.put(key,qty_value);
-
-            }else if (widget instanceof Spinner) {
-                Spinner spinner = (Spinner) widget;
-                String itemSelected = spinner.getSelectedItem().toString();
-                Log.v(TAG, "check spinner---" + itemSelected);
-                options.put(key, new String[]{itemSelected});
-                Log.i(TAG,"check jsonObject-->" + jsonObject.toString());
-
-                if(mOptionValues!=null){
-                    String type = mOptionValues.get(key);
-                    if(type==null){
-                        jsonObject.put(key, itemSelected);
-                    }
-                }else{
-                    jsonObject.put(key, itemSelected);
-                }
-
-            }else if ((widget instanceof RadioGroup) || (widget instanceof RadioButton)) {
-                Log.v(TAG, "inside radio button group condition");
-                RadioGroup rg = (RadioGroup) widget;
-                Log.v(TAG,"check tag ---" + rg.getTag());
-                if (rg.getCheckedRadioButtonId() == ID_FEMALE) {
-                    options.put(key, new String[]{"female"});
-                    Log.v(TAG, "female");
-                    jsonObject.put(key,"female");
-
-                }else if (rg.getCheckedRadioButtonId() == ID_MALE) {
-                    Log.v(TAG, "male");
-                    options.put(key, new String[]{"male"});
-                    jsonObject.put(key,"male");
-
-                }else if (rg.getCheckedRadioButtonId() == ID_YES) {
-                    Log.v(TAG, "yes");
-                    options.put(key, new String[]{"yes"});
-                    jsonObject.put(key,"yes");
-
-                }else if (rg.getCheckedRadioButtonId() == ID_NO) {
-                    Log.v(TAG, "no");
-                    options.put(key, new String[]{"no"});
-                    jsonObject.put(key,"no");
-                }
-            }
-            if (!jsonObject.has(key)) {
-                jsonObject.put(key, mOptionValues.get(key));
-            }
-        }
-
-        Log.i(TAG,"check json send ---" + jsonObject.toString());
-        return jsonObject.toString();
-    }
-
-    public class CustomArrayAdapter extends ArrayAdapter<String> {
-        private String[] objects;
-        private Context context;
-        private String fieldLabel;
-        TextView labelItemSel;
-        public ArrayList<String> selectedStrings = new ArrayList<>();
-
-        public CustomArrayAdapter(Context context, int resourceId,
-                                  String[] objects,String fieldLabel,TextView labelItemSel) {
-
-            super(context, resourceId, objects);
-            this.objects = objects;
-            this.context = context;
-            this.fieldLabel = fieldLabel;
-            this.labelItemSel= labelItemSel;
-            Log.i(TAG,"check fieldLabel--" + fieldLabel +"--" +selectedStrings.size());
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView,
-                                    ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
-        }
-
-        public View getCustomView(final int position, View convertView, final ViewGroup parent) {
-            LayoutInflater inflater=(LayoutInflater) context.getSystemService(  Context.LAYOUT_INFLATER_SERVICE );
-            View row=inflater.inflate(R.layout.layout_spinner_adapter, parent, false);
-            final TextView label=(TextView)row.findViewById(R.id.list_text);
-            final CheckBox checkBox=(CheckBox) row.findViewById(R.id.checkBox);
-            label.setText(objects[position]);
-
-
-            checkBox.setChecked(false);
-            if(selectedStrings.indexOf(label.getText().toString())>=0){
-                labelItemSel.setText(String.valueOf(selectedStrings.size())+ " selected");
-                checkBox.setChecked(true);
-            }
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Log.i(TAG, "check item selected--" + objects.length + "---" + checkBox.isChecked());
-
-                    if (checkBox.isChecked()) {
-                        selectedStrings.add(objects[position]);
-                        Log.i(TAG, "get itemsList---" + selectedStrings.size() + "--" + selectedStrings.toString());
-                        String extras = selectedStrings.toString().replace("[", "").replace("]", "");
-                        try {
-                            jsonObject.put(fieldLabel, extras);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        labelItemSel.setText(String.valueOf(selectedStrings.size())+ " selected");
-                    }else{
-                        selectedStrings.remove(objects[position]);
-                        Log.i(TAG, "get itemsList---" + selectedStrings.size() + "--" + selectedStrings.toString());
-                        String extras = selectedStrings.toString().replace("[", "").replace("]", "");
-                        try {
-                            jsonObject.put(fieldLabel, extras);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        labelItemSel.setText(String.valueOf(selectedStrings.size())+ " selected");
-                    }
-                }
-            });
-            return row;
-        }
     }
 }

@@ -102,8 +102,9 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
             try {
                 jsonObject = new JSONObject(jsonString);
                 Log.i(TAG, "array---"  + "-----" + jsonObject.getJSONArray(itemName).length());
+                JSONObject jsonObject1 = null;
                 if (jsonObject.getJSONArray(itemName).length()>=po){
-                    JSONObject jsonObject1 = jsonObject.getJSONArray(itemName).getJSONObject(position);
+                    jsonObject1 = jsonObject.getJSONArray(itemName).getJSONObject(position);
                     Log.i(TAG, "check json---" + position + "---" + jsonObject1);
                     holder.friends_name.setText(jsonObject1.getString("tag"));
                     buildSpecsDialogWithValue(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList, jsonObject1);
@@ -111,13 +112,14 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     holder.save_custom_item.setText("SAVED");
                     Log.i(TAG, "json Object---" + jsonObject);
                 } else {
-                    buildSpecsDialog(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList);
+                    buildSpecsDialogWithValue(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList, jsonObject1);
+                    //    buildSpecsDialog(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }else{
-            buildSpecsDialog(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList);
+            buildSpecsDialogWithValue(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList, jsonObject);
         }
 
         holder.save_custom_item.setOnClickListener(new View.OnClickListener() {
@@ -149,242 +151,8 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
         });
     }
 
-    public void buildSpecsDialog(HashMap<String,View> mOptionWidgets,HashMap<String,String> mOptionValues,
-                                 LinearLayout layout, ArrayList<Fields> itemFields) {
-        try{
-            for(Fields field : itemFields) {
-                boolean hasChild = false;
-                LinearLayout innerLayout = new LinearLayout(mContext);
-                if(Build.VERSION.SDK_INT>Build.VERSION_CODES.KITKAT){
-                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(650,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
-                    innerLayout.setPadding(0, 0, 0, 5);
-                }else{
-                    innerLayout.setLayoutParams(new ViewGroup.LayoutParams(400,
-                            ViewGroup.LayoutParams.WRAP_CONTENT));
-                    innerLayout.setPadding(0, 0, 0, 5);
-                }
-                innerLayout.setOrientation(LinearLayout.HORIZONTAL);
-                innerLayout.setWeightSum(3.0f);
-
-                text = new EditText(mContext);
-                ArrayAdapter<String> spinnerArrayAdapter;
-                LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1.8f);
-
-                if (field.getType().equals("number_input") || field.getType().equals("text_input") ) {
-                    Log.i(TAG, "entered--" + "number input");
-                    if (!field.getLabel().equals("Quantity")) {
-                        TextView label = new TextView(mContext);
-                        label.setText(field.getLabel());
-                        label.setTypeface(font);
-                        label.setTextSize(14);
-                        label.setPadding(20,0,0,0);
-                        label.setLayoutParams(labelParams);
-                        if (label.getParent() != null)
-                            ((ViewGroup) label.getParent()).removeView(label);
-                        innerLayout.addView(label);
-
-                        text = new EditText(mContext);
-                        if (field.getType().equals("number_input")) {
-                            text.setInputType(InputType.TYPE_CLASS_PHONE);
-                        } else {
-                            text.setInputType(InputType.TYPE_CLASS_TEXT);
-                        }
-                            text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-                        text.setGravity(Gravity.START);
-                        text.setTag(field.getLabel());
-                        hasEditText = true;
-                        innerLayout.addView(text);
-                        hasChild = true;
-                        mOptionWidgets.put(field.getLabel(), text);
-                    }
-                }
-                else if(field.getType().equals("single_choice") || field.getType().equals("pricing_input")) {
-                    Log.i(TAG,"entered--" + "single choice");
-
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setPadding(20,0,0,0);
-                    label.setLayoutParams(labelParams);
-
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
-
-                    Spinner spinnerSingle = new Spinner(mContext);
-                    spinnerSingle.setTag(field.getLabel());
-                    spinnerArrayAdapter = new ArrayAdapter<>(mContext,
-                            android.R.layout.simple_spinner_item, field.getOptions());
-                    spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerSingle.setAdapter(spinnerArrayAdapter);
-
-                    spinnerSingle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-
-                    innerLayout.addView(spinnerSingle);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), spinnerSingle);
-                    mOptionValues.put(field.getLabel(),null);
-
-                }else if(field.getType().equals("multiple_choice")){
-                    Log.i(TAG,"entered--" + "multiple choice");
-                    LinearLayout labelVertical = new LinearLayout(mContext);
-                    labelParams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, 60,1.8f);
-
-                    labelVertical.setOrientation(LinearLayout.VERTICAL);
-                    labelVertical.setLayoutParams(labelParams);
-
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setPadding(20,0,0,0);
-
-                    TextView labelItemSel = new TextView(mContext);
-                    labelItemSel.setText("0 selected");
-                    labelItemSel.setTypeface(font);
-                    labelItemSel.setTextSize(13);
-                    labelItemSel.setPadding(20,0,0,0);
-
-                    if(label.getParent() != null)
-                         ((ViewGroup)label.getParent()).removeView(label);
-                    labelVertical.addView(label);
-                    labelVertical.addView(labelItemSel);
-                    innerLayout.addView(labelVertical);
-
-                    Spinner spinnerMulti = new Spinner(mContext);
-                    spinnerMulti.setTag(field.getLabel());
-
-                    ArrayList<String> items = new ArrayList<>();
-                    ArrayAdapter<String> myAdapter = new CustomArrayAdapter(mContext, R.layout.layout_spinner,
-                            field.getOptions(),items,field.getLabel(),labelItemSel);
-                    spinnerMulti.setAdapter(myAdapter);
-
-                    spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-
-                    innerLayout.addView(spinnerMulti);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), spinnerMulti);
-                    mOptionValues.put(field.getLabel(),field.getOptions()[0]);
-                    Log.i(TAG,"moptionValue--->" + mOptionValues.get(field.getLabel()));
-
-                }else if(field.getType().equals("multiline_text")) {
-                    Log.i(TAG,"entered--" + "multiline text");
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setPadding(20,0,0,0);
-                    label.setLayoutParams(labelParams);
-
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
-
-                    text = new EditText(mContext);
-                    text.setMaxLines(3);
-                    text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-                    text.setGravity(Gravity.START);
-                    text.setTag(field.getLabel());
-                    text.setPadding(5,0,20,0);
-                    hasEditText = true;
-                    innerLayout.addView(text);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), text);
-
-                }else if(field.getType().equals("gender_toggle")) {
-                    Log.i(TAG,"entered--" + "gender toggle");
-                    //radio button
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setPadding(20,0,0,0);
-                    label.setLayoutParams(labelParams);
-
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
-
-                    RadioGroup rbGroup = new RadioGroup(mContext);
-                    rbGroup.setPadding(0,0,20,0);
-
-                    rbGroup.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-                    rbGroup.setTag("GENDER");
-                    RadioButton male = new RadioButton(mContext);
-                    male.setText("Male");
-                    male.setId(ID_MALE);
-
-                    RadioButton female = new RadioButton(mContext);
-                    female.setText("Female");
-                    female.setId(ID_FEMALE);
-
-                    rbGroup.addView(female);
-                    rbGroup.addView(male);
-
-                    innerLayout.addView(rbGroup);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), rbGroup);
-
-                }else if(field.getType().equals("yes_no_toggle")) {
-                    Log.i(TAG,"entered--" + "yes no toggle");
-                    TextView label = new TextView(mContext);
-                    label.setText(field.getLabel());
-                    label.setTypeface(font);
-                    label.setTextSize(14);
-                    label.setPadding(20,0,0,0);
-                    label.setLayoutParams(labelParams);
-
-                    if(label.getParent() != null)
-                        ((ViewGroup)label.getParent()).removeView(label);
-                    innerLayout.addView(label);
-
-                    RadioGroup rbGroup = new RadioGroup(mContext);
-                    rbGroup.setOrientation(RadioGroup.HORIZONTAL);
-                    rbGroup.setTag(field.getLabel());
-
-                    RadioButton yes = new RadioButton(mContext);
-                    yes.setText("Yes");
-                    yes.setTag("Yes");
-                    yes.setId(ID_YES);
-                    rbGroup.addView(yes);
-
-                    RadioButton no = new RadioButton(mContext);
-                    no.setText("No");
-                    no.setTag("No");
-                    no.setId(ID_NO);
-                    no.setChecked(true);
-                    rbGroup.addView(no);
-
-                    innerLayout.addView(rbGroup);
-                    hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), rbGroup);
-                }
-                if(hasChild) {
-                    Log.i(TAG, "Adding child" );
-                    layout.addView(innerLayout);
-                }
-            }
-            for(int i=0;i<mOptionWidgets.size();i++){
-                mOptionWidgets.remove(i);
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void buildSpecsDialogWithValue(HashMap<String,View> mOptionWidgets,HashMap<String,String> mOptionValues,
                                           LinearLayout layout, ArrayList<Fields> itemFields,JSONObject data) {
-        Log.i(TAG,"check data rec--" + data.toString());
         try{
             for(Fields field : itemFields) {
                 boolean hasChild = false;
@@ -428,10 +196,12 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
                         text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-
                         text.setGravity(Gravity.START);
                         text.setTag(field.getLabel());
-                        text.setText(data.getString(field.getLabel()));
+
+                        if(data!=null)
+                            text.setText(data.getString(field.getLabel()));
+
                         hasEditText = true;
                         innerLayout.addView(text);
                         hasChild = true;
@@ -459,13 +229,15 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     spinnerSingle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
 
-                    int j=0;
-                    for(int i=0;i<field.getOptions().length;i++){
-                        Log.i(TAG,"field options--" + field.getOptions()[i] + "---" + data.get(field.getLabel()));
-                        if(field.getOptions()[i].equals(data.get(field.getLabel()))){
-                            spinnerSingle.setSelection(j);
+                    if(data!=null) {
+                        int j = 0;
+                        for (int i = 0; i < field.getOptions().length; i++) {
+                            Log.i(TAG, "field options--" + field.getOptions()[i] + "---" + data.get(field.getLabel()));
+                            if (field.getOptions()[i].equals(data.get(field.getLabel()))) {
+                                spinnerSingle.setSelection(j);
+                            }
+                            j++;
                         }
-                        j++;
                     }
                     innerLayout.addView(spinnerSingle);
                     hasChild = true;
@@ -502,18 +274,23 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
                     Spinner spinnerMulti = new Spinner(mContext);
                     spinnerMulti.setTag(field.getLabel());
-                    List<String> items = Arrays.asList(data.getString(field.getLabel()).split("\\s*,\\s*"));
+
                     ArrayList<String> itemsArray = new ArrayList<>();
-                    Log.i(TAG,"check item array--" + itemsArray.toString());
-                    for(int i=0;i<items.size();i++){
-                        itemsArray.add(items.get(i));
+
+                    if(data!=null){
+                        List<String> items = Arrays.asList(data.getString(field.getLabel()).split("\\s*,\\s*"));
+                        Log.i(TAG,"check item array--" + itemsArray.toString());
+                        for(int i=0;i<items.size();i++){
+                            itemsArray.add(items.get(i));
+                        }
+                        labelItemSel.setText(String.valueOf(items.size())+ " selected");
                     }
-                    labelItemSel.setText(String.valueOf(items.size())+ " selected");
+
                     CustomArrayAdapter myAdapter = new CustomArrayAdapter(mContext, R.layout.layout_spinner,
                             field.getOptions(),itemsArray,field.getLabel(),labelItemSel);
                     spinnerMulti.setAdapter(myAdapter);
-                        spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
+                    spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
 
                     innerLayout.addView(spinnerMulti);
                     hasChild = true;
@@ -539,10 +316,12 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     text.setMaxLines(3);
                     text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
-
                     text.setGravity(Gravity.START);
                     text.setTag(field.getLabel());
-                    text.setText(data.getString(field.getLabel()));
+
+                    if(data!=null)
+                        text.setText(data.getString(field.getLabel()));
+
                     hasEditText = true;
                     innerLayout.addView(text);
                     hasChild = true;
@@ -578,13 +357,15 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
                     rbGroup.addView(female);
                     rbGroup.addView(male);
-                    if(field.getLabel().equals(data.getString(field.getLabel()))){
-                        if(data.getString(field.getLabel()).equals("female")){
-                            female.setChecked(true);
-                            male.setChecked(false);
-                        }else{
-                            male.setChecked(true);
-                            female.setChecked(false);
+                    if(data!=null) {
+                        if (field.getLabel().equals(data.getString(field.getLabel()))) {
+                            if (data.getString(field.getLabel()).equals("female")) {
+                                female.setChecked(true);
+                                male.setChecked(false);
+                            } else {
+                                male.setChecked(true);
+                                female.setChecked(false);
+                            }
                         }
                     }
                     innerLayout.addView(rbGroup);
@@ -623,14 +404,15 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     rbGroup.addView(no);
                     innerLayout.addView(rbGroup);
 
-                    Log.i(TAG,"for radio---" + field.getLabel() + "---" + data.getString(field.getLabel()));
-
-                    if(data.getString(field.getLabel()).equals("yes")){
-                        yes.setChecked(true);
-                        no.setChecked(false);
-                    }else{
-                        no.setChecked(true);
-                        yes.setChecked(false);
+                    if(data!=null) {
+                        Log.i(TAG, "for radio---" + field.getLabel() + "---" + data.getString(field.getLabel()));
+                        if (data.getString(field.getLabel()).equals("yes")) {
+                            yes.setChecked(true);
+                            no.setChecked(false);
+                        } else {
+                            no.setChecked(true);
+                            yes.setChecked(false);
+                        }
                     }
 
                     hasChild = true;
@@ -747,6 +529,10 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     jsonObject.put(key, "no");
                 }
             }
+            if (!jsonObject.has(key)) {
+                jsonObject.put(key, mOptionValues.get(key));
+            }
+
         }
         Log.i(TAG,"check json here itslef--" + jsonObject.toString());
         return jsonObject.toString();

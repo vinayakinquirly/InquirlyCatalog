@@ -147,6 +147,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingRight="25dp"
+            android:layout_marginBottom="60dp"
             android:background="@color/mainColor"
             android:id="@+id/bill_linear_total"
             android:visibility="gone">
