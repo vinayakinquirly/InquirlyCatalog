@@ -405,6 +405,7 @@ public class ApplicationController extends Application {
                 url = sharedPreferences.getString(CatalogSharedPrefs.COMPANY_NAME,null);
                 urlfinal = url;
                 break;
+
         }
         return urlfinal;
     }

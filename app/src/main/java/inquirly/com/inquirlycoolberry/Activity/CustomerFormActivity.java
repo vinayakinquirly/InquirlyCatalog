@@ -90,7 +90,6 @@ public class CustomerFormActivity extends AppCompatActivity {
         Log.i(TAG,"taxes---" + taxJsonList + "---" + itemRes);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setTheme(R.style.CoolberryTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_form);
 

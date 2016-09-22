@@ -7,7 +7,6 @@ import java.util.HashMap;
 /**
  * Created by binvij on 12/12/15.
  */
-
 public class Campaign {
 
     public String category;
@@ -39,10 +38,9 @@ public class Campaign {
     }
 
     public class FormAttributes {
-
+        private String tac;
         private String category_name;
         private String feedback_label;
-        private String tac;
         private SubCategories[] sub_categories;
         private HashMap<String,ArrayList<Fields>> itemProperties;
 
@@ -61,7 +59,6 @@ public class Campaign {
         public void setFeedback_label(String feedback_label) {
             this.feedback_label = feedback_label;
         }
-
 
         public void setItemProperties(HashMap<String,ArrayList<Fields>> properties) {
             itemProperties = properties;

@@ -22,10 +22,10 @@ import android.widget.ImageView;
 import android.graphics.Typeface;
 import android.widget.LinearLayout;
 import android.view.LayoutInflater;
+
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import android.widget.CompoundButton;
 import inquirly.com.inquirlycatalogue.R;
-import android.support.annotation.IdRes;
 import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import inquirly.com.inquirlycatalogue.models.Fields;
@@ -43,12 +43,13 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
 
     private Context mContext;
     private CartItem cartItem;
-    public String mCampaignId;
+    public String mCampaignId,propsJson,termsJson;
     public ArrayList<Fields> fieldList;
+    JSONObject termsJsonObject;
     public static String callFrom,color;
     private LinearLayout contentLayout ;
+    private Gson gson = new Gson();
     public ArrayList<CampaignDbItem> dbitem;
-    public JSONObject jsonObject = new JSONObject();
     private static final String TAG = "CoolItemsTabAdapter";
     private ArrayList<CartItem> cartItemList = new ArrayList<>();
     final HashMap<String,View> mOptionWidgets = new HashMap<>();
@@ -63,10 +64,12 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         this.mCampaignId =mCampaignId;
         this.callFrom = callFrom;
         this.mContext = ctx;
-        Log.i(TAG,"itemdata---tab>" + itemsData.size() + itemsData.get(0).getType());
         cartItemList = appInstance.getCartItems();
         Log.i(TAG,"size----" +cartItemList.size());
         color = appInstance.getImage("color_1");
+        SharedPreferences prefs = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
+        propsJson = prefs.getString(mCampaignId + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, null);
+        termsJson = prefs.getString(mCampaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, null);
         buildItemProperties();
     }
 
@@ -84,6 +87,12 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         final CampaignDbItem item = dbitem.get(position);
         Log.i(TAG,"items----" + item.getItemName() + "----" + position + "---" + item.getType());
+
+        try {
+            termsJsonObject = new JSONObject(termsJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         viewHolder.txtViewTitle.setTextColor(Color.parseColor(color));
         viewHolder.food_item_price.setBackgroundColor(Color.parseColor(color));
@@ -141,9 +150,17 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                 for(int i=0;i<propertyList.get(item.getType()).size();i++) {
                     Log.i(TAG, "check fieldList ---" +  propertyList.get(item.getType()).get(i).getLabel());
                 }
-
-                if(propertyList.get(item.getType()).size()>1){
-                    createDialogBox(item.getItemCode(),finalQty[0],item.getType());
+                String note=null;
+                if(propertyList.get(item.getType()).size()>1) {
+                    try {
+                        note = termsJsonObject.getString(item.getType());
+                        Log.i(TAG,"check note rec--" + note);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (note!=null) {
+                        createDialogBox(item.getItemCode(), finalQty[0], item.getType(),note);
+                    }
                 }
             }
         });
@@ -234,8 +251,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
 
     public void buildItemProperties() {
         Log.i(TAG,"campaign ID---" + mCampaignId);
-        SharedPreferences prefs = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
-        String propsJson = prefs.getString(mCampaignId + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, null);
+
         propertyList = new HashMap<>();
         Log.i(TAG,"check propsJson---" + propsJson);
 
@@ -274,19 +290,23 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         }
     }
 
-    public void createDialogBox(final String itemName, int itemQty,String type){
+    public void createDialogBox(final String itemName, int itemQty,String type,String note){
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.layout_custom_item, null);
         contentLayout = (LinearLayout) dialogView.findViewById(R.id.custom_data_area);
 
         final TextView friendsName= (TextView)dialogView.findViewById(R.id.friend_name);
         final TextView itemNum = (TextView)dialogView.findViewById(R.id.item_count);
+        final TextView t_and_c= (TextView)dialogView.findViewById(R.id.terms_conditions);
         final Button save_custom_item = (Button)dialogView.findViewById(R.id.btn_save_item);
         final Button cancel_save = (Button)dialogView.findViewById(R.id.btn_cancel_item);
 
-        itemNum.setText(String.valueOf(itemQty));
+        t_and_c.setText(note);
 
-        CommonMethods.addSpecificationsToDialog(mOptionWidgets,mOptionValues,contentLayout,propertyList.get(type),mContext);
+        itemNum.setText(String.valueOf(itemQty));
+        JSONObject data=null;
+        CommonMethods.addSpecificationsToDialog(mOptionWidgets,mOptionValues,contentLayout,
+                propertyList.get(type),mContext,data);
         dialogBuilder.setView(dialogView);
 
         dialogBuilder.setTitle("Select Options");

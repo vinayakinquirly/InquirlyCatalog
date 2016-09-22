@@ -50,6 +50,8 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
     private String itemName,itemType;
     public JSONObject jsonObject = new JSONObject();
     private static final String TAG = "CustomCartItemAdapter";
+    private  HashMap<String,View> mOptionWidgets = new HashMap<>();
+    private  HashMap<String,String> mOptionValues = new HashMap<>();
     public  HashMap<String, ArrayList<Fields>>  propertyList = new HashMap<>();
     private ApplicationController appInstance =  ApplicationController.getInstance();
 
@@ -87,8 +89,6 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        final HashMap<String,View> mOptionWidgets = new HashMap<>();
-        final HashMap<String,String> mOptionValues = new HashMap<>();
 
         final int itemNum= position+1;
         holder.setIsRecyclable(false);
@@ -107,19 +107,22 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     jsonObject1 = jsonObject.getJSONArray(itemName).getJSONObject(position);
                     Log.i(TAG, "check json---" + position + "---" + jsonObject1);
                     holder.friends_name.setText(jsonObject1.getString("tag"));
-                    buildSpecsDialogWithValue(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList, jsonObject1);
+                    CommonMethods.addSpecificationsToDialog(mOptionWidgets,mOptionValues,holder.contentLayout,
+                            fieldList,mContext,jsonObject1);
                     holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
                     holder.save_custom_item.setText("SAVED");
                     Log.i(TAG, "json Object---" + jsonObject);
                 } else {
-                    buildSpecsDialogWithValue(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList, jsonObject1);
+                    CommonMethods.addSpecificationsToDialog(mOptionWidgets,mOptionValues,holder.contentLayout,
+                            fieldList, mContext,jsonObject1);
                     //    buildSpecsDialog(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }else{
-            buildSpecsDialogWithValue(mOptionWidgets,mOptionValues,holder.contentLayout, fieldList, jsonObject);
+            CommonMethods.addSpecificationsToDialog(mOptionWidgets,mOptionValues,holder.contentLayout,
+                    fieldList,mContext, jsonObject);
         }
 
         holder.save_custom_item.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +136,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     public void run() {
                         try {
                             if(appInstance.saveCustomItemJson(itemName,num,
-                                    generateItemDetails(mOptionWidgets,mOptionValues,name,num,holder.contentLayout))){
+                                    CommonMethods.generateItemDetails(mOptionWidgets,mOptionValues,name,num,holder.contentLayout))){
                                 Log.i(TAG,"saved successfully");
                                 holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
                                 holder.save_custom_item.setText("SAVED");
@@ -402,7 +405,6 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     no.setId(ID_NO);
                     no.setChecked(true);
                     rbGroup.addView(no);
-                    innerLayout.addView(rbGroup);
 
                     if(data!=null) {
                         Log.i(TAG, "for radio---" + field.getLabel() + "---" + data.getString(field.getLabel()));
@@ -415,6 +417,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                         }
                     }
 
+                    innerLayout.addView(rbGroup);
                     hasChild = true;
                     mOptionWidgets.put(field.getLabel(), rbGroup);
                 }

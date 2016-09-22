@@ -32,5 +32,7 @@
             android:id="@+id/checkBox"
             android:checked="false"
             android:layout_weight="2.5" />
+
     </TableRow>
+
 </LinearLayout>

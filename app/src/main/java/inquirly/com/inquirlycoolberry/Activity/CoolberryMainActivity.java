@@ -317,23 +317,23 @@ public class CoolberryMainActivity extends AppCompatActivity {
             listCategory.addItemDecoration(spacing);
             myDB.close();
             listCategory.addOnItemTouchListener(
-                    new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            if(InternetConnectionStatus.checkConnection(CoolberryMainActivity.this)) {
-                                CampaignItemData campaign = items.get(position);
-                                Log.i(TAG, "campaign clicked=" + campaign.getId());
-                                Intent i = new Intent(getApplicationContext(), CoolberryItemsTabActivity.class);
-                                Log.i(TAG, "campaignID" + campaign.getId() + "--type--" + campaignType);
-                                i.putExtra("campaignId", campaign.getId());
-                                i.putExtra(ApiConstants.CAMPAIGN_TYPE, campaignType);
-                                startActivity(i);
-                            }else{
-                                Toast.makeText(CoolberryMainActivity.this, "Unable to connect to server. " +
-                                        "please check your network connection", Toast.LENGTH_SHORT).show();
-                            }
+                new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if(InternetConnectionStatus.checkConnection(CoolberryMainActivity.this)) {
+                            CampaignItemData campaign = items.get(position);
+                            Log.i(TAG, "campaign clicked=" + campaign.getId());
+                            Intent i = new Intent(getApplicationContext(), CoolberryItemsTabActivity.class);
+                            Log.i(TAG, "campaignID" + campaign.getId() + "--type--" + campaignType);
+                            i.putExtra("campaignId", campaign.getId());
+                            i.putExtra(ApiConstants.CAMPAIGN_TYPE, campaignType);
+                            startActivity(i);
+                        }else{
+                            Toast.makeText(CoolberryMainActivity.this, "Unable to connect to server. " +
+                                    "please check your network connection", Toast.LENGTH_SHORT).show();
                         }
-                    })
+                    }
+                })
             );
         }
     }

@@ -8,6 +8,7 @@ import android.view.View;
 import java.util.ArrayList;
 import android.view.Window;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -20,12 +21,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.design.widget.CoordinatorLayout;
 import inquirly.com.inquirlycatalogue.utils.ApiConstants;
 import inquirly.com.inquirlycatalogue.utils.SQLiteDataBase;
 import inquirly.com.inquirlycatalogue.models.CampaignDbItem;
-import inquirly.com.inquirlycatalogue.utils.RecyclerViewGridSpacing;
 import inquirly.com.inquirlycoolberry.Adapters.CoolberryItemsTabAdapter;
 
 public class CoolberrySearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -74,24 +73,6 @@ public class CoolberrySearchActivity extends AppCompatActivity implements Search
         Bundle bundle = getIntent().getExtras();
         mCampaignId = bundle.getString(ApiConstants.CAMPAIGN_ID);
         isRecyclerviewoffset = false;
-        /*recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-
-                        Intent detailActivityIntent = new Intent(getApplicationContext(), DetailViewActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("itemsList", mItems);
-                        bundle.putInt("itemPosition", position);
-                        Log.i(TAG, "ItemTabFragment clicked position=" + position);
-                        bundle.putString(ApiConstants.CAMPAIGN_ID, mCampaignId);
-                        Log.i(TAG, "campaign_id=" + mCampaignId);
-                        detailActivityIntent.putExtras(bundle);
-                        startActivity(detailActivityIntent);
-                    }
-                })
-        );*/
-
         coordinatorLayout = (CoordinatorLayout)findViewById(R.id.food_search_cordinator);
     }
 
@@ -99,10 +80,13 @@ public class CoolberrySearchActivity extends AppCompatActivity implements Search
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
         final MenuItem item = menu.findItem(R.id.action_search);
+
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(CoolberrySearchActivity.this);
         searchView.setIconified(false);
         searchView.setMaxWidth(1500);
+        searchView.setImeOptions(searchView.getImeOptions() | EditorInfo.IME_FLAG_NO_FULLSCREEN |
+                EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         MenuItemCompat.setOnActionExpandListener(item,
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
@@ -128,29 +112,12 @@ public class CoolberrySearchActivity extends AppCompatActivity implements Search
         myDb.close();
         int n = mItems.size();
         Log.d("size is ", String.valueOf(n));
-        if(isRecyclerviewoffset) {
-            recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-            mAdapter = new CoolberryItemsTabAdapter(mItems, mCampaignId,"search",getApplicationContext());
-            recyclerView.setAdapter(mAdapter);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            RecyclerViewGridSpacing spacing = new RecyclerViewGridSpacing(this, R.dimen.item_offsetnull);
-            recyclerView.addItemDecoration(spacing);
-            final List<CampaignDbItem> filteredModelList = filter(mItems, newText);
-            mAdapter.setFilter(filteredModelList);
-            mAdapter.notifyDataSetChanged();
-        }
-        else {
-            recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
-            mAdapter = new CoolberryItemsTabAdapter(mItems, mCampaignId,"search",getApplicationContext());
-            recyclerView.setAdapter(mAdapter);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            RecyclerViewGridSpacing spacing = new RecyclerViewGridSpacing(this, R.dimen.item_offset);
-            recyclerView.addItemDecoration(spacing);
-            isRecyclerviewoffset = true;
-            final List<CampaignDbItem> filteredModelList = filter(mItems, newText);
-            mAdapter.setFilter(filteredModelList);
-            mAdapter.notifyDataSetChanged();
-        }
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        mAdapter = new CoolberryItemsTabAdapter(mItems, mCampaignId,"search",getApplicationContext());
+        recyclerView.setAdapter(mAdapter);
+        final List<CampaignDbItem> filteredModelList = filter(mItems, newText);
+        mAdapter.setFilter(filteredModelList);
+        mAdapter.notifyDataSetChanged();
         return true;
     }
 

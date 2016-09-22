@@ -61,12 +61,12 @@ import inquirly.com.inquirlycoolberry.Fragments.CoolberryItemsTabFragment;
 
 public class CoolberryItemsTabActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
-    private static Menu mMenu;
     private Intent intent;
-    public String mCampaignId,color;
+    private static Menu mMenu;
     private String mCampaignType;
     private ProgressDialog pDialog;
     private static Context context;
+    public String mCampaignId,color;
     private SharedPreferences mSharedPrefs;
     public  ArrayList<Campaign> campaignList;
     public  ArrayList<CampaignDbItem> itemList;
@@ -79,7 +79,6 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setTheme(R.style.CoolberryTheme);
         super.onCreate(savedInstanceState);
         color =appInstance.getImage("color_1");
         intent = getIntent();

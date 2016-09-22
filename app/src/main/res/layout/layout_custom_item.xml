@@ -101,9 +101,9 @@
             </TableRow>
 
             <TextView
+                android:id="@+id/terms_conditions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="**Extra Rs.10/topping on more than 1 topping of each type."
                 android:textSize="12sp"
                 android:textScaleX="1.1"
                 android:layout_marginTop="5dp"

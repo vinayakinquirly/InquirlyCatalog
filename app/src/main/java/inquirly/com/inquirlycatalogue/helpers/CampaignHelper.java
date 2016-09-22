@@ -20,6 +20,7 @@ import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
  * Created by binvij on 11/12/15.
  */
 public class CampaignHelper {
+
     private static final String TAG = CampaignHelper.class.getSimpleName();
 
     /**
@@ -55,47 +56,46 @@ public class CampaignHelper {
      * Builds the campaign details for a given campaign
      * */
     public static ArrayList<Campaign> buildCampaignDetails(JSONObject response, Context context, final String campaignId) {
-    ArrayList<Campaign> campaignList = new ArrayList<>();
-    Gson gson = new Gson();
-    try {
+        ArrayList<Campaign> campaignList = new ArrayList<>();
+        Gson gson = new Gson();
+        try {
+            JSONArray cardsArray = response.getJSONObject("campaign").getJSONArray("cards");
+            Log.i(TAG, "card count=" + cardsArray.length());
+            for(int i=0; i<cardsArray.length(); i++) {
+                Campaign campaign = gson.fromJson(cardsArray.get(i).toString(), Campaign.class);
+                JSONObject itemProperties =  ((JSONObject)cardsArray.get(i)).getJSONObject("form_attributes").getJSONObject("item_properties");
+                JSONObject pricingModel = ((JSONObject)cardsArray.get(i)).getJSONObject("form_attributes").getJSONObject("pricing_model");
+                JSONObject item_tac = ((JSONObject)cardsArray.get(i)).getJSONObject("form_attributes").getJSONObject("item_tac");
+                String termsConditions = ((JSONObject)cardsArray.get(i)).getJSONObject("form_attributes").getString("tac");
+                SharedPreferences.Editor editor = context.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE).edit();
+                Log.i(TAG, "inserting json properties for item props and pricing props");
+                if(itemProperties != null) {
+                    Log.i(TAG, "inserting item properties json="+ itemProperties.toString());
+                    editor.putString(campaignId + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, itemProperties.toString());
+                }
 
-        JSONArray cardsArray = response.getJSONObject("campaign").getJSONArray("cards");
-        Log.i(TAG, "card count=" + cardsArray.length());
-        for(int i=0; i<cardsArray.length(); i++) {
-            Campaign campaign = gson.fromJson(cardsArray.get(i).toString(), Campaign.class);
-            //Log.i(TAG, "campaign sub categories length=" + campaign.getForm_attributes().getSub_categories().length);
+                if(pricingModel != null) {
+                    Log.i(TAG, "inserting pricing model json=" + pricingModel.toString());
+                    editor.putString(CatalogSharedPrefs.KEY_PRICING_MODEL, pricingModel.toString());
+                }
 
-            JSONObject itemProperties =  ((JSONObject)cardsArray.get(i)).getJSONObject("form_attributes").getJSONObject("item_properties");
-            JSONObject pricingModel = ((JSONObject)cardsArray.get(i)).getJSONObject("form_attributes").getJSONObject("pricing_model");
-            String termsConditions = ((JSONObject)cardsArray.get(i)).getJSONObject("form_attributes").getString("tac");
-            SharedPreferences.Editor editor = context.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE).edit();
-            //write item properties and pricing model to local prefs
-            Log.i(TAG, "inserting json properties for item props and pricing props");
-            if(itemProperties != null) {
-                Log.i(TAG, "inserting item properties json="+ itemProperties.toString());
-                editor.putString(campaignId + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, itemProperties.toString());
+                if(item_tac!=null){
+                    Log.i(TAG, "inserting Item terms & conditions Json=" + item_tac.toString());
+                    editor.putString(campaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, item_tac.toString());
+                }
+
+//                if(termsConditions != null) {
+//                    Log.i(TAG, "inserting terms & condition json=" + termsConditions);
+//                    editor.putString(campaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, termsConditions);
+//                }
+
+                editor.apply();
+                campaignList.add(campaign);
             }
-
-            if(pricingModel != null) {
-                Log.i(TAG, "inserting pricing model json=" + pricingModel.toString());
-                editor.putString(CatalogSharedPrefs.KEY_PRICING_MODEL, pricingModel.toString());
-            }
-
-            if(termsConditions != null)
-            {
-                Log.i(TAG, "inserting terms & condition json=" + termsConditions.toString());
-                editor.putString(campaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, termsConditions.toString());
-            }
-
-            editor.commit();
-            campaignList.add(campaign);
+        }catch(JSONException ex) {
+            Log.e(TAG, "Error parsing cards="+ex.getMessage());
         }
-    }catch(JSONException ex) {
-        Log.e(TAG, "Error parsing cards="+ex.getMessage());
+        Log.i(TAG, "Campaign size found=" + campaignList.size());
+        return campaignList;
     }
-    Log.i(TAG, "Campaign size found=" + campaignList.size());
-    return campaignList;
- }
-
-
 }

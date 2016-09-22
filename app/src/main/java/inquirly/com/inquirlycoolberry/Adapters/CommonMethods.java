@@ -23,7 +23,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+
 import inquirly.com.inquirlycatalogue.R;
 import inquirly.com.inquirlycatalogue.models.Fields;
 
@@ -36,7 +39,6 @@ public class CommonMethods  {
     private static boolean hasEditText = false;
     private static final String TAG = "CommonMethods";
     private static JSONObject jsonObject = new JSONObject();
-
 
     @IdRes
     private static final int ID_MALE = 1;
@@ -51,7 +53,8 @@ public class CommonMethods  {
     private static final int ID_NO = 4;
 
     public static void addSpecificationsToDialog(HashMap<String,View> mOptionWidgets,HashMap<String,String> mOptionValues,
-                                          LinearLayout layout, ArrayList<Fields> itemFields,Context mContext){
+                                          LinearLayout layout, ArrayList<Fields> itemFields,Context mContext,
+                                                 JSONObject data){
         font  = Typeface.createFromAsset(mContext.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         try{
             for(Fields field : itemFields) {
@@ -73,7 +76,7 @@ public class CommonMethods  {
 
                 EditText text;
                 LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, 60,1.8f);
+                        LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1.8f);
                 ArrayAdapter<String> spinnerArrayAdapter;
                 if (field.getType().equals("number_input") || field.getType().equals("text_input") ) {
                     Log.v(TAG, "entered--" + "number input");
@@ -100,6 +103,10 @@ public class CommonMethods  {
 
                         text.setGravity(Gravity.START);
                         text.setTag(field.getLabel());
+
+                        if(data!=null)
+                            text.setText(data.getString(field.getLabel()));
+
                         hasEditText = true;
                         innerLayout.addView(text);
                         hasChild = true;
@@ -130,10 +137,21 @@ public class CommonMethods  {
                     spinnerSingle.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
 
-                    innerLayout.addView(spinnerSingle);
+                    if(data!=null) {
+                        int j = 0;
+                        for (int i = 0; i < field.getOptions().length; i++) {
+                            Log.i(TAG, "field options--" + field.getOptions()[i] + "---" + data.get(field.getLabel()));
+                            if (field.getOptions()[i].equals(data.get(field.getLabel()))) {
+                                spinnerSingle.setSelection(j);
+                            }
+                            j++;
+                        }
+                    }
+
                     hasChild = true;
-                    mOptionWidgets.put(field.getLabel(), spinnerSingle);
+                    innerLayout.addView(spinnerSingle);
                     mOptionValues.put(field.getLabel(),null);
+                    mOptionWidgets.put(field.getLabel(), spinnerSingle);
 
                 }else if(field.getType().equals("multiple_choice")){
                     LinearLayout labelVertical = new LinearLayout(mContext);
@@ -154,7 +172,6 @@ public class CommonMethods  {
                     labelItemSel.setText("0 selected");
                     labelItemSel.setTypeface(font);
                     labelItemSel.setTextSize(13);
-                    labelItemSel.setWidth(100);
                     labelItemSel.setPadding(20,0,0,0);
 
                     if(multiLabel.getParent() != null)
@@ -165,10 +182,19 @@ public class CommonMethods  {
 
                     Spinner spinnerMulti = new Spinner(mContext);
                     spinnerMulti.setTag(field.getLabel());
-                    spinnerMulti.setScrollBarFadeDuration(0);
 
-                    ArrayAdapter<String> myAdapter = new CustomArrayAdapter(mContext,
-                            android.R.layout.simple_spinner_item, field.getOptions(),field.getLabel(),labelItemSel);
+                    ArrayList<String> itemsArray = new ArrayList<>();
+                    if(data!=null){
+                        List<String> items = Arrays.asList(data.getString(field.getLabel()).split("\\s*,\\s*"));
+                        Log.i(TAG,"check item array--" + itemsArray.toString());
+                        for(int i=0;i<items.size();i++){
+                            itemsArray.add(items.get(i));
+                        }
+                        labelItemSel.setText(String.valueOf(items.size())+ " selected");
+                    }
+
+                    CustomArrayAdapter myAdapter = new CustomArrayAdapter(mContext,R.layout.layout_spinner,
+                            field.getOptions(),itemsArray,field.getLabel(),labelItemSel);
                     spinnerMulti.setAdapter(myAdapter);
 
                     spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -201,6 +227,10 @@ public class CommonMethods  {
 
                     text.setGravity(Gravity.START);
                     text.setTag(field.getLabel());
+
+                    if(data!=null)
+                        text.setText(data.getString(field.getLabel()));
+
                     hasEditText = true;
                     innerLayout.addView(text);
                     hasChild = true;
@@ -234,6 +264,18 @@ public class CommonMethods  {
 
                     rbGroup.addView(female);
                     rbGroup.addView(male);
+
+                    if(data!=null) {
+                        if (field.getLabel().equals(data.getString(field.getLabel()))) {
+                            if (data.getString(field.getLabel()).equals("female")) {
+                                female.setChecked(true);
+                                male.setChecked(false);
+                            } else {
+                                male.setChecked(true);
+                                female.setChecked(false);
+                            }
+                        }
+                    }
 
                     innerLayout.addView(rbGroup);
                     hasChild = true;
@@ -269,6 +311,17 @@ public class CommonMethods  {
                     no.setChecked(true);
                     rbGroup.addView(no);
 
+                    if(data!=null) {
+                        Log.i(TAG, "for radio---" + field.getLabel() + "---" + data.getString(field.getLabel()));
+                        if (data.getString(field.getLabel()).equals("yes")) {
+                            yes.setChecked(true);
+                            no.setChecked(false);
+                        } else {
+                            no.setChecked(true);
+                            yes.setChecked(false);
+                        }
+                    }
+
                     innerLayout.addView(rbGroup);
                     hasChild = true;
                     mOptionWidgets.put(field.getLabel(), rbGroup);
@@ -290,16 +343,18 @@ public class CommonMethods  {
     public static class CustomArrayAdapter extends ArrayAdapter<String> {
         private String[] objects;
         private Context context;
-        private String fieldLabel;
+        private String fieldLabel,itemNumSel;
         private TextView labelItemSel;
         public ArrayList<String> selectedStrings = new ArrayList<>();
 
         public CustomArrayAdapter(Context context, int resourceId,
-                                  String[] objects,String fieldLabel,TextView labelItemSel) {
+                                  String[] objects,ArrayList<String> selectedStrings,String fieldLabel,
+                                  TextView labelItemSel) {
 
             super(context, resourceId, objects);
             this.objects = objects;
             this.context = context;
+            this.selectedStrings = selectedStrings;
             this.fieldLabel = fieldLabel;
             this.labelItemSel= labelItemSel;
             Log.i(TAG,"check fieldLabel--" + fieldLabel +"--" +selectedStrings.size());
@@ -323,17 +378,23 @@ public class CommonMethods  {
             final CheckBox checkBox=(CheckBox) row.findViewById(R.id.checkBox);
             label.setText(objects[position]);
 
-
-            checkBox.setChecked(false);
             if(selectedStrings.indexOf(label.getText().toString())>=0){
+                itemNumSel =String.valueOf(selectedStrings.size())+ " selected";
                 labelItemSel.setText(String.valueOf(selectedStrings.size())+ " selected");
                 checkBox.setChecked(true);
+                try {
+                    String extraString = selectedStrings.toString().replace("[","").replace("]","");
+                    jsonObject.put(fieldLabel,extraString);
+                    Log.i(TAG,"see json object--" + jsonObject.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
+
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Log.i(TAG, "check item selected--" + objects.length + "---" + checkBox.isChecked());
-
                     if (checkBox.isChecked()) {
                         selectedStrings.add(objects[position]);
                         Log.i(TAG, "get itemsList---" + selectedStrings.size() + "--" + selectedStrings.toString());
@@ -427,8 +488,6 @@ public class CommonMethods  {
             }
         }
 
-//        JSONObject jsonObject1 = jsonObject;
-//        jsonObject.remove((String)jsonObject.keys().next());
         Log.i(TAG,"check json send ---" +jsonObject + "<----->");
         return jsonObject.toString();
     }

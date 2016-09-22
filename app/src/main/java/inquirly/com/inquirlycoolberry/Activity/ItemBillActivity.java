@@ -41,7 +41,6 @@ import inquirly.com.inquirlycoolberry.Adapters.ItemBillAdapter;
 public class ItemBillActivity extends AppCompatActivity implements View.OnClickListener{
 
     public Intent intent;
-    private String cat_grp;
     public Button btn_payment;
     private Gson gson = new Gson();
     public RecyclerView food_bill_list;

@@ -297,7 +297,8 @@ public class SQLiteDataBase {
         return database.delete(TABLE_CUSTOM_ITEM,null,null)!=0;
     }
 
-    public void createCampaignList(String uuid, String name,String state,String hashtag, String imagepath, String validtill) {
+    public void createCampaignList(String uuid, String name,String state,String hashtag,
+                                   String imagepath, String validtill) {
         ContentValues cv = new ContentValues();
         cv.put(CAMPAIGN_UUID, uuid);
         cv.put(CAMPAIGN_NAME, name);
@@ -306,8 +307,8 @@ public class SQLiteDataBase {
         cv.put(VALID_TILL, validtill);
         cv.put(STATE, state);
 
-        Log.d("uuid", uuid);
-        Log.d("name", name);
+        Log.i("uuid", uuid);
+        Log.i("name", name);
         database.insertWithOnConflict(CAMPAIGN_TABLE, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
@@ -340,7 +341,7 @@ public class SQLiteDataBase {
     }
 
     public ArrayList<CampaignItemData> getCampaignListData() {
-        item = new ArrayList<CampaignItemData>();
+        item = new ArrayList<>();
         String[] columns = new String[]{CAMPAIGN_UUID, CAMPAIGN_NAME, HASH_TAG, PREVIEW, VALID_TILL};
         Cursor c = database.query(CAMPAIGN_TABLE, columns, null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
@@ -362,8 +363,8 @@ public class SQLiteDataBase {
                 data.setPreview(preview);
                 item.add(data);
 
-                Log.d(TAG, "keyuuid : " + id);
-                Log.d(TAG, "keyname : " + name);
+                Log.i(TAG, "keyuuid : " + id);
+                Log.i(TAG, "keyname : " + name);
             }
             while (c.moveToNext());
             c.close();
