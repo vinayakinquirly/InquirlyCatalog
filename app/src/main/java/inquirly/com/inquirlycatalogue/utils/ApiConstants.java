@@ -13,6 +13,7 @@ public class ApiConstants {
     public static final String API_CAMPAIGN_TYPE = API_BASE_URL + "/campaigns/cafe/config";
     public static final String API_CAFE_ORDER = API_BASE_URL + "/pipeline2/cafe_order";
     public static final String API_CAFE_BILL = API_BASE_URL + "/campaigns/billing/generate_bill";
+    public static final String API_CAFE_UPDATE = API_BASE_URL + "/campaigns/cafe/updates";
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String APPLICATION_JSON = "application/json";
     public static final String ACCEPT = "Accept";

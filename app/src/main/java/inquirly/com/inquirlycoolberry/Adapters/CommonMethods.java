@@ -1,32 +1,30 @@
 package inquirly.com.inquirlycoolberry.Adapters;
 
-import android.content.Context;
-import android.graphics.Typeface;
-import android.os.Build;
-import android.support.annotation.IdRes;
-import android.text.InputType;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-
+import java.util.Arrays;
+import android.os.Build;
+import android.util.Log;
+import java.util.HashMap;
+import android.view.View;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.text.InputType;
+import android.widget.Spinner;
+import org.json.JSONException;
+import android.widget.TextView;
+import android.content.Context;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.graphics.Typeface;
+import android.widget.RadioGroup;
+import android.widget.RadioButton;
+import android.widget.LinearLayout;
+import android.view.LayoutInflater;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.support.annotation.IdRes;
 import inquirly.com.inquirlycatalogue.R;
 import inquirly.com.inquirlycatalogue.models.Fields;
 
@@ -385,7 +383,6 @@ public class CommonMethods  {
                 try {
                     String extraString = selectedStrings.toString().replace("[","").replace("]","");
                     jsonObject.put(fieldLabel,extraString);
-                    Log.i(TAG,"see json object--" + jsonObject.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

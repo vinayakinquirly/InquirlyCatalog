@@ -363,8 +363,6 @@ public class SQLiteDataBase {
                 data.setPreview(preview);
                 item.add(data);
 
-                Log.i(TAG, "keyuuid : " + id);
-                Log.i(TAG, "keyname : " + name);
             }
             while (c.moveToNext());
             c.close();

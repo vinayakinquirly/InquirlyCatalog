@@ -54,7 +54,7 @@ public class CoolberryMainActivity extends AppCompatActivity {
     private Menu mMenu;
     private ProgressDialog pDialog;
     private RecyclerView listCategory;
-    private String type,camp_id,propsJson;
+    private String type,camp_id;
     private SharedPreferences mSharedPrefs;
     private CoolberryMainAdapter campAdapter;
     private static final String TAG = "CoolberryMainActivity";
@@ -157,13 +157,21 @@ public class CoolberryMainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.i(TAG,"whats menu---" + menu);
         MenuItem item = menu.findItem(R.id.action_count);
+        MenuItem itemRef = menu.findItem(R.id.action_refresh);
+
         LayerDrawable icon = (LayerDrawable) item.getIcon();
+        LayerDrawable iconRef = (LayerDrawable) itemRef.getIcon();
         int size = ApplicationController.getInstance().getCartItemCount();
         CartCount.setBadgeCount(this, icon, size);
+        CartCount.setBadgeCount(this, iconRef, size);
+
+
         mMenu = menu;
         MenuItem item1 = menu.findItem(R.id.action_count);
         MenuItem item2 = menu.findItem(R.id.action_refresh);
+
         if(type.equals(ApiConstants.CAMPAIGN_TYPE_FEEDBACK)) {
             item1.setEnabled(false);
             item1.getIcon().setAlpha(100);
@@ -188,7 +196,6 @@ public class CoolberryMainActivity extends AppCompatActivity {
                 pDialog.setMessage("Reloading....Please wait");
                 pDialog.setCancelable(false);
                 pDialog.show();
-
                 new Thread() {
                     public void run() {
                         try {
@@ -226,75 +233,74 @@ public class CoolberryMainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
         String securityToken = sp.getString(CatalogSharedPrefs.KEY_SEC_TOKEN, "");
         ApiRequest.getCampaignList(
-                securityToken,
-                campaignType,
-                new IRequestCallback() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-                        Log.i(TAG,"buildCampaignList----" + response.toString());
-                        final ArrayList<CampaignItemData> itemData = CampaignHelper.buildCampaignList(response, CoolberryMainActivity.this);
-                        try {
-                            if (campaignType != ApiConstants.CAMPAIGN_TYPE_FEEDBACK) {
-                                for (int i = 0; i < itemData.size(); i++) {
-                                    CampaignItemData data = itemData.get(i);
-                                    if(data.getState().equals("ACTIVE")) {
-                                        String img_path = "/sdcard/campaigns/" + data.getName() + ".png";
-                                        // re-loading the activity due to some image issue loading with picasso//
-                                        startActivity(getIntent());
-                                        new DownloadFile(data.getPreview().getImage(), data.getName()).execute();
-                                        SQLiteDataBase myDB = new SQLiteDataBase(getApplicationContext());
-                                        myDB.open();
-                                        myDB.createCampaignList(data.getId(), data.getName(), data.getState(), data.getHash_tag(), img_path, data.getValid_till());
-                                        Log.i(TAG,"data saved in DB");
-                                        getCampaignList(ApiConstants.CAMPAIGN_TYPE_CATALOG);
-                                        myDB.close();
-                                    }
-                                    else {
-                                        Log.i(TAG,"campaign is inactive");
-                                    }
+            securityToken,
+            campaignType,
+            new IRequestCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.i(TAG,"buildCampaignList----" + response.toString());
+                    final ArrayList<CampaignItemData> itemData = CampaignHelper.buildCampaignList(response, CoolberryMainActivity.this);
+                    try {
+                        if (campaignType != ApiConstants.CAMPAIGN_TYPE_FEEDBACK) {
+                            for (int i = 0; i < itemData.size(); i++) {
+                                CampaignItemData data = itemData.get(i);
+                                if(data.getState().equals("ACTIVE")) {
+                                    String img_path = "/sdcard/campaigns/" + data.getName() + ".png";
+                                    // re-loading the activity due to some image issue loading with picasso//
+                                    startActivity(getIntent());
+                                    new DownloadFile(data.getPreview().getImage(), data.getName()).execute();
+                                    SQLiteDataBase myDB = new SQLiteDataBase(getApplicationContext());
+                                    myDB.open();
+                                    myDB.createCampaignList(data.getId(), data.getName(), data.getState(), data.getHash_tag(), img_path, data.getValid_till());
+                                    Log.i(TAG,"data saved in DB");
+                                    getCampaignList(ApiConstants.CAMPAIGN_TYPE_CATALOG);
+                                    myDB.close();
                                 }
-                                SharedPreferences.Editor editor = mSharedPrefs.edit();
-                                editor.putBoolean(CatalogSharedPrefs.IS_CAMPAIGN_LIST_LOADED, true);
-                                editor.commit();
-
-                            } else {
-                                listCategory.setLayoutManager(new GridLayoutManager(CoolberryMainActivity.this, 2));
-                                RecyclerFeedBackAdapter mAdapter = new RecyclerFeedBackAdapter(itemData, CoolberryMainActivity.this);
-                                listCategory.setAdapter(mAdapter);
-                                listCategory.setItemAnimator(new DefaultItemAnimator());
-                                RecyclerViewGridSpacing spacing = new RecyclerViewGridSpacing(getApplicationContext(), R.dimen.item_offset);
-                                listCategory.addItemDecoration(spacing);
-                                listCategory.addOnItemTouchListener(
-
-                                        new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                                            @Override
-                                            public void onItemClick(View view, int position) {
-                                                if(InternetConnectionStatus.checkConnection(CoolberryMainActivity.this)){
-                                                    CampaignItemData campaign = itemData.get(position);
-                                                    Log.i(TAG, "campaign clicked=" + campaign.getId());
-                                                    Intent i = new Intent(getApplicationContext(), CoolberryItemsTabActivity.class);
-                                                    i.putExtra("campaignId", campaign.getId());
-                                                    i.putExtra(ApiConstants.CAMPAIGN_TYPE, campaignType);
-                                                    startActivity(i);
-                                                }else {
-                                                    Toast.makeText(CoolberryMainActivity.this, "Unable to connect to server. " +
-                                                            "please check your network connection", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        })
-                                );
+                                else {
+                                    Log.i(TAG,"campaign is inactive");
+                                }
                             }
+                            SharedPreferences.Editor editor = mSharedPrefs.edit();
+                            editor.putBoolean(CatalogSharedPrefs.IS_CAMPAIGN_LIST_LOADED, true);
+                            editor.commit();
 
-                        } catch (SQLException e) {
-                            e.printStackTrace();
+                        } else {
+                            listCategory.setLayoutManager(new GridLayoutManager(CoolberryMainActivity.this, 2));
+                            RecyclerFeedBackAdapter mAdapter = new RecyclerFeedBackAdapter(itemData, CoolberryMainActivity.this);
+                            listCategory.setAdapter(mAdapter);
+                            listCategory.setItemAnimator(new DefaultItemAnimator());
+                            RecyclerViewGridSpacing spacing = new RecyclerViewGridSpacing(getApplicationContext(), R.dimen.item_offset);
+                            listCategory.addItemDecoration(spacing);
+                            listCategory.addOnItemTouchListener(
+                                new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(View view, int position) {
+                                        if(InternetConnectionStatus.checkConnection(CoolberryMainActivity.this)){
+                                            CampaignItemData campaign = itemData.get(position);
+                                            Log.i(TAG, "campaign clicked=" + campaign.getId());
+                                            Intent i = new Intent(getApplicationContext(), CoolberryItemsTabActivity.class);
+                                            i.putExtra("campaignId", campaign.getId());
+                                            i.putExtra(ApiConstants.CAMPAIGN_TYPE, campaignType);
+                                            startActivity(i);
+                                        }else {
+                                            Toast.makeText(CoolberryMainActivity.this, "Unable to connect to server. " +
+                                                    "please check your network connection", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                })
+                            );
                         }
-                    }
-                    @Override
-                    public void onError(VolleyError error) {
-                        Log.e(TAG, "Error getting campaign list=" + error.getMessage());
-                        Toast.makeText(getApplicationContext(), "Something went wrong...please try again later", Toast.LENGTH_SHORT).show();
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
                 }
+                @Override
+                public void onError(VolleyError error) {
+                    Log.e(TAG, "Error getting campaign list=" + error.getMessage());
+                    Toast.makeText(getApplicationContext(), "Something went wrong...please try again later", Toast.LENGTH_SHORT).show();
+                }
+            }
         );
         pDialog.dismiss();
     }
@@ -363,7 +369,7 @@ public class CoolberryMainActivity extends AppCompatActivity {
             File root = android.os.Environment.getExternalStorageDirectory();
             File dir = new File (root.getAbsolutePath() + "/campaigns/");
 
-            if(dir.exists()==false) {
+            if(!dir.exists()) {
                 dir.mkdirs();
             }
 
@@ -394,8 +400,6 @@ public class CoolberryMainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Object o) {
-            //pDialog.dismiss();
-        }
+        protected void onPostExecute(Object o) {}
     }
 }

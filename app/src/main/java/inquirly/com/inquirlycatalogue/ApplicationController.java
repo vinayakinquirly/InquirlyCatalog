@@ -36,20 +36,16 @@ import io.branch.referral.Branch;
  */
 public class ApplicationController extends Application {
 
-    private int position;
     private Context context;
     private SQLiteDataBase mydb;
     private ImageLoader mImageLoader;
     private RequestQueue mRequestQueue;
     private static String mFeedbackLink;
-    private String itemPresent,itemReceived;
-    private ProgressDialog addingItemDialog;
     private  ArrayList<CartItem> mCartItems;
-    private SharedPreferences sharedPreferences;
     private static Float mTotalCartAmount = 0.0f;
     private static ApplicationController mInstance;
-    private HashSet<String> cartItemName = new HashSet<>();
     public static HashMap<String,ArrayList<Fields>> mItemFields;
+    private SharedPreferences sharedPreferences,sharedPreferences2;
     public static final String TAG = ApplicationController.class.getSimpleName();
 
     @Override
@@ -359,6 +355,7 @@ public class ApplicationController extends Application {
 
     public String getImage(String image){
         sharedPreferences = getSharedPreferences(CatalogSharedPrefs.KEY_CUSTOM_THEME,MODE_PRIVATE);
+        sharedPreferences2 = getSharedPreferences(CatalogSharedPrefs.KEY_NAME,MODE_PRIVATE);
         String url,urlfinal = null;
         switch (image){
             case "bg_1":
@@ -406,6 +403,15 @@ public class ApplicationController extends Application {
                 urlfinal = url;
                 break;
 
+            case "security_token":
+                url = sharedPreferences2.getString(CatalogSharedPrefs.KEY_SEC_TOKEN,null);
+                urlfinal = url;
+                break;
+
+            case "last_updated":
+                url = sharedPreferences2.getString(CatalogSharedPrefs.KEY_LAST_UPDATED,null);
+                urlfinal = url;
+                break;
         }
         return urlfinal;
     }

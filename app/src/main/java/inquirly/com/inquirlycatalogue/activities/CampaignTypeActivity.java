@@ -17,22 +17,20 @@ import android.content.DialogInterface;
 import inquirly.com.inquirlycatalogue.R;
 import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.support.v7.app.AppCompatActivity;
 import inquirly.com.inquirlycatalogue.utils.ApiConstants;
 import inquirly.com.inquirlycatalogue.ApplicationController;
 import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
 import inquirly.com.inquirlycoolberry.Activity.CoolberryMainActivity;
+import inquirly.com.inquirlycoolberry.service.UpdateMenuTimerReceiver;
 
 public class CampaignTypeActivity extends AppCompatActivity {
 
     private EditText input;
-    private Boolean showFeedback = true;
     public AlertDialog.Builder alertDialog;
     public static String catalougeView,userId;
     public Button btn_feedback, btn_catalogue;
     public String themeResponse,color_1,color_2;
-    public CardView card_catalogue,card_feedback;
     private static final String TAG = "CampaignTypeActivity";
     public ImageView type_back_1,type_back_2,type_back_3,type_logo;
     public SharedPreferences mSharedPrefs,sharedPreferences,sPrefs;
@@ -53,7 +51,7 @@ public class CampaignTypeActivity extends AppCompatActivity {
         sPrefs = this.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
         sharedPreferences = getSharedPreferences(CatalogSharedPrefs.KEY_CUSTOM_THEME, Context.MODE_PRIVATE);
         catalougeView = sharedPreferences.getString(CatalogSharedPrefs.CATALOG_VIEW,null);
-        showFeedback = sharedPreferences.getBoolean(CatalogSharedPrefs.SHOW_FEEDBACK,false);
+        Boolean showFeedback = sharedPreferences.getBoolean(CatalogSharedPrefs.SHOW_FEEDBACK, false);
 
         color_1 = sharedPreferences.getString(CatalogSharedPrefs.COLOR_1,null);
         color_2 = sharedPreferences.getString(CatalogSharedPrefs.COLOR_2,null);
@@ -63,8 +61,6 @@ public class CampaignTypeActivity extends AppCompatActivity {
         mSharedPrefs.getBoolean(CatalogSharedPrefs.KEY_TABLE_ID_SELECTED, false);
         setContentView(R.layout.activity_campaign_type);
 
-//        card_feedback = (CardView) findViewById(R.id.card_feedback);
-//        card_catalogue = (CardView) findViewById(R.id.card_catalogue);
         btn_feedback = (Button) findViewById(R.id.btn_feedback);
         btn_catalogue = (Button) findViewById(R.id.btn_catalogue);
 
@@ -72,13 +68,11 @@ public class CampaignTypeActivity extends AppCompatActivity {
             btn_feedback.setVisibility(View.GONE);
         }
 
-        if(catalougeView!=null&& (showFeedback!=null)&& (color_1!=null) && (color_2!=null) ){
+        if(catalougeView!=null&& (showFeedback !=null)&& (color_1!=null) && (color_2!=null) ){
             btn_feedback.setBackgroundColor(Color.parseColor(color_1));
             btn_catalogue.setBackgroundColor(Color.parseColor(color_1));
             btn_feedback.setTextColor(getResources().getColor(android.R.color.white));
             btn_catalogue.setTextColor(getResources().getColor(android.R.color.white));
-        }else {
-//            Toast.makeText(CampaignTypeActivity.this, "Please Re-Login into app", Toast.LENGTH_SHORT).show();
         }
 
         type_back_1= (ImageView)findViewById(R.id.type_back_1);
@@ -101,7 +95,11 @@ public class CampaignTypeActivity extends AppCompatActivity {
                 Log.i(TAG,"view check----" + catalougeView);
                 if(catalougeView!=null) {
                     if (catalougeView.equals("food_menu_view")) {
+
                         Log.i(TAG, "food menu entered");
+                        /*------------BACKGROUND SERVICE CALLED-------------*/
+                        UpdateMenuTimerReceiver.setupAlarm(getApplicationContext());
+
                         Intent intent = new Intent(getApplicationContext(), CoolberryMainActivity.class);
                         intent.putExtra(ApiConstants.CAMPAIGN_TYPE, ApiConstants.CAMPAIGN_TYPE_CATALOG);
                         startActivity(intent);
@@ -142,7 +140,7 @@ public class CampaignTypeActivity extends AppCompatActivity {
         }
     }
 
-    private void showpopup() {
+/*    private void showpopup() {
         final SharedPreferences.Editor editor = mSharedPrefs.edit();
 
         input = new EditText(CampaignTypeActivity.this);
@@ -175,12 +173,12 @@ public class CampaignTypeActivity extends AppCompatActivity {
                             startActivity(i);
                             editor.putString(CatalogSharedPrefs.TABLE_NAME, table_name);
                             editor.putBoolean(CatalogSharedPrefs.KEY_TABLE_ID_SELECTED, true);
-                            editor.commit();
+                            editor.apply();
                         }
                     }
                 });
         alertDialog.show();
-    }
+    }*/
 
     @Override
     public void onNewIntent(Intent intent) {

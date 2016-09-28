@@ -22,8 +22,6 @@ import android.widget.ImageView;
 import android.graphics.Typeface;
 import android.widget.LinearLayout;
 import android.view.LayoutInflater;
-
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import inquirly.com.inquirlycatalogue.R;
 import android.content.SharedPreferences;
@@ -43,16 +41,15 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
 
     private Context mContext;
     private CartItem cartItem;
-    public String mCampaignId,propsJson,termsJson;
+    private SharedPreferences prefs;
     public ArrayList<Fields> fieldList;
-    JSONObject termsJsonObject;
+    private LinearLayout contentLayout;
     public static String callFrom,color;
-    private LinearLayout contentLayout ;
-    private Gson gson = new Gson();
     public ArrayList<CampaignDbItem> dbitem;
+    public String mCampaignId,propsJson,termsJson;
     private static final String TAG = "CoolItemsTabAdapter";
-    private ArrayList<CartItem> cartItemList = new ArrayList<>();
     final HashMap<String,View> mOptionWidgets = new HashMap<>();
+    private ArrayList<CartItem> cartItemList = new ArrayList<>();
     final HashMap<String,String> mOptionValues = new HashMap<>();
     private HashMap<String, ArrayList<Fields>> propertyList = new HashMap<>();
     private ApplicationController appInstance = ApplicationController.getInstance();
@@ -60,16 +57,15 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
     public CoolberryItemsTabAdapter(ArrayList<CampaignDbItem> itemsData,
                                     String mCampaignId,String callFrom,Context ctx) {
 
-        this.dbitem = itemsData;
-        this.mCampaignId =mCampaignId;
-        this.callFrom = callFrom;
         this.mContext = ctx;
+        this.dbitem = itemsData;
+        this.callFrom = callFrom;
+        this.mCampaignId =mCampaignId;
+        color = appInstance.getImage("color_1");
         cartItemList = appInstance.getCartItems();
         Log.i(TAG,"size----" +cartItemList.size());
-        color = appInstance.getImage("color_1");
-        SharedPreferences prefs = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
+        prefs = mContext.getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
         propsJson = prefs.getString(mCampaignId + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, null);
-        termsJson = prefs.getString(mCampaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, null);
         buildItemProperties();
     }
 
@@ -87,12 +83,6 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         final CampaignDbItem item = dbitem.get(position);
         Log.i(TAG,"items----" + item.getItemName() + "----" + position + "---" + item.getType());
-
-        try {
-            termsJsonObject = new JSONObject(termsJson);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         viewHolder.txtViewTitle.setTextColor(Color.parseColor(color));
         viewHolder.food_item_price.setBackgroundColor(Color.parseColor(color));
@@ -150,17 +140,19 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                 for(int i=0;i<propertyList.get(item.getType()).size();i++) {
                     Log.i(TAG, "check fieldList ---" +  propertyList.get(item.getType()).get(i).getLabel());
                 }
+
                 String note=null;
                 if(propertyList.get(item.getType()).size()>1) {
+                    termsJson = prefs.getString(mCampaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, null);
+                    Log.i(TAG,"check terms & conditions---" + termsJson);
                     try {
-                        note = termsJsonObject.getString(item.getType());
+                        JSONObject jsonObject = new JSONObject(termsJson);
+                        note = jsonObject.getString(item.getType());
                         Log.i(TAG,"check note rec--" + note);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    if (note!=null) {
-                        createDialogBox(item.getItemCode(), finalQty[0], item.getType(),note);
-                    }
+                    createDialogBox(item.getItemCode(), finalQty[0], item.getType(),note);
                 }
             }
         });
@@ -168,7 +160,6 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         viewHolder.item_sub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                     if (viewHolder.item_qty.getText().toString().equals("0")) {
                         Toast.makeText(mContext, "sorry! Cannot be less then 0", Toast.LENGTH_SHORT).show();
                     } else if (viewHolder.item_qty.getText().toString().equals("1")) {
@@ -301,7 +292,12 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         final Button save_custom_item = (Button)dialogView.findViewById(R.id.btn_save_item);
         final Button cancel_save = (Button)dialogView.findViewById(R.id.btn_cancel_item);
 
-        t_and_c.setText(note);
+        if(note!=null) {
+            t_and_c.setText(note);
+        } else{
+          note ="";
+            t_and_c.setText(note);
+        }
 
         itemNum.setText(String.valueOf(itemQty));
         JSONObject data=null;

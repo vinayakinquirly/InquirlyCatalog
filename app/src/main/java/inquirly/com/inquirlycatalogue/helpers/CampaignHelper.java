@@ -84,11 +84,6 @@ public class CampaignHelper {
                     editor.putString(campaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, item_tac.toString());
                 }
 
-//                if(termsConditions != null) {
-//                    Log.i(TAG, "inserting terms & condition json=" + termsConditions);
-//                    editor.putString(campaignId + "_" + CatalogSharedPrefs.KEY_TERMS_CONDITIONS, termsConditions);
-//                }
-
                 editor.apply();
                 campaignList.add(campaign);
             }

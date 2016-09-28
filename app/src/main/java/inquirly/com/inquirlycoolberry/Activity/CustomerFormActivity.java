@@ -6,7 +6,6 @@ import android.view.View;
 import java.util.HashMap;
 import org.json.JSONArray;
 import java.util.ArrayList;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.view.Window;
@@ -336,7 +335,6 @@ public class CustomerFormActivity extends AppCompatActivity {
                 Log.i(TAG, "jsonArray json" + jsonArray.length() + "---jsonArray--" + jsonArray.toString());
 
                 for (int index = 0; index < jsonArray.length(); index++) {
-                    //read all the item properties
                     JSONObject obj = jsonArray.getJSONObject(index);
                     Fields field = new Fields();
                     field.setType(obj.getString("type"));
@@ -345,7 +343,6 @@ public class CustomerFormActivity extends AppCompatActivity {
                     JSONArray optionsArray = obj.getJSONArray("options");
                     String[] options = new String[optionsArray.length()];
 
-                    //loop through options array
                     for (int c = 0; c < optionsArray.length(); c++) {
                         Log.i(TAG, "optionsArray--->" + optionsArray.getString(c));
                         options[c] = optionsArray.getString(c);

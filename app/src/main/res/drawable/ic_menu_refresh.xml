@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/ic_notification"
-        android:drawable="@mipmap/cart"
+        android:drawable="@mipmap/refresh"
         android:gravity="left" />
 
     <!-- set a place holder Drawable so android:drawable isn't null -->
     <item
         android:id="@+id/ic_badge"
-        android:drawable="@mipmap/cart"
-       />
+        android:drawable="@mipmap/refresh"
+        />
 </layer-list>

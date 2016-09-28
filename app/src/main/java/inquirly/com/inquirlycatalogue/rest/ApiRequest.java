@@ -3,11 +3,18 @@ package inquirly.com.inquirlycatalogue.rest;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.Log;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.TimeZone;
+
 import com.google.gson.Gson;
 import org.json.JSONException;
 import android.content.Context;
@@ -28,8 +35,9 @@ import inquirly.com.inquirlycatalogue.ApplicationController;
  * Created by binvij on 11/12/15.
  */
 public class ApiRequest {
+
     private static final String TAG = "ApiRequest";
-    Context mContext;
+    private static ApplicationController appInstance = ApplicationController.getInstance();
 
     public static void postOrder(OrderItem item, String url, final IRequestCallback callback) {
         Gson gson = new Gson();
@@ -122,7 +130,7 @@ public class ApiRequest {
     public static void getCampaignList(final String securityToken,final String campaignType,final IRequestCallback callback) {
         Map<String, String> jsonParams = new HashMap<String, String>();
         jsonParams.put("type", campaignType);
-        Log.i(TAG, "security token="+securityToken + "jsonObejct Sent---" + jsonParams);
+        Log.i(TAG, "final post json--" + jsonParams.toString());
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
                 ApiConstants.API_CAMPAIGN_LIST,
@@ -363,4 +371,43 @@ public class ApiRequest {
         ApplicationController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
+    public static void getUpdates(final String security_token,final IRequestCallback callback){
+
+        JSONObject jsonUpdate = new JSONObject();
+        try {
+            jsonUpdate.put("ts",appInstance.getImage("last_updated"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.i(TAG,"final post Json--" + jsonUpdate.toString());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                ApiConstants.API_CAFE_UPDATE,
+                jsonUpdate,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        callback.onSuccess(jsonObject);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        callback.onError(volleyError);
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put(ApiConstants.CONTENT_TYPE, ApiConstants.APPLICATION_JSON);
+                    headers.put(ApiConstants.ACCEPT, ApiConstants.APPLICATION_JSON);
+                    headers.put("UserSecurityToken",security_token);
+                    return headers;
+                }
+        };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 60, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        ApplicationController.getInstance().addToRequestQueue(jsonObjectRequest);
+    }
 }

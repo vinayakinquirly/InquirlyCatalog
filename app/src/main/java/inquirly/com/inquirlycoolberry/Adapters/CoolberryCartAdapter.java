@@ -68,8 +68,8 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
         final int itemCount = item.getItemQuantity();
         final int qty = item.getItemQuantity();
         Log.i("qty is:", String.valueOf(qty));
-        String customiseData = appInstance.getCustomItemData(item.getItemCode());
 
+        String customiseData = appInstance.getCustomItemData(item.getItemCode());
         viewHolder.item_quantity.setText(String.valueOf(appInstance.getCartItems().
                 get(position).getItemQuantity()));
         Log.i(TAG,"check position---" + position + "--qty--" + qty + "--name--" + item.getItemName());
@@ -153,7 +153,6 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                 customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
                         cartItem.getItemQuantity(),propJson,item.getItemType(),item.getItemCode());
 
-                //CoolBerryCartActivity.mTxtTotalPrice.setText(String.valueOf(newTotalPrice[0]));
                 viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
             }
         });
@@ -168,15 +167,12 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     Toast.makeText(mContext, "minimum Quantity reached.", Toast.LENGTH_SHORT).show();
                 }else {
                     newPrice[0] = (currentPrice[0] / currentQty[0]);
-                    Log.i(TAG, " currentQty--->" + currentQty[0] + " currentPrice--->" + currentPrice[0]);
                     newQty[0] = currentQty[0] - 1;
                     newPrice[0] = (newPrice[0] * newQty[0]);
 
-                    Log.i(TAG, "Qty-->" + newQty[0] + " Price--->" + newPrice[0]);
                     qtyToSent.remove(position);
                     qtyToSent.add(newQty[0]);
 
-                    Log.i(TAG,"newQty---" + newQty[0]);
                     int num = newQty[0]+1;
                     appInstance.deleteCustomItemDataJson(item.getItemCode(),num);
 
@@ -196,30 +192,20 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
                             cartItem.getItemQuantity(), propJson,item.getItemType(),item.getItemCode());
 
-                    //CoolBerryCartActivity.mTxtTotalPrice.setText(String.valueOf(newTotalPrice[0]));
                     viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
                 }
             }
         });
 
         isClicked = 1;
-        final int[] itemOpenPos = {0};
-        final CardView[] cardView = {null};
+        final int currentPos = position;
         viewHolder.cart_item_card.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
-                Log.i(TAG,"check visibiltiy---" + viewHolder.tag_custom.getVisibility());
                 if(viewHolder.tag_custom.getVisibility()==View.VISIBLE) {
                     ViewGroup.LayoutParams params = viewHolder.cart_item_card.getLayoutParams();
                     if (isClicked == 1) {
-                        Log.i(TAG,"entered in cardView[0]----" + cardView[0]);
-                        if(cardView[0]!=null){
-                            Log.i(TAG,"entered in cardView[0]");
-                            params.width= card_width;
-                            params.height = 120;
-                            viewHolder.cart_item_card.setLayoutParams(params);
-                        }
                         params.width= card_width;
                         params.height = -2;
                         viewHolder.cart_item_card.setLayoutParams(params);
@@ -228,17 +214,9 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                         customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
                                 itemQty, propJson, item.getItemType(), item.getItemCode());
                         viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
-                        Log.i(TAG,"Check item parent---"+viewHolder.cart_item_card.getHeight() + "---" +
-                        viewHolder.cart_item_card.getWidth());
-                        itemOpenPos[0] = position;
-                        cardView[0] = viewHolder.cart_item_card;
-                        Log.i(TAG,"cardView---" + cardView[0]);
                         isClicked = 2;
                     } else {
                         isClicked = 1;
-                        Log.i(TAG,"Check item parent---"+viewHolder.cart_item_card.getHeight() + "---" +
-                                viewHolder.cart_item_card.getWidth());
-                        itemOpenPos[0] = position;
                         params.width = card_width;
                         params.height = card_height;
                         viewHolder.cart_item_card.setLayoutParams(params);
@@ -255,8 +233,8 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private TableRow tag_custom;
         public ImageView item_img;
+        private TableRow tag_custom;
         private ImageView cancel_img;
         private CardView cart_item_card;
         public RecyclerView customizeCartItemList;
@@ -272,8 +250,8 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
             item_quantity =(TextView) itemLayoutView.findViewById(R.id.food_item_qty);
             cancel_img    =(ImageView)itemLayoutView.findViewById(R.id.food_item_delete);
             item_img      =(ImageView) itemLayoutView.findViewById(R.id.food_item_image);
-            cart_item_card = (CardView)itemLayoutView.findViewById(R.id.cart_item_card);
-            tag_custom = (TableRow)itemLayoutView.findViewById(R.id.tag_customize);
+            cart_item_card= (CardView)itemLayoutView.findViewById(R.id.cart_item_card);
+            tag_custom    = (TableRow)itemLayoutView.findViewById(R.id.tag_customize);
             customizeCartItemList = (RecyclerView)itemLayoutView.findViewById(R.id.customizeCartItemList);
 
             ViewGroup.LayoutParams layoutParams = cart_item_card.getLayoutParams();

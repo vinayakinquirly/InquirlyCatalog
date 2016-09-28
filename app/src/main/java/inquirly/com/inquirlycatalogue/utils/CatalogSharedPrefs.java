@@ -21,6 +21,7 @@ public class CatalogSharedPrefs {
     public static final String TABLE_NAME = "tableNumber";
     public static final String KEY_CLIENT_NAME = "clientName";
     public static final String IS_FROM_DEEPLINKING = "is_from_deeplinking";
+    public static final String KEY_LAST_UPDATED = "last_updated";
 
     /*--------------------------------------CUSTOM THEME------------------------------------------*/
 
