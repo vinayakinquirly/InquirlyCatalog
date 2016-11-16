@@ -183,6 +183,8 @@ public class CoolBerryCartActivity extends AppCompatActivity {
                                 Log.i(TAG,"propjsonarray---" + propJsonArray.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            }catch( NullPointerException nullException){
+                                Log.i(TAG,"null exception---" + nullException.getMessage());
                             }
                         }
 

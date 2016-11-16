@@ -48,9 +48,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
     public ArrayList<CampaignDbItem> dbitem;
     public String mCampaignId,propsJson,termsJson;
     private static final String TAG = "CoolItemsTabAdapter";
-    final HashMap<String,View> mOptionWidgets = new HashMap<>();
     private ArrayList<CartItem> cartItemList = new ArrayList<>();
-    final HashMap<String,String> mOptionValues = new HashMap<>();
     private HashMap<String, ArrayList<Fields>> propertyList = new HashMap<>();
     private ApplicationController appInstance = ApplicationController.getInstance();
 
@@ -159,38 +157,35 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         viewHolder.item_sub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    if (viewHolder.item_qty.getText().toString().equals("0")) {
-                        Toast.makeText(mContext, "sorry! Cannot be less then 0", Toast.LENGTH_SHORT).show();
-                    } else if (viewHolder.item_qty.getText().toString().equals("1")) {
-                        Toast.makeText(mContext, "Please delete item from cart!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        i[0] = Integer.parseInt(viewHolder.item_qty.getText().toString());
-                        i[0]--;
-                        Log.i(TAG, "check i[0]---" + i[0]);
-                        cartItem.setItemName(item.getItemName());
-                        cartItem.setItemQuantity(i[0]);
+                if (viewHolder.item_qty.getText().toString().equals("0")) {
+                    Toast.makeText(mContext, "sorry! Cannot be less then 0", Toast.LENGTH_SHORT).show();
+                } else if (viewHolder.item_qty.getText().toString().equals("1")) {
+                    Toast.makeText(mContext, "Please delete item from cart!", Toast.LENGTH_SHORT).show();
+                } else {
+                    i[0] = Integer.parseInt(viewHolder.item_qty.getText().toString());
+                    i[0]--;
+                    Log.i(TAG, "check i[0]---" + i[0]);
+                    cartItem.setItemName(item.getItemName());
+                    cartItem.setItemQuantity(i[0]);
 
-                        int totalprice = (i[0] * item.getPrice());
+                    int totalprice = (i[0] * item.getPrice());
 
-                        cartItem.setItemPrice(String.valueOf(totalprice));
-                        cartItem.setItemCode(item.getItemCode());
-                        Log.i(TAG, "check Imageurl--->" + item.getPrimaryImage());
-                        cartItem.setItemImage(item.getPrimaryImage());
-                        cartItem.setItemType(item.getType());
-                        cartItem.setCampaignId(item.getCampaignId());
-                        appInstance.saveItemInDb(cartItem);
-                        viewHolder.item_qty.setText(String.valueOf(i[0]));
-                        CoolberryItemsTabActivity.setCartCount();
-                    }
+                    cartItem.setItemPrice(String.valueOf(totalprice));
+                    cartItem.setItemCode(item.getItemCode());
+                    Log.i(TAG, "check Imageurl--->" + item.getPrimaryImage());
+                    cartItem.setItemImage(item.getPrimaryImage());
+                    cartItem.setItemType(item.getType());
+                    cartItem.setCampaignId(item.getCampaignId());
+                    appInstance.saveItemInDb(cartItem);
+                    viewHolder.item_qty.setText(String.valueOf(i[0]));
+                    CoolberryItemsTabActivity.setCartCount();
+                }
             }
         });
 
         try{
             Uri uri = Uri.fromFile(new File(item.getPrimaryImage()));
             Log.i(TAG,"tab images---" + uri);
-
-            // original .resize(600,350)
-            // original .resize(900,465)
 
             Picasso.with(mContext).load(uri).resize(900,465).centerCrop().placeholder(R.drawable.placeholder_check_2)
                     .into(viewHolder.imgViewIcon);
@@ -280,11 +275,11 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         }
     }
 
-    public void createDialogBox(final String itemName, int itemQty,String type,String note){
+    public void createDialogBox(final String itemCode, int itemQty,String type,String note){
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.layout_custom_item, null);
-        contentLayout = (LinearLayout) dialogView.findViewById(R.id.custom_data_area);
 
+        contentLayout = (LinearLayout) dialogView.findViewById(R.id.custom_data_area);
         final TextView friendsName= (TextView)dialogView.findViewById(R.id.friend_name);
         final TextView itemNum = (TextView)dialogView.findViewById(R.id.item_count);
         final TextView t_and_c= (TextView)dialogView.findViewById(R.id.terms_conditions);
@@ -300,11 +295,9 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
 
         itemNum.setText(String.valueOf(itemQty));
         JSONObject data=null;
-        Log.i(TAG,"dialog--" + mOptionWidgets.size() + "---" + mOptionValues.size() + "---"
-                + propertyList.get(type));
 
-        CommonMethods.addSpecificationsToDialog(mOptionWidgets,mOptionValues,contentLayout,
-                propertyList.get(type),mContext,data);
+        CommonMethods.addSpecificationsToDialog(contentLayout,
+                propertyList.get(type),mContext,null);
         dialogBuilder.setView(dialogView);
 
         dialogBuilder.setTitle("Select Options");
@@ -318,51 +311,25 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
             public void onClick(View view) {
                 final String name = friendsName.getText().toString();
                 final int num = Integer.parseInt(itemNum.getText().toString());
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                            try {
-                                if (appInstance.saveCustomItemJson(itemName, num,
-                                        CommonMethods.generateItemDetails(mOptionWidgets,mOptionValues, name, num, contentLayout))) {
-                                    Log.v(TAG, "saved successfully");
-                                    save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
-                                    save_custom_item.setText("SAVED");
-                                    Toast.makeText(mContext, "item saved successfully!", Toast.LENGTH_SHORT).show();
-                                    new Handler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            dialog.dismiss();
-                                        }
-                                    }, 500);
-                                } else {
-                                    Toast.makeText(mContext, "Please try again! Some Error occurred.", Toast.LENGTH_SHORT).show();
-                                    new Handler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            dialog.dismiss();
-                                        }
-                                    }, 500);
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                    }
-                },180);
-            }
-        });
 
-        cancel_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        final String name = friendsName.getText().toString();
-                        final int num = Integer.parseInt(itemNum.getText().toString());
                         try {
-                            if (appInstance.saveCustomItemJson(itemName, num,
-                                    CommonMethods.generateItemDetails(mOptionWidgets,mOptionValues, name, num, contentLayout))) {
+                            if (appInstance.saveCustomItemJson(itemCode, num,
+                                    CommonMethods.generateItemDetails(name, num, contentLayout))) {
                                 Log.v(TAG, "saved successfully");
+                                save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
+                                save_custom_item.setText("SAVED");
+                                Toast.makeText(mContext, "item saved successfully!", Toast.LENGTH_SHORT).show();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        dialog.dismiss();
+                                    }
+                                }, 500);
+                            } else {
+                                Toast.makeText(mContext, "Please try again! Some Error occurred.", Toast.LENGTH_SHORT).show();
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -375,6 +342,14 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                         }
                     }
                 },180);
+            }
+        });
+
+        cancel_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                appInstance.deleteCartItem(itemCode);
             }
         });
     }

@@ -97,7 +97,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"check position---" + position);
-                ApplicationController.getInstance().deleteCartItem(mItems.get(position));
+                ApplicationController.getInstance().deleteCartItem(mItems.get(position).getItemCode());
                 ApplicationController.getInstance().deleteCustomData(item.getItemCode());
                 mItems.remove(position);
                 notifyItemRemoved(position);
@@ -111,7 +111,7 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                     @Override
                     public void run() {
                     }
-                },500);
+                },100);
             }
         });
 

@@ -33,10 +33,11 @@ import inquirly.com.inquirlycatalogue.models.Fields;
  */
 public class CommonMethods  {
 
-    private static Typeface font;
     private static boolean hasEditText = false;
     private static final String TAG = "CommonMethods";
     private static JSONObject jsonObject = new JSONObject();
+    private static HashMap<String,View> mOptionWidgetsLocal = new HashMap<>();
+    private static HashMap<String,String> mOptionValuesLocal = new HashMap<>();
 
     @IdRes
     private static final int ID_MALE = 1;
@@ -50,13 +51,12 @@ public class CommonMethods  {
     @IdRes
     private static final int ID_NO = 4;
 
-    public static void addSpecificationsToDialog(HashMap<String,View> mOptionWidgets,HashMap<String,String> mOptionValues,
-                                          LinearLayout layout, ArrayList<Fields> itemFields,Context mContext,
+    public static void addSpecificationsToDialog(LinearLayout layout, ArrayList<Fields> itemFields,Context mContext,
                                                  JSONObject data){
-        Log.i(TAG,"mOptionvalues--" + mOptionValues.size() + "----" + mOptionWidgets.size()
-                + "---" + itemFields.size());
+        HashMap<String,View> mOptionWidgets = new HashMap<>();
+        HashMap<String,String> mOptionValues = new HashMap<>();
 
-        font  = Typeface.createFromAsset(mContext.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
+        Typeface font = Typeface.createFromAsset(mContext.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         try{
             for(Fields field : itemFields) {
 
@@ -190,14 +190,18 @@ public class CommonMethods  {
                     List<String> items;
 
                     Log.i(TAG,"check data rec---" + data);
-                    if(data!=null){
-                        Log.i(TAG,"check data rec---" + data.toString());
-                        items = Arrays.asList(data.getString(field.getLabel()).split("\\s*,\\s*"));
-                        Log.i(TAG,"check item array--" + itemsArray.toString());
-                        for(int i=0;i<items.size();i++){
-                            itemsArray.add(items.get(i));
+                    if(data!=null) {
+                        try {
+                            Log.i(TAG, "check data rec---" + data.toString());
+                            items = Arrays.asList(data.getString(field.getLabel()).split("\\s*,\\s*"));
+                            Log.i(TAG, "check item array--" + itemsArray.toString());
+                            for (int i = 0; i < items.size(); i++) {
+                                itemsArray.add(items.get(i));
+                            }
+                            labelItemSel.setText(String.valueOf(items.size()) + " selected");
+                        }catch (JSONException e){
+                            Log.i(TAG,"jsonException---->" + e.getMessage());
                         }
-                        labelItemSel.setText(String.valueOf(items.size())+ " selected");
                     }
 
                     CustomArrayAdapter myAdapter = new CustomArrayAdapter(mContext,R.layout.layout_spinner,
@@ -337,13 +341,14 @@ public class CommonMethods  {
                     layout.addView(innerLayout);
                 }
             }
-            for(int i=0;i<mOptionWidgets.size();i++){
-                mOptionWidgets.remove(i);
-            }
+            mOptionWidgetsLocal = mOptionWidgets;
+            mOptionValuesLocal = mOptionValues;
+
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+        jsonObject = new JSONObject();
     }
 
     public static class CustomArrayAdapter extends ArrayAdapter<String> {
@@ -423,19 +428,16 @@ public class CommonMethods  {
                     }
                 }
             });
-//            jsonObject = null;
-//            jsonObject = new JSONObject();
+            for(int i=0;i<selectedStrings.size();i++){
+                selectedStrings.remove(i);
+            }
             return row;
         }
     }
 
-    public static String generateItemDetails(HashMap<String,View> mOptionWidgets, HashMap<String,String> mOptionValues,
-                                      String name,int num,LinearLayout contentLayout) throws JSONException {
+    public static String generateItemDetails(String name,int num,LinearLayout contentLayout) throws JSONException {
 
-//        if(comingFrom.equals("tabAdapter")){
-//            jsonObject = new JSONObject();
-//        }
-        Log.i(TAG,"check Json recevied--" + mOptionValues+"--");
+        Log.i(TAG,"check Json recevied--" + mOptionValuesLocal+"--");
         HashMap<String, String[]> options = new HashMap<>();
         String numValue = String.valueOf(num);
         jsonObject.put("tag",name);
@@ -444,7 +446,7 @@ public class CommonMethods  {
         for (int iChild = 0; iChild < contentLayout.getChildCount(); iChild++) {
             LinearLayout innerLayout = (LinearLayout) contentLayout.getChildAt(iChild);
             String key = (String) innerLayout.getChildAt(1).getTag();
-            View widget = mOptionWidgets.get(key);
+            View widget = mOptionWidgetsLocal.get(key);
             Log.v(TAG,"key value---" + key +"--" + widget);
 
             if (widget instanceof EditText) {
@@ -459,8 +461,8 @@ public class CommonMethods  {
                 Log.v(TAG, "check spinner---" + itemSelected);
                 options.put(key, new String[]{itemSelected});
                 Log.i(TAG,"check jsonObject-->" + jsonObject.toString());
-                if(mOptionValues!=null){
-                    String type = mOptionValues.get(key);
+                if(mOptionValuesLocal!=null){
+                    String type = mOptionValuesLocal.get(key);
                     if(type==null){
                         jsonObject.put(key, itemSelected);
                     }
@@ -498,7 +500,6 @@ public class CommonMethods  {
 //                jsonObject.put(key, mOptionValues.get(key));
 //            }
         }
-
         Log.i(TAG,"check json send ---" +jsonObject + "<----->");
         String jsonString;
         jsonString = jsonObject.toString();

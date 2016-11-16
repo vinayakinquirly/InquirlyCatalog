@@ -32,8 +32,6 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
     private String itemName,itemType;
     public ArrayList<Fields> fieldList;
     private static final String TAG = "CustomCartItemAdapter";
-    private  HashMap<String,View> mOptionWidgets = new HashMap<>();
-    private  HashMap<String,String> mOptionValues = new HashMap<>();
     public  HashMap<String, ArrayList<Fields>>  propertyList = new HashMap<>();
     private ApplicationController appInstance =  ApplicationController.getInstance();
 
@@ -80,19 +78,19 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
 
                     if (jsonObject.getJSONArray(itemName).getJSONObject(position).length() != 2){
                         Log.i(TAG, "if entered");
-                        CommonMethods.addSpecificationsToDialog(mOptionWidgets, mOptionValues, holder.contentLayout,
+                        CommonMethods.addSpecificationsToDialog(holder.contentLayout,
                                 fieldList, mContext, jsonObject1);
                     }else{
                         Log.i(TAG,"else entered--"  );
-                        CommonMethods.addSpecificationsToDialog(mOptionWidgets, mOptionValues, holder.contentLayout,
+                        CommonMethods.addSpecificationsToDialog(holder.contentLayout,
                                 fieldList, mContext, null);
                     }
                     holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
                     holder.save_custom_item.setText("SAVED");
                     Log.i(TAG, "json Object---" + jsonObject);
                 } else {
-                    CommonMethods.addSpecificationsToDialog(mOptionWidgets,mOptionValues,holder.contentLayout,
-                            fieldList, mContext,jsonObject1);
+                    CommonMethods.addSpecificationsToDialog(holder.contentLayout,
+                            fieldList, mContext, null);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -110,7 +108,7 @@ public class CustomizeCartItemAdapter extends RecyclerView.Adapter<CustomizeCart
                     public void run() {
                         try {
                             if(appInstance.saveCustomItemJson(itemName,num,
-                                    CommonMethods.generateItemDetails(mOptionWidgets,mOptionValues,name,num,holder.contentLayout))){
+                                    CommonMethods.generateItemDetails(name,num,holder.contentLayout))){
                                 Log.i(TAG,"saved successfully");
                                 holder.save_custom_item.setBackgroundColor(mContext.getResources().getColor(android.R.color.holo_green_light));
                                 holder.save_custom_item.setText("SAVED");

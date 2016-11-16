@@ -166,9 +166,9 @@ public class ApplicationController extends Application {
         return count;
     }
 
-    public void deleteCartItem(CartItem item){
+    public void deleteCartItem(String itemCode){
         mydb.open();
-        if(mydb.deleteCartItem(item.getItemCode())){
+        if(mydb.deleteCartItem(itemCode)){
             Log.i(TAG,"delete successfully");
             getCartItems();
         }else{
