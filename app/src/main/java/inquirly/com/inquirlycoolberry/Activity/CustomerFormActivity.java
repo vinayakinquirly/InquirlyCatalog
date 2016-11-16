@@ -4,15 +4,14 @@ import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
 import java.util.HashMap;
-import org.json.JSONArray;
 import java.util.ArrayList;
-import org.json.JSONException;
 import org.json.JSONObject;
 import android.view.Window;
 import com.google.gson.Gson;
 import android.widget.Toast;
 import android.view.MenuItem;
 import android.widget.Button;
+import org.json.JSONException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.widget.EditText;
@@ -35,20 +34,17 @@ import inquirly.com.inquirlycatalogue.models.PlaceOrderRes;
 import inquirly.com.inquirlycatalogue.ApplicationController;
 import inquirly.com.inquirlycatalogue.rest.IRequestCallback;
 import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
-import inquirly.com.inquirlycatalogue.utils.InternetConnectionStatus;
 import inquirly.com.inquirlycoolberry.Adapters.CoolberryCartAdapter;
+import inquirly.com.inquirlycatalogue.utils.InternetConnectionStatus;
 
 public class CustomerFormActivity extends AppCompatActivity {
 
-    private String color;
     public Intent intent;
     public Button btn_pay;
     private int pipeline_id;
     private Gson gson = new Gson();
     public static String mCampaignId;
     private ProgressDialog orderDialog;
-    private ArrayList<Fields> fieldList;
-    private TextView bill_total,view_bill;
     public ArrayList<ItemBillReq.Items> itemsList;
     private ItemBillReq billRes = new ItemBillReq();
     public ArrayList<ItemBillReq.Items> itemDetails;
@@ -65,15 +61,15 @@ public class CustomerFormActivity extends AppCompatActivity {
     private ApplicationController instance = ApplicationController.getInstance();
     private ApplicationController appInstance = ApplicationController.getInstance();
     public static HashMap<String, ArrayList<Fields>>  propertyList = new HashMap<>();
+    private String catalog_group,sec_token,image_url,billReceived,taxJsonList,itemRes;
     private ArrayList<ItemBillReq.CustomerDetails> customerDetailsList = new ArrayList<>();
-    private String propsJson,catalog_group, sec_token,image_url,billReceived,taxJsonList,itemRes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         intent = getIntent();
         billReceived = intent.getStringExtra("billJson");
         billRes = gson.fromJson(billReceived,ItemBillReq.class);
-        color = appInstance.getImage("color_1");
+        String color = appInstance.getImage("color_1");
 
         for(int i=0;i<billRes.getBill().getTaxes().size();i++){
             taxesList.add(billRes.getBill().getTaxes().get(i));
@@ -94,12 +90,13 @@ public class CustomerFormActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_customer_form);
         setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(Color.parseColor(color));
 
         form_back_1 = (ImageView)findViewById(R.id.form_back_1);
         form_back_2 = (ImageView)findViewById(R.id.form_back_2);
         form_back_3 = (ImageView)findViewById(R.id.form_back_3);
-        bill_total = (TextView)findViewById(R.id.billTotal);
-        view_bill = (TextView)findViewById(R.id.food_view_bill);
+        TextView bill_total = (TextView) findViewById(R.id.billTotal);
+        TextView view_bill = (TextView) findViewById(R.id.food_view_bill);
         Picasso.with(this).load(instance.getImage("bg_1")).resize(700,110).into(form_back_1);
         Picasso.with(this).load(instance.getImage("bg_1")).resize(700,110).into(form_back_2);
         Picasso.with(this).load(instance.getImage("bg_1")).resize(700,110).into(form_back_3);
@@ -107,8 +104,8 @@ public class CustomerFormActivity extends AppCompatActivity {
         float total = billRes.getBill().getTotal();
         bill_total.setText(String.valueOf(total));
 
-        propsJson = intent.getStringExtra("propJson");
-        Log.i(TAG,"check json---" + propsJson);
+        propertyList = (HashMap<String, ArrayList<Fields>>) intent.getSerializableExtra("propertyList");
+        Log.i(TAG,"check json---" + propertyList.size());
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -171,12 +168,13 @@ public class CustomerFormActivity extends AppCompatActivity {
                         orderDialog.setMessage("Please wait! while we place your Order.");
                         orderDialog.setCancelable(false);
                         orderDialog.show();
+
                         valuesList.add(user_name.getText().toString());
                         valuesList.add(user_mob.getText().toString());
                         valuesList.add(user_email.getText().toString());
                         Log.i(TAG, "values entered----" + valuesList.get(0) + "--" +
                                 valuesList.get(1) + "---" + valuesList.get(2));
-                        buildFieldList(propsJson);
+
                         createBillJson();
                     } else {
                         Toast.makeText(CustomerFormActivity.this, "Unable to connect to server. " +
@@ -213,14 +211,15 @@ public class CustomerFormActivity extends AppCompatActivity {
         int itemNum = ApplicationController.getInstance().getCartItemCount();
         itemsList = new ArrayList<>();
         itemDetails = new ArrayList<>();
+        Log.i(TAG,"propertylist--" + propertyList.size());
         for (int i = 0; i < itemNum; i++) {
             ItemBillReq.Items items = new ItemBillReq.Items();
             items.setItemCode(ApplicationController.getInstance().getCartItems().get(i).getItemCode());
-
+            String itemCode = CoolberryCartAdapter.mItems.get(i).getItemType();
             ArrayList<ItemBillReq.ItemDetails> itemDetailsList = new ArrayList<>();
-            for (int j = 0; j < fieldList.size(); j++) {
+            for (int j = 0; j < propertyList.get(itemCode).size(); j++) {
                 ItemBillReq.ItemDetails cartItemsDetail = new ItemBillReq.ItemDetails();
-                cartItemsDetail.setAttribute(fieldList.get(j).getLabel());
+                cartItemsDetail.setAttribute(propertyList.get(itemCode).get(j).getLabel());
                 cartItemsDetail.setValue(ApplicationController.getInstance().
                         getCartItems().get(i).getItemQuantity());
 
@@ -231,6 +230,7 @@ public class CustomerFormActivity extends AppCompatActivity {
 
             Log.i(TAG,"check cart item name 0-----" + CoolberryCartAdapter.mItems.get(i).getItemName());
             String itemProperties = appInstance.getCustomItemData(CoolberryCartAdapter.mItems.get(i).getItemCode());
+            Log.i(TAG,"itemProperties from DB---" + itemProperties);
             if(itemProperties!=null) {
                 Log.i(TAG, "check item look----" + itemProperties);
                 try {
@@ -276,44 +276,44 @@ public class CustomerFormActivity extends AppCompatActivity {
         Log.i(TAG, "customer JSON---" + customerString);
 
         ApiRequest.postOrderJson(
-                catalog_group,
-                pipeline_id,
-                taxJsonList,
-                itemRes,
-                billRes.getBill().getTotal(),
-                customerString,
-                itemsJsonList,
-                sec_token,
-                new IRequestCallback() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-                        Log.i(TAG, "JSON received----" + response.toString());
+            catalog_group,
+            pipeline_id,
+            taxJsonList,
+            itemRes,
+            billRes.getBill().getTotal(),
+            customerString,
+            itemsJsonList,
+            sec_token,
+            new IRequestCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.i(TAG, "JSON received----" + response.toString());
 
-                        appInstance.deleteAllCartItems();
-                        appInstance.deleteAllCustomItems();
+                    appInstance.deleteAllCartItems();
+                    appInstance.deleteAllCustomItems();
 
-                        orderDialog.dismiss();
-                        PlaceOrderRes placeOrderRes = gson.fromJson(response.toString(), PlaceOrderRes.class);
+                    orderDialog.dismiss();
+                    PlaceOrderRes placeOrderRes = gson.fromJson(response.toString(), PlaceOrderRes.class);
 
-                        if(placeOrderRes.getStatus()!=200){
-                            Toast.makeText(CustomerFormActivity.this, placeOrderRes.getResMessage(), Toast.LENGTH_SHORT).show();
-                        }else{
-                            Intent i = new Intent(getApplicationContext(), OrderPlacedActivity.class);
-                            i.putExtra("large", placeOrderRes.getMessage_large());
-                            i.putExtra("small", placeOrderRes.getMessage_small());
-                            i.putExtra("back_url",image_url);
-                            i.putExtra("logo_url",logo_url);
-                            startActivity(i);
-                            finish();
-                        }
-                    }
-
-                    @Override
-                    public void onError(VolleyError error) {
-                        orderDialog.dismiss();
-                        Log.i(TAG, "error-----" + error.getMessage());
+                    if(placeOrderRes.getStatus()!=200){
+                        Toast.makeText(CustomerFormActivity.this, placeOrderRes.getResMessage(), Toast.LENGTH_SHORT).show();
+                    }else{
+                        Intent i = new Intent(getApplicationContext(), OrderPlacedActivity.class);
+                        i.putExtra("large", placeOrderRes.getMessage_large());
+                        i.putExtra("small", placeOrderRes.getMessage_small());
+                        i.putExtra("back_url",image_url);
+                        i.putExtra("logo_url",logo_url);
+                        startActivity(i);
+                        finish();
                     }
                 }
+
+                @Override
+                public void onError(VolleyError error) {
+                    orderDialog.dismiss();
+                    Log.i(TAG, "error-----" + error.getMessage());
+                }
+            }
         );
     }
 
@@ -321,43 +321,5 @@ public class CustomerFormActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         this.finish();
-    }
-
-    public void buildFieldList(String propsJson) {
-        Log.i(TAG, "entered buildFieldList");
-        try {
-            JSONObject itemProperties = new JSONObject(propsJson);
-            for (int keyIndex = 0; keyIndex < itemProperties.names().length(); keyIndex++) {
-                String key = (String) itemProperties.names().get(keyIndex);
-                Log.i(TAG, "Getting item properties for key=" + key);
-                JSONArray jsonArray = itemProperties.getJSONArray(key);
-                fieldList = new ArrayList<>();
-                Log.i(TAG, "jsonArray json" + jsonArray.length() + "---jsonArray--" + jsonArray.toString());
-
-                for (int index = 0; index < jsonArray.length(); index++) {
-                    JSONObject obj = jsonArray.getJSONObject(index);
-                    Fields field = new Fields();
-                    field.setType(obj.getString("type"));
-                    field.setLabel(obj.getString("label"));
-
-                    JSONArray optionsArray = obj.getJSONArray("options");
-                    String[] options = new String[optionsArray.length()];
-
-                    for (int c = 0; c < optionsArray.length(); c++) {
-                        Log.i(TAG, "optionsArray--->" + optionsArray.getString(c));
-                        options[c] = optionsArray.getString(c);
-                    }
-
-                    field.setOptions(options);
-                    fieldList.add(field);
-                    Log.i(TAG, "field size---" + field.getType() + "---" + fieldList.size());
-                }
-                Log.i(TAG, "field--->" + fieldList.size() + fieldList.get(keyIndex).getLabel());
-                propertyList.put(key, fieldList);
-                Log.i(TAG, "propertyList--->" + propertyList.get(0) + "---" + propertyList.size());
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, "Error parsing item properties from shared prefs:" + ex.getMessage());
-        }
     }
 }

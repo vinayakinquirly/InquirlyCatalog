@@ -150,8 +150,8 @@ public class CoolberryCartAdapter extends RecyclerView.Adapter<CoolberryCartAdap
                 viewHolder.item_price.setText(String.valueOf(newPrice[0]));
 
                 propJson = sharedPreferences.getString(item.getCampaignId() + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES, null);
-                customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext,
-                        cartItem.getItemQuantity(),propJson,item.getItemType(),item.getItemCode());
+                customizeCartItemAdapter = new CustomizeCartItemAdapter(mContext, cartItem.getItemQuantity(),
+                        propJson,item.getItemType(),item.getItemCode());
 
                 viewHolder.customizeCartItemList.setAdapter(customizeCartItemAdapter);
             }

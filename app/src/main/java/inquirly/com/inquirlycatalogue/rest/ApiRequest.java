@@ -382,21 +382,21 @@ public class ApiRequest {
 
         Log.i(TAG,"final post Json--" + jsonUpdate.toString());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
-                ApiConstants.API_CAFE_UPDATE,
-                jsonUpdate,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        callback.onSuccess(jsonObject);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        callback.onError(volleyError);
-                    }
+            Request.Method.POST,
+            ApiConstants.API_CAFE_UPDATE,
+            jsonUpdate,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+                    callback.onSuccess(jsonObject);
                 }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    callback.onError(volleyError);
+                }
+            }
         ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {

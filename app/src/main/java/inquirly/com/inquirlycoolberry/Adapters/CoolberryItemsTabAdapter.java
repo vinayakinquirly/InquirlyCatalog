@@ -117,7 +117,6 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
                 viewHolder.item_qty.setText(String.valueOf(i[0]));
                 Log.i(TAG,"check Qty--->" + viewHolder.item_qty.getText().toString());
                 finalQty[0] = i[0];
-                Log.i(TAG,"final QTY--->" + finalQty[0]);
                 if(callFrom.equals("search")){
                     CoolberrySearchActivity.addProduct(item.getItemName());
                 }else{
@@ -301,6 +300,9 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
 
         itemNum.setText(String.valueOf(itemQty));
         JSONObject data=null;
+        Log.i(TAG,"dialog--" + mOptionWidgets.size() + "---" + mOptionValues.size() + "---"
+                + propertyList.get(type));
+
         CommonMethods.addSpecificationsToDialog(mOptionWidgets,mOptionValues,contentLayout,
                 propertyList.get(type),mContext,data);
         dialogBuilder.setView(dialogView);

@@ -83,11 +83,6 @@ public class AutoUpdateDataService extends IntentService {
                             updateTime.getChars(0,2,localHour,0);
                             updateTime = new String(localHour);
                             Log.i(TAG,"current time--CT-" + currentTime + "--UT-" + updateTime);
-                            new DoFinalUpdate().execute();
-                            for(int i=0;i<dataUpdateRes.getUpdates().size();i++) {
-                                Log.i(TAG,"timestamps are equal UPDATING..." + dataUpdateRes.getUpdates().get(i).getId());
-                                new UpdateDetails(dataUpdateRes.getUpdates().get(i).getId()).execute();
-                            }
                             if(currentTime.equals(updateTime)){
                                 Log.i(TAG,"timestamps are equal UPDATING...");
                                 new DoFinalUpdate().execute();

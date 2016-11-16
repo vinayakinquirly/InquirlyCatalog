@@ -53,12 +53,17 @@ public class CommonMethods  {
     public static void addSpecificationsToDialog(HashMap<String,View> mOptionWidgets,HashMap<String,String> mOptionValues,
                                           LinearLayout layout, ArrayList<Fields> itemFields,Context mContext,
                                                  JSONObject data){
+        Log.i(TAG,"mOptionvalues--" + mOptionValues.size() + "----" + mOptionWidgets.size()
+                + "---" + itemFields.size());
+
         font  = Typeface.createFromAsset(mContext.getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         try{
             for(Fields field : itemFields) {
-                boolean hasChild = false;
 
+                boolean hasChild = false;
+                Log.i(TAG,"field label---" + field.getLabel());
                 LinearLayout innerLayout = new LinearLayout(mContext);
+
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT){
                     innerLayout.setLayoutParams(new ViewGroup.LayoutParams(650,
                             ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -154,7 +159,7 @@ public class CommonMethods  {
                 }else if(field.getType().equals("multiple_choice")){
                     LinearLayout labelVertical = new LinearLayout(mContext);
                     labelParams = new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT, 60,1.8f);
+                            ViewGroup.LayoutParams.MATCH_PARENT, 40,1.8f);
                     labelVertical.setOrientation(LinearLayout.VERTICAL);
                     labelVertical.setLayoutParams(labelParams);
                     Log.v(TAG,"entered--" + "multiple choice");
@@ -182,8 +187,12 @@ public class CommonMethods  {
                     spinnerMulti.setTag(field.getLabel());
 
                     ArrayList<String> itemsArray = new ArrayList<>();
+                    List<String> items;
+
+                    Log.i(TAG,"check data rec---" + data);
                     if(data!=null){
-                        List<String> items = Arrays.asList(data.getString(field.getLabel()).split("\\s*,\\s*"));
+                        Log.i(TAG,"check data rec---" + data.toString());
+                        items = Arrays.asList(data.getString(field.getLabel()).split("\\s*,\\s*"));
                         Log.i(TAG,"check item array--" + itemsArray.toString());
                         for(int i=0;i<items.size();i++){
                             itemsArray.add(items.get(i));
@@ -194,7 +203,6 @@ public class CommonMethods  {
                     CustomArrayAdapter myAdapter = new CustomArrayAdapter(mContext,R.layout.layout_spinner,
                             field.getOptions(),itemsArray,field.getLabel(),labelItemSel);
                     spinnerMulti.setAdapter(myAdapter);
-
                     spinnerMulti.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT,1.4f));
 
@@ -348,8 +356,8 @@ public class CommonMethods  {
         public CustomArrayAdapter(Context context, int resourceId,
                                   String[] objects,ArrayList<String> selectedStrings,String fieldLabel,
                                   TextView labelItemSel) {
-
             super(context, resourceId, objects);
+
             this.objects = objects;
             this.context = context;
             this.selectedStrings = selectedStrings;
@@ -415,6 +423,8 @@ public class CommonMethods  {
                     }
                 }
             });
+//            jsonObject = null;
+//            jsonObject = new JSONObject();
             return row;
         }
     }
@@ -422,7 +432,10 @@ public class CommonMethods  {
     public static String generateItemDetails(HashMap<String,View> mOptionWidgets, HashMap<String,String> mOptionValues,
                                       String name,int num,LinearLayout contentLayout) throws JSONException {
 
-        Log.i(TAG,"check Json recevied--" + mOptionValues+"--" + jsonObject.toString());
+//        if(comingFrom.equals("tabAdapter")){
+//            jsonObject = new JSONObject();
+//        }
+        Log.i(TAG,"check Json recevied--" + mOptionValues+"--");
         HashMap<String, String[]> options = new HashMap<>();
         String numValue = String.valueOf(num);
         jsonObject.put("tag",name);
@@ -480,12 +493,17 @@ public class CommonMethods  {
                     jsonObject.put(key,"no");
                 }
             }
-            if (!jsonObject.has(key)) {
-                jsonObject.put(key, mOptionValues.get(key));
-            }
+
+//            if (!jsonObject.has(key)) {
+//                jsonObject.put(key, mOptionValues.get(key));
+//            }
         }
 
         Log.i(TAG,"check json send ---" +jsonObject + "<----->");
-        return jsonObject.toString();
+        String jsonString;
+        jsonString = jsonObject.toString();
+        jsonObject = null;
+        jsonObject = new JSONObject();
+        return jsonString;
     }
 }

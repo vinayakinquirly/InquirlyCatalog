@@ -300,7 +300,7 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
         getMenuInflater().inflate(R.menu.menu_tab, menu);
         MenuItem item = menu.findItem(R.id.action_count);
         LayerDrawable icon = (LayerDrawable) item.getIcon();
-        int size = ApplicationController.getInstance().getCartItemCount();
+        int size = appInstance.getCartItemCount();
         CartCount.setBadgeCount(this, icon, size);
         mMenu = menu;
         return true;

@@ -29,6 +29,6 @@ public class UpdateMenuTimerReceiver extends BroadcastReceiver {
         Log.i(TAG,"check elapsed time---" + AlarmManager.ELAPSED_REALTIME);
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME
                 , SystemClock.elapsedRealtime()+NOTIFICATIONS_INTERVAL,
-                NOTIFICATIONS_INTERVAL,alarmIntent);
+                15 * 60000,alarmIntent);
     }
 }

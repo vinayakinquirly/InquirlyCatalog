@@ -1,10 +1,12 @@
 package inquirly.com.inquirlycatalogue.models;
 
+import java.io.Serializable;
+
 /**
  * Created by binvij on 15/12/15.
  */
 
-public class Fields {
+public class Fields implements Serializable{
 
     private String type;
     private String label;

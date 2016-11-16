@@ -6,7 +6,7 @@ package inquirly.com.inquirlycatalogue.utils;
 public class ApiConstants {
 
     public static final String API_BASE_URL = "https://stagingsignin.inquirly.com";
-    //public static final String API_BASE_URL = "https://beta.inquirly.com/";
+//    public static final String API_BASE_URL = "https://beta.inquirly.com/";
     public static final String API_AUTH = API_BASE_URL + "/rest/authenticate";
     public static final String API_CAMPAIGN_LIST = API_BASE_URL + "/campaigns/mobileApi/get_campaigns";
     public static final String API_CAMPAIGN_DETAILS = API_BASE_URL + "/campaigns/mobileApi/campaign_details";

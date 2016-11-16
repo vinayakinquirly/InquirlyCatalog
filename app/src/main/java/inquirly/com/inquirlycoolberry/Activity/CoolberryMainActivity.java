@@ -6,6 +6,9 @@ import android.util.Log;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -52,6 +55,8 @@ import inquirly.com.inquirlycatalogue.adapters.RecyclerFeedBackAdapter;
 public class CoolberryMainActivity extends AppCompatActivity {
 
     private Menu mMenu;
+    String updateJson;
+    int arrLength;
     private ProgressDialog pDialog;
     private RecyclerView listCategory;
     private String type,camp_id;
@@ -78,6 +83,7 @@ public class CoolberryMainActivity extends AppCompatActivity {
            // actionBar.setHomeAsUpIndicator(getColoredArrow());
         }
 
+        mSharedPrefs = getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
         Typeface font = Typeface.createFromAsset(getApplicationContext().getAssets(), "Montserrat-Regular.ttf");
         for(int i = 0; i < toolbar.getChildCount(); i++){
             View view = toolbar.getChildAt(i);
@@ -93,7 +99,6 @@ public class CoolberryMainActivity extends AppCompatActivity {
         }
 
         pDialog = new ProgressDialog(CoolberryMainActivity.this);
-        mSharedPrefs = getSharedPreferences(CatalogSharedPrefs.KEY_NAME, Context.MODE_PRIVATE);
 //        camp_id = mSharedPrefs.getString("campaign_id",null);
 //        propsJson = mSharedPrefs.getString(camp_id + "_" + CatalogSharedPrefs.KEY_ITEM_PROPERTIES,null);
         boolean isCampaignListLoaded = mSharedPrefs.getBoolean(CatalogSharedPrefs.IS_CAMPAIGN_LIST_LOADED, false);
@@ -162,11 +167,26 @@ public class CoolberryMainActivity extends AppCompatActivity {
         MenuItem itemRef = menu.findItem(R.id.action_refresh);
 
         LayerDrawable icon = (LayerDrawable) item.getIcon();
-        LayerDrawable iconRef = (LayerDrawable) itemRef.getIcon();
+
         int size = ApplicationController.getInstance().getCartItemCount();
         CartCount.setBadgeCount(this, icon, size);
-        CartCount.setBadgeCount(this, iconRef, size);
 
+        updateJson = mSharedPrefs.getString("updateJson",null);
+        Log.i(TAG,"check json from preferences--" + updateJson);
+
+        JSONArray jsonArray=null;
+        if(updateJson!=null) {
+            try {
+                jsonArray = new JSONArray(updateJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            arrLength = jsonArray != null ? jsonArray.length() : 0;
+            if (arrLength > 0) {
+                LayerDrawable iconRef = (LayerDrawable) itemRef.getIcon();
+                CartCount.setBadgeCount(this, iconRef, size);
+            }
+        }
 
         mMenu = menu;
         MenuItem item1 = menu.findItem(R.id.action_count);
@@ -192,6 +212,10 @@ public class CoolberryMainActivity extends AppCompatActivity {
 
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
+            if(arrLength>0){
+                SharedPreferences.Editor editor = mSharedPrefs.edit();
+                editor.putString("updateJson","[]");
+            }
             if (InternetConnectionStatus.checkConnection(this)) {
                 pDialog.setMessage("Reloading....Please wait");
                 pDialog.setCancelable(false);

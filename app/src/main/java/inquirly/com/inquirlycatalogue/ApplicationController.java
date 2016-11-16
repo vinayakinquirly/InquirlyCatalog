@@ -150,13 +150,10 @@ public class ApplicationController extends Application {
     }
 
     public ArrayList<CartItem> getCartItems() {
-        ArrayList<CartItem> items = new ArrayList<>();
+        ArrayList<CartItem> items;
         mydb.open();
-        int size = mydb.getItemsList().size();
-        Log.i(TAG,"getCartItems enetered" + size);
-        for(int i=0;i<size;i++){
-            items.add(mydb.getItemsList().get(i));
-        }
+        items = mydb.getItemsList();
+        Log.i(TAG,"getCartItems enetered---" + items.size());
         mydb.close();
         return items;
     }
@@ -164,7 +161,7 @@ public class ApplicationController extends Application {
     public int getCartItemCount(){
         Log.i(TAG,"count item entered");
         mydb.open();
-        int count = mydb.getItemsList().size();
+        int count = mydb.getCartItemCount();
         mydb.close();
         return count;
     }
@@ -239,7 +236,7 @@ public class ApplicationController extends Application {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
+            }mydb.close();
             return true;
         } else {
             for (int p =0;p<customItemJson.size();p++){
@@ -275,6 +272,7 @@ public class ApplicationController extends Application {
         String json=null;
         json=  mydb.getCustomItemList(itemCode);
         Log.i(TAG,"check JSON---" + json);
+        mydb.close();
         return json;
     }
 
@@ -284,6 +282,7 @@ public class ApplicationController extends Application {
         if(mydb.deleteCustomData(itemCode)){
             return true;
         }
+        mydb.close();
         Log.i(TAG,"some error occured");
         return false;
     }
@@ -329,6 +328,7 @@ public class ApplicationController extends Application {
         }else{
             Log.i(TAG,"custom item list is null");
             //Toast.makeText(ApplicationController.this, "Some error occurred!", Toast.LENGTH_SHORT).show();
+            mydb.close();
             return false;
         }
     }
@@ -338,6 +338,16 @@ public class ApplicationController extends Application {
         mydb.open();
         if(mydb.deleteAllCustomItems());
         mydb.close();
+    }
+
+    public ArrayList<String> getCampaignUUIDList(){
+        Log.i(TAG,"uuid list controller entered");
+        ArrayList<String> uuidList;
+        mydb.open();
+        uuidList = mydb.getCampaignUuidList();
+        Log.i(TAG,"controller uuidlist--" + uuidList.size());
+        mydb.close();
+        return uuidList;
     }
 
     /*---------------------------------------------------------------------------*/

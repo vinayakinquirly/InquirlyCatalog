@@ -68,6 +68,7 @@ public class SQLiteDataBase {
     public static final String CART_ITEM_CAMPAIGN_ID = "item_campaignId";
 
     public final String[] ALL_CUSTOM_ITEMS = new String[]{CUSTOM_ITEM_NAME,CUSTOM_ITEM_JSON};
+    public final String[] ALL_CAMPAIGN_ITEMS = new String[]{CUSTOM_ITEM_NAME,CUSTOM_ITEM_JSON};
 
     public static final String CUSTOM_ITEM_NAME = "item_name";
     public static final String CUSTOM_ITEM_JSON = "item_json";
@@ -165,7 +166,6 @@ public class SQLiteDataBase {
                 null, null, null);
 
         Log.i(TAG, "check address---" + cart.getCount() + "---" + item.getItemCode() + "---" + item.getItemQuantity());
-
         ContentValues cv = new ContentValues();
         if (item.getItemQuantity() != 0) {
             if (cart.getCount() != 0) {
@@ -196,10 +196,11 @@ public class SQLiteDataBase {
     public ArrayList<CartItem> getItemsList(){
         String query = "SELECT * FROM " + TABLE_ITEM_NAME;// + " WHERE " + CART_ITEM_CODE + "=?" ;
         Cursor cursorCart = database.rawQuery(query, null);
-        Log.i(TAG,"getCount" + cursorCart.getCount() +"---" +cursorCart.moveToFirst());
-        ArrayList<CartItem> cartItemList = new ArrayList<>();
+        Log.i(TAG,"sql cart count---" + cursorCart.getCount() + "---" + cursorCart.getColumnName(0) +
+        "---" + cursorCart.getColumnName(1));
 
-        if(cursorCart.getCount()!= 0) {
+        ArrayList<CartItem> cartItemList = new ArrayList<>();
+        if(cursorCart.getCount()!= 0 && cursorCart.moveToFirst()) {
             do{
                 CartItem item = new CartItem();
                 item.setItemCode(cursorCart.getString(1));
@@ -216,6 +217,15 @@ public class SQLiteDataBase {
         }
         cursorCart.close();
         return cartItemList;
+    }
+
+    public int getCartItemCount(){
+        String query = "SELECT * FROM " + TABLE_ITEM_NAME;// + " WHERE " + CART_ITEM_CODE + "=?" ;
+        Cursor cursorCart = database.rawQuery(query, null);
+        Log.i(TAG,"sql cart count---" + cursorCart.getCount());
+        int count = cursorCart.getCount();
+        cursorCart.close();
+        return count;
     }
 
     public boolean deleteCartItem(String itemCode){
@@ -295,6 +305,24 @@ public class SQLiteDataBase {
 
     public boolean deleteAllCustomItems() {
         return database.delete(TABLE_CUSTOM_ITEM,null,null)!=0;
+    }
+
+    public ArrayList<String> getCampaignUuidList(){
+        Log.i(TAG,"sql uuid list entered");
+        ArrayList<String> uuidList = new ArrayList<>();
+        Cursor customItem = database.query(false, CAMPAIGN_TABLE, null, null, null, null,
+                null, null, null);
+        Log.i(TAG,"custom count---" + customItem.getCount() + "--" + customItem.getColumnCount());
+        if(customItem.getCount()!= 0) {
+            customItem.moveToFirst();
+            do{
+                uuidList.add(customItem.getString(1));
+                Log.i(TAG,"sql uuid list---" + uuidList.size() + "---" + customItem.getString(1));
+            }while (customItem.moveToNext());
+            customItem.close();
+        }
+        customItem.close();
+        return uuidList;
     }
 
     public void createCampaignList(String uuid, String name,String state,String hashtag,

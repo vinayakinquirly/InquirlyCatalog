@@ -40,6 +40,7 @@ import inquirly.com.inquirlycoolberry.Adapters.ItemBillAdapter;
 
 public class ItemBillActivity extends AppCompatActivity implements View.OnClickListener{
 
+    private String color;
     public Intent intent;
     public Button btn_payment;
     private Gson gson = new Gson();
@@ -78,13 +79,14 @@ public class ItemBillActivity extends AppCompatActivity implements View.OnClickL
         linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setTheme(R.style.CoolberryTheme);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_bill);
+        color = appInstance.getImage("color_1");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.bill_toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(Color.parseColor(color));
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -110,7 +112,7 @@ public class ItemBillActivity extends AppCompatActivity implements View.OnClickL
         food_bill_list = (RecyclerView)findViewById(R.id.food_bill_list);
         sharedPreferences = getSharedPreferences(CatalogSharedPrefs.KEY_CUSTOM_THEME,MODE_PRIVATE);
         btn_payment = (Button)findViewById(R.id.btn_make_payment);
-        btn_payment.setBackgroundColor(Color.parseColor(appInstance.getImage("color_1")));
+        btn_payment.setBackgroundColor(Color.parseColor(color));
         itemBillAdapter = new ItemBillAdapter(ItemBillActivity.this,billRes.getBill().getTotal(),billTaxesList,billItemsList);
         food_bill_list.setLayoutManager(linearLayoutManager);
         //food_bill_list.setHasFixedSize(true);
