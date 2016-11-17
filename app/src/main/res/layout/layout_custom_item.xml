@@ -106,6 +106,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textScaleX="1.1"
+                android:text=" "
                 android:layout_marginTop="5dp"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@android:color/holo_blue_dark"/>

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import inquirly.com.inquirlycatalogue.models.CartItem;
 import inquirly.com.inquirlycatalogue.models.Fields;
+import inquirly.com.inquirlycatalogue.utils.ApiConstants;
 import inquirly.com.inquirlycatalogue.utils.CatalogSharedPrefs;
 import inquirly.com.inquirlycatalogue.utils.LruBitmapCache;
 import inquirly.com.inquirlycatalogue.utils.SQLiteDataBase;
@@ -350,6 +351,39 @@ public class ApplicationController extends Application {
         return uuidList;
     }
 
+    public boolean saveUpdatesFromServer(String update_on,String camp_id){
+        Log.i(TAG,"app camp_id---" + camp_id);
+        mydb.open();
+        if(mydb.saveUpdatesFromServer(update_on,camp_id)){
+            mydb.close();
+            return  true;
+        }else{
+            mydb.close();
+            return false;
+        }
+    }
+
+    public ArrayList<String> getSavedUpdates(){
+        ArrayList<String> savedCampaignList;
+        Log.i(TAG,"getSavedUpdates entered");
+        mydb.open();
+        savedCampaignList = mydb.getSavedCampaignList();
+        mydb.close();
+        return  savedCampaignList;
+    }
+
+    public boolean deleteSavedUpdates(){
+        Log.i(TAG,"app delete saved updates entered");
+        mydb.open();
+        if(mydb.deleteSavedUpdates()){
+            mydb.close();
+            return true;
+        }else{
+            mydb.close();
+            return false;
+        }
+    }
+
     /*---------------------------------------------------------------------------*/
 
     //set item specifications
@@ -424,5 +458,25 @@ public class ApplicationController extends Application {
                 break;
         }
         return urlfinal;
+    }
+
+    public void putSharedData(String whereToPut,String key,String value){
+        Log.i(TAG,"whereto put--" + whereToPut + "---" + key + "---" + value);
+        SharedPreferences themePref = getSharedPreferences(CatalogSharedPrefs.KEY_CUSTOM_THEME,MODE_PRIVATE);
+        SharedPreferences catalogPref = getSharedPreferences(CatalogSharedPrefs.KEY_NAME,MODE_PRIVATE);
+
+        switch (whereToPut){
+            case "inqCatalog":
+                SharedPreferences.Editor catalogEditor = catalogPref.edit();
+                catalogEditor.putString(key,value);
+                catalogEditor.apply();
+                break;
+
+            case "customTheme":
+                SharedPreferences.Editor themeEditor = themePref.edit();
+                themeEditor.putString(key,value);
+                themeEditor.apply();
+                break;
+        }
     }
 }

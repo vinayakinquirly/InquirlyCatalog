@@ -9,12 +9,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import inquirly.com.inquirlycatalogue.models.CampaignDbItem;
 import inquirly.com.inquirlycatalogue.models.CampaignItemData;
 import inquirly.com.inquirlycatalogue.models.CartItem;
-
 
 /**
  * Created by kaushal on 22-12-2015.
@@ -26,9 +26,10 @@ public class SQLiteDataBase {
     public static final String CAMPAIGNDETAILS_TABLE = "campaign_details";
     public static final String TABLE_ITEM_NAME = "cart_item_name";
     public static final String TABLE_CUSTOM_ITEM = "custom_item";
+    public static final String TABLE_UPDATES = "table_updates";
     public static final String PIPELINE_TABLE = "pipleline";
     public static final String DB_ID = "db_id";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     public static final String _ID = "_ID";
     public static final String CAMPAIGN_UUID = "campaignUUID";
@@ -38,9 +39,12 @@ public class SQLiteDataBase {
     public static final String HASH_TAG = "hashTag";
     public static final String STATE = "state";
     public static final String VALID_TILL = "validTill";
+    public static final String UPDATE_ON = "update_on";
 
     public final String[] ALL_KEYS_ITEMS = new String[] {CART_ITEM_CODE,CART_ITEM_NAME,CART_ITEM_QTY,
             CART_ITEM_PRICE,CART_ITEM_IMAGE,CART_ITEM_TYPE,CART_ITEM_CAMPAIGN_ID};
+
+    public final String[] ALL_UPDATE_KEYS = new String[] {CAMPAIGN_ID,UPDATE_ON};
 
     public static final String CATEGORY_NAME = "category_name";
     public static final String DESCRIPTION = "description";
@@ -127,6 +131,12 @@ public class SQLiteDataBase {
                             + CUSTOM_ITEM_JSON + " TEXT NOT NULL"
                             + ");");
 
+            db.execSQL(
+                    "CREATE TABLE " + TABLE_UPDATES
+                            + " (" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                            + CAMPAIGN_ID + " TEXT NOT NULL, "
+                            + UPDATE_ON + " TEXT NOT NULL"
+                            + ");");
         }
 
         @Override
@@ -137,6 +147,7 @@ public class SQLiteDataBase {
                 db.execSQL("Drop table If Exists " + SQLiteDataBase.CAMPAIGNDETAILS_TABLE);
                 db.execSQL("Drop table If Exists " + SQLiteDataBase.TABLE_ITEM_NAME);
                 db.execSQL("Drop table If Exists " + SQLiteDataBase.TABLE_CUSTOM_ITEM);
+                db.execSQL("Drop table If Exists " + SQLiteDataBase.TABLE_UPDATES);
                 onCreate(db);
 
             } catch (SQLException e) {
@@ -305,6 +316,38 @@ public class SQLiteDataBase {
 
     public boolean deleteAllCustomItems() {
         return database.delete(TABLE_CUSTOM_ITEM,null,null)!=0;
+    }
+
+    public boolean saveUpdatesFromServer(String update_on,String camp_id){
+        Log.i(TAG, "sql update json---" + camp_id);
+        Cursor cart = database.query(false, TABLE_UPDATES, ALL_UPDATE_KEYS, null, null, null,
+                null, null, null);
+
+        Log.i(TAG, "check address---" + cart.getCount());
+        ContentValues cv = new ContentValues();
+        cv.put(CAMPAIGN_ID,camp_id);
+        cv.put(UPDATE_ON,update_on);
+        cart.close();
+        return database.insertWithOnConflict(TABLE_UPDATES, null, cv, SQLiteDatabase.CONFLICT_REPLACE) != 0;
+    }
+
+    public ArrayList<String> getSavedCampaignList(){
+        ArrayList<String> savedCampaignIdList = new ArrayList<>();
+        Log.i(TAG, "sql get updates entered---");
+        Cursor updatesCursor = database.query(false, TABLE_UPDATES, ALL_UPDATE_KEYS, null, null, null,
+                null, null, null);
+        Log.i(TAG,"sql updatesCursor---" + updatesCursor.getCount() +"---" +  updatesCursor.getColumnName(1));
+        if(updatesCursor.getCount()!=0 && updatesCursor.moveToFirst()){
+            do {
+                savedCampaignIdList.add(updatesCursor.getString(1));
+            }while (updatesCursor.moveToNext());
+        }
+        return  savedCampaignIdList;
+    }
+
+    public boolean deleteSavedUpdates(){
+        Log.i(TAG,"sql delete saved updates entered---");
+        return database.delete(TABLE_UPDATES,null,null)!=0;
     }
 
     public ArrayList<String> getCampaignUuidList(){

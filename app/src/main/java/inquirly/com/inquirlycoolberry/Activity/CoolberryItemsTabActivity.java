@@ -384,52 +384,55 @@ public class CoolberryItemsTabActivity extends AppCompatActivity implements Sear
                                 Log.i(TAG, "Loading campaign details for campaign for="+ campaignId);
                                 campaignList = CampaignHelper.buildCampaignDetails(response, CoolberryItemsTabActivity.this, campaignId);
                                 Log.i(TAG, "Campaign list size=" + campaignList.size());
-                                Campaign.FormAttributes.SubCategories[] subCategories = campaignList.get(0).getForm_attributes().getSub_categories();
+                                try {
+                                    Campaign.FormAttributes.SubCategories[] subCategories = campaignList.get(0).getForm_attributes().getSub_categories();
+                                    ArrayList<CampaignDbItem> itemsList = new ArrayList<CampaignDbItem>();
+                                    for (int i = 0; i < subCategories.length; i++) {
+                                        Campaign.FormAttributes.SubCategories.Item[] items = subCategories[i].getItems();
+                                        final String subcategoryName = subCategories[i].getName();
 
-                                ArrayList<CampaignDbItem> itemsList = new ArrayList<CampaignDbItem>();
-                                for (int i = 0; i < subCategories.length; i++) {
-                                    Campaign.FormAttributes.SubCategories.Item[] items = subCategories[i].getItems();
-                                    final String subcategoryName = subCategories[i].getName();
+                                        for (int j = 0; j < items.length; j++) {
+                                            Campaign.FormAttributes.SubCategories.Item item = items[j];
+                                            CampaignDbItem dbItem = new CampaignDbItem();
 
-                                    for (int j = 0; j < items.length; j++) {
-                                        Campaign.FormAttributes.SubCategories.Item item = items[j];
-                                        CampaignDbItem dbItem = new CampaignDbItem();
+                                            File root = android.os.Environment.getExternalStorageDirectory();
+                                            String img_path = root.getAbsolutePath() + "/campaigndetails/" + item.getName() + item.getItem_code()+".png";
 
-                                        File root = android.os.Environment.getExternalStorageDirectory();
-                                        String img_path = root.getAbsolutePath() + "/campaigndetails/" + item.getName() + item.getItem_code()+".png";
+                                            new DownloadFile(item.getPrimary_image(), item.getName()+item.getItem_code()).execute();
+                                            dbItem.setSubCategoryName(subcategoryName);
+                                            dbItem.setDescription(item.getDescription());
+                                            dbItem.setIsActive(item.is_active());
+                                            dbItem.setItemCode(item.getItem_code());
+                                            dbItem.setItemName(item.getName());
+                                            dbItem.setPrice(item.getPrice());
+                                            dbItem.setType(item.getType());
+                                            dbItem.setCampaignId(campaignId);
+                                            dbItem.setCategoryName(subcategoryName);
+                                            dbItem.setPrimaryImage(img_path);
 
-                                        new DownloadFile(item.getPrimary_image(), item.getName()+item.getItem_code()).execute();
-                                        dbItem.setSubCategoryName(subcategoryName);
-                                        dbItem.setDescription(item.getDescription());
-                                        dbItem.setIsActive(item.is_active());
-                                        dbItem.setItemCode(item.getItem_code());
-                                        dbItem.setItemName(item.getName());
-                                        dbItem.setPrice(item.getPrice());
-                                        dbItem.setType(item.getType());
-                                        dbItem.setCampaignId(campaignId);
-                                        dbItem.setCategoryName(subcategoryName);
-                                        dbItem.setPrimaryImage(img_path);
-
-                                        try {
-//                                            if (item.getMedia().length > 1) {
-//                                                dbItem.setMediaImg1(item.getMedia()[1].getUrl());
-//                                                dbItem.setMediaImg2(item.getMedia()[2].getUrl());
-//                                                dbItem.setMediaImg3(item.getMedia()[3].getUrl());
-//                                                dbItem.setMediaImg4(item.getMedia()[4].getUrl());
-//                                                dbItem.setMediaImg5(item.getMedia()[5].getUrl());
-//                                            }
-                                            itemsList.add(dbItem);
-                                        }
-                                        catch(Exception e) {
-                                            e.printStackTrace();
+                                            try {
+    //                                            if (item.getMedia().length > 1) {
+    //                                                dbItem.setMediaImg1(item.getMedia()[1].getUrl());
+    //                                                dbItem.setMediaImg2(item.getMedia()[2].getUrl());
+    //                                                dbItem.setMediaImg3(item.getMedia()[3].getUrl());
+    //                                                dbItem.setMediaImg4(item.getMedia()[4].getUrl());
+    //                                                dbItem.setMediaImg5(item.getMedia()[5].getUrl());
+    //                                            }
+                                                itemsList.add(dbItem);
+                                            }
+                                            catch(Exception e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     }
+                                    SQLiteDataBase myDb = new SQLiteDataBase(getApplicationContext());
+                                    myDb.open();
+                                    myDb.createCampaignDetails(itemsList);
+                                    myDb.close();
+                                    initViewPagerAndTabs();
+                                }catch(IndexOutOfBoundsException indexExcep){
+                                    Log.e(TAG,"index out of bound---" + indexExcep.getMessage());
                                 }
-                                SQLiteDataBase myDb = new SQLiteDataBase(getApplicationContext());
-                                myDb.open();
-                                myDb.createCampaignDetails(itemsList);
-                                myDb.close();
-                                initViewPagerAndTabs();
                             }
                         }
                         @Override

@@ -286,15 +286,12 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
         final Button save_custom_item = (Button)dialogView.findViewById(R.id.btn_save_item);
         final Button cancel_save = (Button)dialogView.findViewById(R.id.btn_cancel_item);
 
-        if(note!=null) {
+        if(!note.equals(null)) {
             t_and_c.setText(note);
         } else{
-          note ="";
-            t_and_c.setText(note);
+            t_and_c.setText(" ");
         }
-
         itemNum.setText(String.valueOf(itemQty));
-        JSONObject data=null;
 
         CommonMethods.addSpecificationsToDialog(contentLayout,
                 propertyList.get(type),mContext,null);
@@ -350,6 +347,7 @@ public class CoolberryItemsTabAdapter extends RecyclerView.Adapter<CoolberryItem
             public void onClick(View v) {
                 dialog.dismiss();
                 appInstance.deleteCartItem(itemCode);
+                CoolberryItemsTabActivity.setCartCount();
             }
         });
     }

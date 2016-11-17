@@ -43,9 +43,9 @@ import inquirly.com.inquirlycatalogue.utils.InternetConnectionStatus;
  */
 public class AutoUpdateDataService extends IntentService {
 
-    private SharedPreferences sharedPreferences;
     public  ArrayList<Campaign> campaignList;
     private static String security_token=null;
+    private SharedPreferences sharedPreferences;
     private static final String TAG = "AutoUpdateDataService";
     private ApplicationController appInstance = ApplicationController.getInstance();
 
@@ -61,6 +61,11 @@ public class AutoUpdateDataService extends IntentService {
         Log.i(TAG,"date time stamp----"+  dateFormat.format(new Date()));
         security_token = appInstance.getImage("security_token");
         checkForUpdate(security_token);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
     }
 
     private void checkForUpdate(String security_token) {
@@ -84,24 +89,42 @@ public class AutoUpdateDataService extends IntentService {
                             updateTime = new String(localHour);
                             Log.i(TAG,"current time--CT-" + currentTime + "--UT-" + updateTime);
                             if(currentTime.equals(updateTime)){
-                                Log.i(TAG,"timestamps are equal UPDATING...");
-                                new DoFinalUpdate().execute();
-                                for(int i=0;i<dataUpdateRes.getUpdates().size();i++) {
-                                    new UpdateDetails(dataUpdateRes.getUpdates().get(i).getId()).execute();
+                                if(dataUpdateRes.getUpdates().size()!=0){
+                                    new DoFinalUpdate().execute();
+                                    for (int i = 0; i < dataUpdateRes.getUpdates().size(); i++) {
+                                        new UpdateDetails(dataUpdateRes.getUpdates().get(i).getId()).execute();
+                                    }
+                                }else if(appInstance.getSavedUpdates().size()!=0) {
+                                    Log.i(TAG, "timestamps are equal UPDATING...");
+                                    new DoFinalUpdate().execute();
+                                    for (int i = 0; i < dataUpdateRes.getUpdates().size(); i++) {
+                                        new UpdateDetails(appInstance.getSavedUpdates().get(i)).execute();
+                                    }
                                 }
-                            }else{
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("updateJson",dataUpdateRes.getUpdates().toString());
-                                editor.putString("update_on",dataUpdateRes.getUpdate_on());
-                                editor.putString(CatalogSharedPrefs.KEY_LAST_UPDATED,dataUpdateRes.getTs());
-                                editor.apply();
+                                appInstance.putSharedData("inqCatalog","update_on",dataUpdateRes.getUpdate_on());
+                                appInstance.putSharedData("inqCatalog","last_updated",dataUpdateRes.getTs());
+                                if(appInstance.deleteSavedUpdates()){
+                                    Log.i(TAG,"deleted successfully");
+                                }else{
+                                    Log.i(TAG,"falied to delete saved updates");
+                                }
+                            }else {
+                                appInstance.putSharedData("inqCatalog","update_on",dataUpdateRes.getUpdate_on());
+                                appInstance.putSharedData("inqCatalog","last_updated",dataUpdateRes.getTs());
+                                if (dataUpdateRes.getUpdates().size() != 0) {
+                                    for(int i=0;i<dataUpdateRes.getUpdates().size();i++){
+                                        appInstance.saveUpdatesFromServer(dataUpdateRes.getUpdate_on(), dataUpdateRes.getUpdates().get(i).getId());
+                                    }
+                                }
                             }
-                        }else{
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("updateJson",dataUpdateRes.getUpdates().toString());
-                            editor.putString("update_on",dataUpdateRes.getUpdate_on());
-                            editor.putString(CatalogSharedPrefs.KEY_LAST_UPDATED,dataUpdateRes.getTs());
-                            editor.apply();
+                        }else {
+                            appInstance.putSharedData("inqCatalog","update_on",dataUpdateRes.getUpdate_on());
+                            appInstance.putSharedData("inqCatalog","last_updated",dataUpdateRes.getTs());
+                            if(dataUpdateRes.getUpdates().size()!=0) {
+                                for(int i=0;i<dataUpdateRes.getUpdates().size();i++){
+                                    appInstance.saveUpdatesFromServer(dataUpdateRes.getUpdate_on(), dataUpdateRes.getUpdates().get(i).getId());
+                                }
+                            }
                         }
                     }
                 }

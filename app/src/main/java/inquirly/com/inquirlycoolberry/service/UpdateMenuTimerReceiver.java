@@ -22,7 +22,7 @@ public class UpdateMenuTimerReceiver extends BroadcastReceiver {
     }
 
     public static void setupAlarm(Context context) {
-        Log.i(TAG,"check context received--" + context);
+        Log.i(TAG,"check context received--" + context.getPackageName());
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent i=new Intent(context, AutoUpdateDataService.class);
         PendingIntent alarmIntent = PendingIntent.getService(context,0,i,0);

@@ -45,7 +45,6 @@ public class CoolBerryCartActivity extends AppCompatActivity {
     private Fields field;
     public int cartCount;
     public static Intent intent;
-    private static Activity context;
     private ItemBillReq billResponse;
     public ImageView cart_back_image;
     private ProgressDialog billDialog;
@@ -71,7 +70,6 @@ public class CoolBerryCartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         intent = getIntent();
-        context = CoolBerryCartActivity.this;
         color = appInstance.getImage("color_1");
         setContentView(R.layout.activity_coolberry_cart);
 
@@ -162,7 +160,6 @@ public class CoolBerryCartActivity extends AppCompatActivity {
         btn_CheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (InternetConnectionStatus.checkConnection(getApplicationContext())) {
                     if (ApplicationController.getInstance().getCartItemCount() == 0) {
                         Toast.makeText(getApplicationContext(),"Cart cannot be empty...",Toast.LENGTH_SHORT).show();
@@ -320,37 +317,38 @@ public class CoolBerryCartActivity extends AppCompatActivity {
 
     public void postBillJson(){
         ApiRequest.postBillJson(
-                catalog_group,
-                itemsData,
-                sec_token,
-                new IRequestCallback() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-                        Log.i(TAG, "JSON received----" + response.toString());
-                        Gson gson = new Gson();
-                        billResponse = gson.fromJson(response.toString(),ItemBillReq.class);
-                        billDialog.dismiss();
-                        if(billResponse.getResCode()!=200){
-                            Toast.makeText(CoolBerryCartActivity.this,"Unable to generate Bill!", Toast.LENGTH_SHORT).show();
-                            finish();
-                            startActivity(getIntent());
-                        }else {
-                            Intent i = new Intent(getApplicationContext(), CustomerFormActivity.class);
-                            i.putExtra("propJson", propsJson);
-                            i.putExtra("propertyList",propertyList);
-                            i.putExtra("billJson", response.toString());
-                            Log.i(TAG, "check props----" + propsJson);
-                            startActivity(i);
-                            finish();
-                        }
-                    }
-                    @Override
-                    public void onError(VolleyError error) {
-                        billDialog.dismiss();
-                        Toast.makeText(CoolBerryCartActivity.this, "some Error occured. Please try again!", Toast.LENGTH_SHORT).show();
-                        Log.i(TAG, "error-----" + error.getMessage());
+            catalog_group,
+            itemsData,
+            sec_token,
+            new IRequestCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Log.i(TAG, "JSON received----" + response.toString());
+                    Gson gson = new Gson();
+                    billResponse = gson.fromJson(response.toString(),ItemBillReq.class);
+                    billDialog.dismiss();
+                    if(billResponse.getResCode()!=200){
+                        Toast.makeText(CoolBerryCartActivity.this,"Unable to generate Bill!", Toast.LENGTH_SHORT).show();
+                        finish();
+                        startActivity(getIntent());
+                    }else {
+                        Intent i = new Intent(getApplicationContext(), CustomerFormActivity.class);
+                        i.putExtra("propJson", propsJson);
+                        i.putExtra("propertyList",propertyList);
+                        i.putExtra("billJson", response.toString());
+                        Log.i(TAG, "check props----" + propsJson);
+                        startActivity(i);
+                        finish();
                     }
                 }
+                @Override
+                public void onError(VolleyError error) {
+                    billDialog.dismiss();
+                    itemsData = null;
+                    Toast.makeText(CoolBerryCartActivity.this, "some Error occured. Please try again!", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "error-----" + error.getMessage());
+                }
+            }
         );
     }
 }

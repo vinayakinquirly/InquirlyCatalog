@@ -170,9 +170,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="inquirly.com.inquirlycoolberry.service.AutoUpdateDataService"
-            android:exported="false"
-            android:enabled="true" />
+        <service android:name="inquirly.com.inquirlycoolberry.service.AutoUpdateDataService"/>
     </application>
 
 </manifest>
